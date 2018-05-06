@@ -8,7 +8,7 @@ import * as ACTION_TYPES from "../../../constants/action-types"
 
 //Filters
 //import GeneralFilters from './GeneralFilters.jsx';
-//import RegionFilters from './RegionFilters.jsx';
+import RegionFilters from './RegionFilters.jsx';
 //import SectorFilters from './SectorFilters.jsx';
 
 const mapStateToProps = (state, props) => {
@@ -133,7 +133,7 @@ class EventFilters extends React.Component {
                 </div>
                 <hr />
                 <Collapse isOpen={this.state.collapseRegion}>
-                    {/* <RegionFilters /> */}
+                    <RegionFilters />
                     <hr />
                 </Collapse>
             </>

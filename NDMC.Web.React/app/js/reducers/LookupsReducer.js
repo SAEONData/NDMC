@@ -10,6 +10,9 @@ export default function LookupsReducer(state = {}, action) {
         case ACTION_TYPES.LOAD_REGION: {
             return { ...state, region: payload }
         }
+        case ACTION_TYPES.LOAD_REGION_TREE: {
+            return { ...state, regionTree: payload }
+        }
         default: {
             return state
         }

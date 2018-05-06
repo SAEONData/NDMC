@@ -50,7 +50,7 @@ class RegionFilters extends React.Component {
         this.state = { expandedKeys: [] }
 
         //Read initial filter from URL
-        const parsedHash = queryString.parse(location.hash.replace("/projects?", ""))
+        const parsedHash = queryString.parse(location.hash.replace("/events?", ""))
         if (typeof parsedHash.region !== 'undefined') {
 
             //Dispatch to store
