@@ -14,13 +14,17 @@ export default function FilterReducer(state = {}, action) {
             return { ...state, titleFilterInternal: payload }
         }
         case ACTION_TYPES.LOAD_REGION_FILTER: {
-            return { ...state, regionFilter: payload}
+            return { ...state, regionFilter: payload }
+        }
+        case ACTION_TYPES.LOAD_HAZARD_FILTER: {
+            return { ...state, hazardFilter: payload }
         }
         case ACTION_TYPES.CLEAR_FILTERS: {
             return {
                 ...state,
                 titleFilter: "",
                 regionFilter: 0,
+                hazardFilter: 0
             }
         }
         default: {

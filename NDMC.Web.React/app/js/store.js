@@ -8,7 +8,6 @@ import reducers from './reducers'
 const history = createHashHistory()
 const middleware = routerMiddleware(history)
 
-
 const store = createStore(
     combineReducers({ ...reducers, router: routerReducer }), {
         ...applyMiddleware(middleware),
@@ -27,14 +26,16 @@ const store = createStore(
             titleFilter: "",
             titleFilterInternal: "",
             regionFilter: 0,
+            hazardFilter: 0
         },
         lookupData: {
             eventTypes: [],
             region: [],
-            regionTree:[]
+            regionTree: [],
+            hazard: [],
+            hazardTree: []
         }
 
     }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
-
 export default store

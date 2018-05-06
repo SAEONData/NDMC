@@ -9,12 +9,12 @@ import * as ACTION_TYPES from "../../../constants/action-types"
 //Filters
 //import GeneralFilters from './GeneralFilters.jsx';
 import RegionFilters from './RegionFilters.jsx';
-//import SectorFilters from './SectorFilters.jsx';
+import HazardFilters from './HazardFilters.jsx';
 
 const mapStateToProps = (state, props) => {
-    let { filterData: { titleFilter, regionFilter } } = state
-    let { lookupData: { region } } = state
-    return { titleFilter,  regionFilter, region }
+    let { filterData: { regionFilter, hazardFilter } } = state
+    let { lookupData: { region, hazard } } = state
+    return { regionFilter, region, hazardFilter, hazard }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -22,8 +22,8 @@ const mapDispatchToProps = (dispatch) => {
         clearFilters: payload => {
             dispatch({ type: ACTION_TYPES.CLEAR_FILTERS, payload })
         },
-        clearTitleFilter: () => {
-            dispatch({ type: ACTION_TYPES.LOAD_TITLE_FILTER, payload: "" })
+        clearHazardFilter: () => {
+            dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload: 0 })
         },
         clearRegionFilter: () => {
             dispatch({ type: ACTION_TYPES.LOAD_REGION_FILTER, payload: 0 })
@@ -32,22 +32,25 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class EventFilters extends React.Component {
-
     constructor(props) {
         super(props);
-        this.toggleRegion = this.toggleRegion.bind(this);
+        this.toggleRegion = this.toggleRegion.bind(this)
+        this.toggleHazard = this.toggleHazard.bind(this)
         this.clearFilters = this.clearFilters.bind(this)
         this.renderFilterChips = this.renderFilterChips.bind(this)
 
         this.state = {
-            collapseGeneral: false,
             collapseRegion: false,
-            collapseSector: false,
-        };
+            collapsHazzard: false
+        }
     }
 
     toggleRegion() {
-        this.setState({ collapseRegion: !this.state.collapseRegion });
+        this.setState({ collapseRegion: !this.state.collapseRegion })
+    }
+
+    toggleHazard() {
+        this.setState({ collapseHazard: !this.state.collapseHazard })
     }
 
     getBottonColor(state) {
@@ -60,24 +63,20 @@ class EventFilters extends React.Component {
     }
 
     clearFilters() {
-
         let { clearFilters } = this.props
         clearFilters("")
-
         location.hash = "/events"
     }
 
     renderFilterChips() {
-
-        let { titleFilter, regionFilter, region } = this.props
+        let { hazardFilter, regionFilter, region, hazard } = this.props
         let filterChips = []
-
-        if (titleFilter !== "" || regionFilter !== 0) {
+        if (hazardFilter > 0 && hazard.length > 0) {
             filterChips.push(<br key="br" />)
-            if (titleFilter !== "") {
+            if (hazardFilter !== "") {
                 filterChips.push(
                     <Chip
-                        label={"Title: " + titleFilter}
+                        label={"Hazard: " + hazard.filter(x => x.HazardID === parseInt(hazardFilter))[0].HazardName}
                         onDelete={() => this.deleteFilterChip("title")}
                         style={{ backgroundColor: "#4285F4", marginRight: "5px" }}
                         key="titleFilterChip"
@@ -103,12 +102,11 @@ class EventFilters extends React.Component {
 
     deleteFilterChip(type) {
         switch (type) {
-            case "title":
-                this.props.clearTitleFilter()
-                break
             case "region":
                 this.props.clearRegionFilter()
                 break
+            case "hazard":
+                this.props.clearHazardFilter()
         }
     }
 
@@ -126,6 +124,9 @@ class EventFilters extends React.Component {
                         <Button block color={this.getBottonColor(this.state.collapseRegion)} className="btn-sm" onTouchTap={this.toggleRegion} >Region filters</Button>
                     </div>
                     <div className="col-md-3">
+                        <Button block color={this.getBottonColor(this.state.collapseHazard)} className="btn-sm" onTouchTap={this.toggleHazard} >Hazard filters</Button>
+                    </div>
+                    <div className="col-md-3">
                         <Button block color="secondary" className="btn-sm" onTouchTap={this.clearFilters} >
                             <i className="fa fa-eraser" aria-hidden="true"></i>&nbsp;&nbsp;Clear filters
                         </Button>
@@ -134,6 +135,10 @@ class EventFilters extends React.Component {
                 <hr />
                 <Collapse isOpen={this.state.collapseRegion}>
                     <RegionFilters />
+                    <hr />
+                </Collapse>
+                <Collapse isOpen={this.state.collapseHazard}>
+                    <HazardFilters />
                     <hr />
                 </Collapse>
             </>

@@ -17,26 +17,26 @@ const TreeNode = Tree.TreeNode
 const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
-    let { lookupData: { regionTree, region } } = state
-    let { filterData: { regionFilter } } = state
-    return { regionTree, regionFilter, region }
+    let { lookupData: { hazardTree, hazard } } = state
+    let { filterData: { hazardFilter } } = state
+    return { hazardTree, hazardFilter, hazard }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         loadData: payload => {
-            dispatch({ type: ACTION_TYPES.LOAD_REGION_TREE, payload })
+            dispatch({ type: ACTION_TYPES.LOAD_HAZARD_TREE, payload })
         },
-        loadRegionFilter: payload => {
-            dispatch({ type: ACTION_TYPES.LOAD_REGION_FILTER, payload })
+        loadHazardFilter: payload => {
+            dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload })
         },
-        loadRegions: payload => {
-            dispatch({ type: ACTION_TYPES.LOAD_REGION, payload })
+        loadHazards: payload => {
+            dispatch({ type: ACTION_TYPES.LOAD_HAZARD, payload })
         }
     }
 }
 
-class RegionFilters extends React.Component {
+class HazardFilters extends React.Component {
     constructor(props) {
         super(props);
         this.expandAllNodes = this.expandAllNodes.bind(this)
@@ -49,18 +49,18 @@ class RegionFilters extends React.Component {
 
         //Read initial filter from URL
         const parsedHash = queryString.parse(location.hash.replace("/events?", ""))
-        if (typeof parsedHash.region !== 'undefined') {
+        if (typeof parsedHash.hazard !== 'undefined') {
             //Dispatch to store
-            let { loadRegionFilter } = this.props
-            loadRegionFilter(parsedHash.region)
-            stripURLParam("region=" + parsedHash.region)
+            let { loadHazardFilter } = this.props
+            loadHazardFilter(parsedHash.hazard)
+            stripURLParam("hazard=" + parsedHash.hazard)
         }
     }
 
     componentDidMount() {
         //Load data
-        let { loadData, loadRegions } = this.props
-        fetch(apiBaseURL + 'api/region/GetAllTree', {
+        let { loadData, loadHazards } = this.props
+        fetch(apiBaseURL + 'api/Hazard/GetAllTree', {
             headers: {
                 "Content-Type": "application/json"
             }
@@ -70,21 +70,21 @@ class RegionFilters extends React.Component {
                 loadData(res)
             })
 
-        fetch(apiBaseURL + 'api/Region/GetAll/', {
+        fetch(apiBaseURL + 'api/Hazard/GetAll/', {
             headers: {
                 "Content-Type": "application/json"
             }
         })
             .then(res => res.json())
             .then(res => {
-                loadRegions(res)
+                loadHazards(res)
             })
     }
 
     expandAllNodes() {
         let expandedKeys = []
-        let { region } = this.props
-        region.map(x => expandedKeys.push(x.RegionId.toString()))
+        let { hazard } = this.props
+        hazard.map(x => expandedKeys.push(x.HazardID.toString()))
         this.setState({ expandedKeys: expandedKeys })
     }
 
@@ -106,13 +106,12 @@ class RegionFilters extends React.Component {
     }
 
     onSelect(selectedKeys, info) {
-        let { loadRegionFilter } = this.props
+        let { loadHazardFilter } = this.props
         let id = selectedKeys[0]
         if (typeof id === 'undefined') {
             id = 0
         }
-
-        loadRegionFilter(id)
+        loadHazardFilter(id)
     }
 
     getParentKeys(id, data) {
@@ -135,14 +134,14 @@ class RegionFilters extends React.Component {
     }
 
     render() {
-        let { region, regionTree, regionFilter } = this.props
+        let { hazard, hazardTree, hazardFilter } = this.props
         let { expandedKeys } = this.state
         let selectedValue = "All"
-        let treeData = typeof regionTree.dataSource === 'undefined' ? [] : regionTree.dataSource
-        if (regionFilter > 0 && region.length > 0) {
-            selectedValue = region.filter(x => x.RegionId === parseInt(regionFilter))[0].RegionName
+        let treeData = typeof hazardTree.dataSource === 'undefined' ? [] : hazardTree.dataSource
+        if (hazardFilter > 0 && hazard.length > 0) {
+            selectedValue = hazard.filter(x => x.HazardId === parseInt(hazardFilter))[0].HazardName
         }
-        let uiconf = UILookup("treeRegionFilter", "Region filter:")
+        let uiconf = UILookup("treeHazardFilter", "Hazard filter:")
         return (
             <>
                 <div className="row">
@@ -153,10 +152,10 @@ class RegionFilters extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-md-12">
-                        <Button color="secondary" size="sm" id="btnRegionTreeExpandAll" style={{ marginLeft: "0px" }} onTouchTap={this.expandAllNodes} >
+                        <Button color="secondary" size="sm" id="btnHazardTreeExpandAll" style={{ marginLeft: "0px" }} onTouchTap={this.expandAllNodes} >
                             <i className="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;&nbsp;Expand all
                         </Button>
-                        <Button color="secondary" size="sm" id="btnRegionTreeCollapseAll" onTouchTap={this.collapseAllNodes}>
+                        <Button color="secondary" size="sm" id="btnHazardTreeCollapseAll" onTouchTap={this.collapseAllNodes}>
                             <i className="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;&nbsp;Collapse all
                         </Button>
                     </div>
@@ -165,8 +164,8 @@ class RegionFilters extends React.Component {
                 <Tree key={GetUID()}
                     autoExpandParent
                     onSelect={this.onSelect}
-                    defaultSelectedKeys={[regionFilter.toString()]}
-                    defaultExpandedKeys={[...expandedKeys, ...this.getParentKeys(regionFilter, region), regionFilter.toString()]}
+                    defaultSelectedKeys={[hazardFilter.toString()]}
+                    defaultExpandedKeys={[...expandedKeys, ...this.getParentKeys(hazardFilter, hazard), hazardFilter.toString()]}
                     onExpand={this.onExpand}
                 >
                     {this.renderTreeNodes(treeData)}
@@ -176,4 +175,4 @@ class RegionFilters extends React.Component {
         )
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(RegionFilters)
+export default connect(mapStateToProps, mapDispatchToProps)(HazardFilters)
