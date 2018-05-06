@@ -64,7 +64,7 @@ class EventFilters extends React.Component {
         let { clearFilters } = this.props
         clearFilters("")
 
-        location.hash = "/projects"
+        location.hash = "/events"
     }
 
     renderFilterChips() {
