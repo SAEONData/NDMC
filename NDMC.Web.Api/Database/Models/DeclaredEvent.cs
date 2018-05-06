@@ -10,8 +10,7 @@ namespace Database.Models
     {
         public int DeclaredEventId { get; set; }
 
-        [Required]
-        public DateTime Declared { get; set; }
+        public DateTime? DeclaredDate { get; set; }
 
         //FK - Event
         [Required]

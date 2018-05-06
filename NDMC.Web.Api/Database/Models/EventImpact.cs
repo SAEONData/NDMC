@@ -10,11 +10,7 @@ namespace Database.Models
     {
         public int EventImpactId { get; set; }
 
-        [Required]
-        public int Measure { get; set; }
-
-        [Required]
-        public string UnitOfMeasure { get; set; }
+        public double? Measure { get; set; }
 
         //FK - Event
         [Required]

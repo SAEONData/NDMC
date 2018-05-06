@@ -1,21 +1,24 @@
 ﻿using Database.Contexts;
-using Microsoft.EntityFrameworkCore;
+using Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace ND3B_API.ControllerLogic
+namespace API.ControllerLogic
 {
-   
     public class EventsListControllerLogic
     {
-        public void Get()
+        public List<Event> Get()
         {
+            var result = new List<Event>();
+
             using (var context = new SQLDBContext())
             {
-                // do stuff
+                result = context.Events.ToList();
             }
+
+            return result;
         }
     }
 }

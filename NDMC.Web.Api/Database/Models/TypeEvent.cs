@@ -13,25 +13,19 @@ namespace Database.Models
         [Required]
         public string TypeEventName { get; set; }
 
-        //FK - TypePressure
-        [Required]
-        public int TypePressureId { get; set; }
-        [Required]
-        [IgnoreDataMember]
-        public TypePressure TypePressure { get; set; }
+        ////FK - TypePressure
+        //public int? TypePressureId { get; set; }
+        //[IgnoreDataMember]
+        //public TypePressure TypePressure { get; set; }
 
-        //FK - TypeStock
-        [Required]
-        public int TypeStockId { get; set; }
-        [Required]
-        [IgnoreDataMember]
-        public TypeStock TypeStock { get; set; }
+        ////FK - TypeStock
+        //public int? TypeStockId { get; set; }
+        //[IgnoreDataMember]
+        //public TypeStock TypeStock { get; set; }
 
-        //FK - ParentTypeEvent
-        [Required]
-        public int ParentTypeEventId { get; set; }
-        [Required]
-        [IgnoreDataMember]
-        public TypeEvent ParentTypeEvent { get; set; }
+        ////FK - ParentTypeEvent
+        //public int? ParentTypeEventId { get; set; }
+        //[IgnoreDataMember]
+        //public TypeEvent ParentTypeEvent { get; set; }
     }
 }

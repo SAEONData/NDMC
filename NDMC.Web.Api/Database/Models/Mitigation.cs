@@ -10,25 +10,21 @@ namespace Database.Models
     {
         public int MitigationId { get; set; }
 
-        [Required]
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
-        [Required]
-        public string Value { get; set; }
+        public double? Value { get; set; }
 
-        //FK - Department
-        [Required]
-        public int DepartmentId { get; set; }
-        [Required]
+        //FK - Department (nullable)
+        public int? DepartmentId { get; set; }
         [IgnoreDataMember]
         public Department Department { get; set; }
 
         //FK - Stakeholder
-        [Required]
-        public int StakeholderId { get; set; }
-        [Required]
-        [IgnoreDataMember]
-        public Stakeholder Stakeholder { get; set; }
+        //[Required]
+        //public int StakeholderId { get; set; }
+        //[Required]
+        //[IgnoreDataMember]
+        //public Stakeholder Stakeholder { get; set; }
 
         //FK - Event
         [Required]

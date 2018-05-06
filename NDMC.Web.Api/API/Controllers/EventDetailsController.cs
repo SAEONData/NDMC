@@ -1,16 +1,15 @@
-﻿using System;
+﻿using API.ControllerLogic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ND3B_API.ControllerLogic;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 
-namespace ND3B_API.Controllers
+namespace API.Controllers
 {
-    [Produces("application/json")]
     [Route("api/Events/{id}")]
-    public class EventDetailsController : Controller
+    public class EventDetailsController : ApiController
     {
         private readonly EventDetailsControllerLogic _logic;
 
@@ -22,7 +21,7 @@ namespace ND3B_API.Controllers
         [Route("Test")]
         public string Test(int id)
         {
-            return $"EVENTS/{id}";
+            return $"TEST/{id}";
         }
     }
 }

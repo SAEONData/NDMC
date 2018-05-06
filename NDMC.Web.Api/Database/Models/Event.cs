@@ -10,35 +10,19 @@ namespace Database.Models
     {
         public int EventId { get; set; }
 
-        [Required]
-        public string EventName { get; set; }
+        public DateTime? StartDate { get; set; }
 
-        [Required]
-        public DateTime StartDate { get; set; }
-
-        [Required]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public string Location_WKT { get; set; }
 
         //FK - TypeEvent
-        [Required]
-        public int TypeEventId { get; set; }
-        [Required]
+        public int? TypeEventId { get; set; }
         [IgnoreDataMember]
         public TypeEvent TypeEvent { get; set; }
 
-        //FK - AdminRegion
-        [Required]
-        public int AdminRegionId { get; set; }
-        [Required]
-        [IgnoreDataMember]
-        public AdminRegion AdminRegion { get; set; }
-
         //FK - TypeSource
-        [Required]
-        public int TypeSourceId { get; set; }
-        [Required]
+        public int? TypeSourceId { get; set; }
         [IgnoreDataMember]
         public TypeSource TypeSource { get; set; }
     }

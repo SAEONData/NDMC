@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace ND3B_API.ControllerLogic
+namespace API.ControllerLogic
 {
     public class EventDetailsControllerLogic
     {
-        
     }
 }

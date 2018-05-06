@@ -14,10 +14,10 @@ namespace Database.Models
         public string DepartmentName { get; set; }
 
         //FK - AdminRegion
-        [Required]
-        public int AdminRegionId { get; set; }
-        [Required]
-        [IgnoreDataMember]
-        public AdminRegion AdminRegion { get; set; }
+        //[Required]
+        //public int AdminRegionId { get; set; }
+        //[Required]
+        //[IgnoreDataMember]
+        //public AdminRegion AdminRegion { get; set; }
     }
 }
