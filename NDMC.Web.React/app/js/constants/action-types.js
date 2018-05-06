@@ -1,0 +1,25 @@
+
+//Details
+export const LOAD_EVENTS = "LOAD_EVENTS";
+export const SET_EVENT_SCROLL = "SET_EVENT_SCROLL";
+
+
+export const RESET_EVENT_STATE = "RESET_EVENT_STATE";
+
+//Lookups
+export const LOAD_EVENT_TYPE = "LOAD_EVENT_TYPE";
+export const LOAD_REGION = "LOAD_REGION";
+
+//Filters
+export const LOAD_TITLE_FILTER = "LOAD_TITLE_FILTER";
+export const LOAD_TITLE_FILTER_INTERNAL = "LOAD_TITLE_FILTER_INTERNAL";
+export const LOAD_REGION_FILTER = "LOAD_REGION_FILTER";
+export const CLEAR_FILTERS = "CLEAR_FILTERS";
+
+//Global
+export const SET_LOADING = "SET_LOADING";
+export const SET_AUTHENTICATED = "SET_AUTHENTICATED";
+
+//General
+export const LOAD_MORE_EVENTS = "LOAD_MORE_EVENTS";
+export const RESET_EVENT_COUNTS = "RESET_EVENT_COUNTS";
