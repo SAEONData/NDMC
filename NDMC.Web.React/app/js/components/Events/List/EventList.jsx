@@ -8,9 +8,9 @@ import { apiBaseURL } from "../../../constants/apiBaseURL"
 
 const mapStateToProps = (state, props) => {
   let { eventData: { events, start, end, listScrollPos } } = state
-  let { filterData: { titleFilter, regionFilter } } = state
+  let { filterData: { hazardFilter, regionFilter } } = state
   return {
-    events, titleFilter, regionFilter, start, end, listScrollPos
+    events, hazardFilter, regionFilter, start, end, listScrollPos
   }
 }
 
@@ -41,7 +41,7 @@ class EventList extends React.Component {
 
     //Set initial state
     this.state = {
-      titleFilter: "",
+      hazardFilter: 0,
       regionFilter: 0,
       start: 0,
       end: 10
@@ -64,7 +64,7 @@ class EventList extends React.Component {
 
   getEventList(resetCounts) {
 
-    let { loadProjects, setLoading, titleFilter, regionFilter, start, end, resetEventCounts } = this.props
+    let { loadProjects, setLoading, hazardFilter, regionFilter, start, end, resetEventCounts } = this.props
 
     if (resetCounts === true) {
       start = 0
@@ -73,7 +73,7 @@ class EventList extends React.Component {
     }
 
     this.setState({
-      titleFilter: titleFilter,
+      hazardFilter: hazardFilter,
       regionFilter: regionFilter,
       start: start,
       end: end
@@ -81,7 +81,7 @@ class EventList extends React.Component {
 
     setLoading(true)
 
-    let fetchURL = apiBaseURL + 'api/Events/GetAll/List?titlePart=' + titleFilter +
+    let fetchURL = apiBaseURL + 'api/Events/GetAll/List?hazardId=' + hazardFilter +
       '&regionId=' + regionFilter + '&batchSize=' + 10 + '&batchCount=' + Math.floor(end / 10)
 
 
@@ -116,22 +116,22 @@ class EventList extends React.Component {
 
   componentDidUpdate() {
 
-    let pTitleFilter = this.props.titleFilter
-    let pRegionFilter = this.props.regionFilter
-    let pStart = this.props.start
-    let pEnd = this.props.end
+    let eHazardFilter = this.props.hazardFilter
+    let eRegionFilter = this.props.regionFilter
+    let eStart = this.props.start
+    let eEnd = this.props.end
     let { titleFilter, regionFilter, start, end } = this.state
 
     //If any filters changed...refetch projects
     let filtersChanged = false
-    if (pTitleFilter !== titleFilter || pRegionFilter !== regionFilter) {
+    if (eHazardFilter !== titleFilter || eRegionFilter !== regionFilter) {
 
       filtersChanged = true
     }
 
     //If next batch needed
     let nextBatchNeeded = false
-    if (pStart !== start || pEnd !== end) {
+    if (eStart !== start || eEnd !== end) {
       nextBatchNeeded = true
     }
 
@@ -146,7 +146,7 @@ class EventList extends React.Component {
     let ar = []
     if (typeof projects !== 'undefined' && projects.length > 0) {
       for (let i of projects) {
-        ar.push(<EventCard key={i.ProjectId} pid={i.ProjectId} ptitle={i.ProjectTitle} />)
+        ar.push(<EventCard key={i.EventId} id={i.EventId} region={i.Region} startdate={i.StartDate} enddate={i.EndDate} hazardtype={i.EventType} />)
       }
       return ar
     }

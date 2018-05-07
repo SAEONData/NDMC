@@ -79,7 +79,7 @@ class EventFilters extends React.Component {
                         label={"Hazard: " + hazard.filter(x => x.HazardID === parseInt(hazardFilter))[0].HazardName}
                         onDelete={() => this.deleteFilterChip("title")}
                         style={{ backgroundColor: "#4285F4", marginRight: "5px" }}
-                        key="titleFilterChip"
+                        key="hazardFilterChip"
                     />
                 )
             }
