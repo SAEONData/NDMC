@@ -8,9 +8,9 @@ import { apiBaseURL } from "../../../constants/apiBaseURL"
 
 const mapStateToProps = (state, props) => {
   let { eventData: { events, start, end, listScrollPos } } = state
-  let { filterData: { hazardFilter, regionFilter } } = state
+  let { filterData: { hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter } } = state
   return {
-    events, hazardFilter, regionFilter, start, end, listScrollPos
+    events, hazardFilter, regionFilter,startDateFilter, endDateFilter, impactTypeFilter, start, end, listScrollPos
   }
 }
 
@@ -43,6 +43,9 @@ class EventList extends React.Component {
     this.state = {
       hazardFilter: 0,
       regionFilter: 0,
+      impactTypeFilter: 0,
+      startDateFilter: 0,
+      endDateFilter:0,
       start: 0,
       end: 10
     }
@@ -64,7 +67,7 @@ class EventList extends React.Component {
 
   getEventList(resetCounts) {
 
-    let { loadProjects, setLoading, hazardFilter, regionFilter, start, end, resetEventCounts } = this.props
+    let { loadProjects, setLoading, hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end, resetEventCounts } = this.props
 
     if (resetCounts === true) {
       start = 0
