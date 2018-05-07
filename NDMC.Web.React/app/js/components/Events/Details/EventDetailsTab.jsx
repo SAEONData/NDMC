@@ -12,7 +12,7 @@ import * as ACTION_TYPES from "../../../constants/action-types"
 
 const mapStateToProps = (state, props) => {
     let { eventData: { eventDetails } } = state
-    let { lookupData:{ } } = state
+    let { lookupData:{ region, hazard, impacts } } = state
     return { eventDetails }
 }
 
@@ -32,6 +32,7 @@ class EventDetailsTab extends React.Component {
                         label="Hazard Type:"
                         id="txtHazardType"
                         value={eventDetails.HazardType}
+                        allowEdit={false}
                     />
                 </div>
                 <br />
@@ -42,6 +43,7 @@ class EventDetailsTab extends React.Component {
                         id="txtEventDate"
                         inputWidth="75px"
                         valueFrom={eventDetails.StartDate} valueTo={eventDetails.EndDate}
+                        allowEdit={false}
                     />
                 </div>
                 <br />
@@ -50,7 +52,8 @@ class EventDetailsTab extends React.Component {
                         col="col-md-12"
                         label="Region:"
                         id="txtEventRegion"
-                        value={eventDetails.Regions[0]}
+                        value={eventDetails.Regions}
+                        allowEdit={false}
                     />
                 </div>
                 <br />
@@ -60,6 +63,7 @@ class EventDetailsTab extends React.Component {
                         label="Impact Type"
                         id="txtImpactType"
                         value={eventDetails.EventsImpacts}
+                        allowEdit={false}
                     />
                 </div>
                 <br />
@@ -69,6 +73,7 @@ class EventDetailsTab extends React.Component {
                         label="Declared Date"
                         id="txtDeclaredDate"
                         value={eventDetails.DeclareDate}
+                        allowEdit={false}
                     />
                 </div>
                 <br />
