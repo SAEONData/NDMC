@@ -64,7 +64,7 @@ class EventDetails extends React.Component {
 
     navBack() {
         this.props.setLoading(true)
-        location.hash = "/projects"
+        location.hash = "/events"
     }
 
     backToList() {
