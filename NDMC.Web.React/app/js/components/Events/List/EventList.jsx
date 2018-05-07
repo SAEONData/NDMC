@@ -162,7 +162,14 @@ class EventList extends React.Component {
     let ar = []
     if (typeof events !== 'undefined' && events.length > 0) {
       for (let i of events) {
-        ar.push(<EventCard key={i.EventId} id={i.EventId} region={i.Regions[0]} startdate={i.StartDate} enddate={i.EndDate} hazardtype={i.EventImpacts} />)
+        let startdate = new Date(i.StartDate)
+        let enddate = new Date(i.EndDate)
+        if(startdate.getFullYear() === 1900) {
+          startdate = false
+        } else {
+          startdate = startdate.toDateString()
+        }
+        ar.push(<EventCard key={i.EventId} id={i.EventId} region={i.Regions[0]} startdate={startdate} enddate={enddate.toDateString()} hazardtype={i.EventType} />)
       }
       return ar
     }

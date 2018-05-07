@@ -28,12 +28,16 @@ class EventCard extends React.Component {
   }
 
   render() {
+    const { region: { RegionName }, startdate, enddate, hazardtype} = this.props
     return (
       <>
         <Card>
           <CardBody>
-            <CardTitle>{this.props.hazardtype} : {this.props.region} : {this.props.startdate}-{this.props.enddate}</CardTitle>
-            <CardText></CardText>
+            <CardTitle>Event at {this.props.region.RegionName} </CardTitle>
+            <CardText>
+              {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br/>
+              {hazardtype ? `Type: ${hazardtype}` : ' '}
+              </CardText>
             <Button color="primary" className="btn-sm" onTouchTap={this.onTouchTap.bind(this)}>View</Button>
           </CardBody>
         </Card>
