@@ -22,6 +22,9 @@ const mapDispatchToProps = (dispatch) => {
     loadEvents: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_EVENTS, payload })
     },
+    clearEventDetails: payload => {
+      dispatch({ type: ACTION_TYPES.LOAD_EVENTS, payload: [] })
+    },
     setLoading: payload => {
       dispatch({ type: ACTION_TYPES.SET_LOADING, payload })
     },
@@ -35,7 +38,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class EventList extends React.Component {
-
   constructor(props) {
     super(props)
 
@@ -67,7 +69,7 @@ class EventList extends React.Component {
 
   getEventList(resetCounts) {
 
-    let { loadEvents, setLoading, hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end, resetEventCounts } = this.props
+    let { loadEvents, setLoading, hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end, resetEventCounts, clearEventDetails } = this.props
 
     if (resetCounts === true) {
       start = 0
@@ -78,11 +80,17 @@ class EventList extends React.Component {
     this.setState({
       hazardFilter: hazardFilter,
       regionFilter: regionFilter,
+      impactTypeFilter: impactTypeFilter,
+      startDateFilter: startDateFilter,
+      endDateFilter: endDateFilter,
       start: start,
       end: end
     })
 
     setLoading(true)
+
+    //Clear details data
+    clearEventDetails()
 
     let fetchURL = apiBaseURL + 'api/Events/GetAll/List?startDate=' + startDateFilter +"&endDate=" + endDateFilter + "&eventType=" + hazardFilter +
       '&impactType=' + impactTypeFilter +'&region=' + regionFilter
@@ -130,7 +138,9 @@ class EventList extends React.Component {
 
     //If any filters changed...refetch events
     let filtersChanged = false
-    if (eHazardFilter !== titleFilter || eRegionFilter !== regionFilter) {
+    if (eHazardFilter !== titleFilter || eRegionFilter !== regionFilter || eImpactTypeFilter !== impactTypeFilter
+      || eStartDateFilter !== startDateFilter
+      || eEndDateFilter !== endDateFilter) {
 
       filtersChanged = true
     }
@@ -142,7 +152,7 @@ class EventList extends React.Component {
     }
 
     if (filtersChanged === true || nextBatchNeeded === true) {
-      //Promise.resolve(this.getEventList(filtersChanged))
+      //this.getEventList(filtersChanged)
     }
   }
 
@@ -161,12 +171,12 @@ class EventList extends React.Component {
 
   render() {
     const ar = this.buildList()
-    let eventlist = []
-    if (ar.length > 0) {
-      eventlist = (
-        ar.slice(this.props.start, this.props.end)
-      )
-    }
+    let eventlist = ar
+    // if (ar.length > 0) {
+    //   eventlist = (
+    //     ar.slice(this.props.start, this.props.end)
+    //   )
+    // }
 
     return (
       <div>
