@@ -25,7 +25,7 @@ const store = createStore(
         filterData: {
             regionFilter: 0,
             hazardFilter: 0,
-            impactFilter:0,
+            impactTypeFilter:0,
             startDateFilter:0,
             endDateFilter:0
         },
