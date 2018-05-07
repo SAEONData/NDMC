@@ -55,6 +55,9 @@ class CustomNavbar extends React.Component {
             <NavItem>
               <a className="nav-link" href="#/events">Events</a>
             </NavItem>
+            <NavItem>
+              <a className="nav-link" href="#/graphs">Graphs</a>
+            </NavItem>
           </NavbarNav>
         </Collapse>
       </Navbar>

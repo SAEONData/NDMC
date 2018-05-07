@@ -11,9 +11,9 @@ import { apiBaseURL } from "../../../constants/apiBaseURL"
 import * as ACTION_TYPES from "../../../constants/action-types"
 
 const mapStateToProps = (state, props) => {
-    let { eventData: { eventDetails } } = state
-    let { lookupData:{ region, hazard, impacts } } = state
-    return { eventDetails }
+    let { eventData: { events, eventDetails } } = state
+    let { lookupData: { region, hazard, impacts } } = state
+    return { events, eventDetails, region, hazard, impacts }
 }
 
 class EventDetailsTab extends React.Component {
@@ -21,48 +21,49 @@ class EventDetailsTab extends React.Component {
         super(props);
     }
 
+    // buildImpactList(e){
+    //     const { events } = this.props
+    //     let impactstring = ''
+    //     for(let i in events){
+    //         impactstring += i.ImpactType + i.measure? `: ${i.Measure}\n`: `\n` +
+    //     }
+    // }
+
     render() {
-        const { eventDetails } = this.props
+        const { eventDetails, eventDetails: { Regions, EventType, StartDate, EndDate, DeclaredDate, EventsImpacts }  } = this.props
+
+        let startdate = new Date(StartDate)
+        let enddate = new Date(EndDate)
+        let declareddate = new Date(DeclaredDate)
+        let impactString = EventsImpacts ? EventsImpacts.reduce((prev, next) => prev += `${next.ImpactType}: ${next.Measure}\n`, "") : ""
         return (
             <>
                 <br />
                 <div className="row">
-                    <TextAreaComponent
-                        col="col-md-12"
+                    <TextComponent
+                        col="col-md-4"
                         label="Hazard Type:"
                         id="txtHazardType"
-                        value={eventDetails.HazardType}
+                        value={EventType ? EventType : ""}
+                        allowEdit={false}
+                    />
+                    <TextComponent
+                        col="col-md-4"
+                        label="Region:"
+                        id="txtEventRegion"
+                        value={Regions ? Regions[0].RegionName : ""}
                         allowEdit={false}
                     />
                 </div>
                 <br />
                 <div className="row">
                     <RangeComponent
-                        col="col-md-6"
+                        col="col-md-8"
                         label="Date"
                         id="txtEventDate"
-                        inputWidth="75px"
-                        valueFrom={eventDetails.StartDate} valueTo={eventDetails.EndDate}
-                        allowEdit={false}
-                    />
-                </div>
-                <br />
-                <div className="row">
-                    <TextAreaComponent
-                        col="col-md-12"
-                        label="Region:"
-                        id="txtEventRegion"
-                        value={eventDetails.Regions}
-                        allowEdit={false}
-                    />
-                </div>
-                <br />
-                <div className="row">
-                    <TextComponent
-                        col="col-md-4"
-                        label="Impact Type"
-                        id="txtImpactType"
-                        value={eventDetails.EventsImpacts}
+                        inputWidth="100px"
+                        valueFrom={`${startdate.getFullYear()}\/${startdate.getMonth()+1}\/${startdate.getDate()}`}
+                        valueTo={`${enddate.getFullYear()}\/${enddate.getMonth()}\/${enddate.getDay()}`}
                         allowEdit={false}
                     />
                 </div>
@@ -72,7 +73,17 @@ class EventDetailsTab extends React.Component {
                         col="col-md-4"
                         label="Declared Date"
                         id="txtDeclaredDate"
-                        value={eventDetails.DeclareDate}
+                        value={declareddate.getFullYear() === 1900?"Na": declareddate.toDateString() }
+                        allowEdit={false}
+                    />
+                </div>
+                <br />
+                <div className="row">
+                    <TextAreaComponent
+                        col="col-md-6"
+                        label="Impact Types"
+                        id="txtImpactType"
+                         value={impactString }
                         allowEdit={false}
                     />
                 </div>

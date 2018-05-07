@@ -18,6 +18,7 @@ const mapStateToProps = (state, props) => {
 
     let { eventData: { eventDetails } } = state
     let { globalData: { loading } } = state
+ //   let { lookupData: { }} = state
 
     return {
         eventDetails, loading
@@ -49,6 +50,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         loadEventDetails: payload => {
             dispatch({ type: ACTION_TYPES.LOAD_EVENT_DETAILS, payload })
+        },
+        loadDeclareDate: payload => {
+            dispatch({ type: ACTION_TYPES.LOAD_DECLAREDATE, payload })
         }
     }
 }
@@ -83,7 +87,7 @@ class EventDetails extends React.Component {
 
     loadEvents(loadEventDetails) {
         let action
-        action = fetch(apiBaseURL + 'api/Events/GetById/' + this.state.projectId, {
+        action = fetch(apiBaseURL + 'api/Events/details/' + this.state.eventId, {
             headers: {
                 "Content-Type": "application/json"
             }
@@ -95,7 +99,7 @@ class EventDetails extends React.Component {
     }
 
     loadData() {
-        let { setLoading, loadEventDetails, loadEvents } = this.props
+        let { setLoading, loadEventDetails, loadEvents, loadRegion, loadEndDate, loadStartDate, loadImpact, loadDeclareDate } = this.props
         setLoading(true)
         Promise.all([
             this.loadEvents(loadEventDetails)

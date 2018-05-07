@@ -164,7 +164,7 @@ class EventList extends React.Component {
       for (let i of events) {
         let startdate = new Date(i.StartDate)
         let enddate = new Date(i.EndDate)
-        if(startdate.getFullYear() === 1900) {
+        if(startdate.getFullYear() === 1900 ||startdate.getFullYear() === 1970) {
           startdate = false
         } else {
           startdate = startdate.toDateString()
