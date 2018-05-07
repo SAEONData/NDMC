@@ -134,11 +134,11 @@ class EventList extends React.Component {
     let eEndDateFilter = this.props.endDateFilter
     let eStart = this.props.start
     let eEnd = this.props.end
-    let { titleFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end } = this.state
+    let { hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end } = this.state
 
     //If any filters changed...refetch events
     let filtersChanged = false
-    if (eHazardFilter !== titleFilter || eRegionFilter !== regionFilter || eImpactTypeFilter !== impactTypeFilter
+    if (eHazardFilter !== hazardFilter || eRegionFilter !== regionFilter || eImpactTypeFilter !== impactTypeFilter
       || eStartDateFilter !== startDateFilter
       || eEndDateFilter !== endDateFilter) {
 
@@ -146,13 +146,13 @@ class EventList extends React.Component {
     }
 
     //If next batch needed
-    let nextBatchNeeded = false
-    if (eStart !== start || eEnd !== end) {
-      nextBatchNeeded = true
-    }
+    // let nextBatchNeeded = false
+    // if (eStart !== start || eEnd !== end) {
+    //   nextBatchNeeded = true
+    // }
 
-    if (filtersChanged === true || nextBatchNeeded === true) {
-      //this.getEventList(filtersChanged)
+    if (filtersChanged === true /*|| nextBatchNeeded === true*/) {
+      this.getEventList(filtersChanged)
     }
   }
 
