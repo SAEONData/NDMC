@@ -13,6 +13,15 @@ export default function FilterReducer(state = {}, action) {
         case ACTION_TYPES.LOAD_HAZARD_FILTER: {
             return { ...state, hazardFilter: payload }
         }
+        case ACTION_TYPES.LOAD_IMPACT_FILTER: {
+            return { ...state, hazardFilter: payload }
+        }
+        case ACTION_TYPES.LOAD_STARTDATE_FILTER: {
+            return { ...state, startDateFilter: payload }
+        }
+        case ACTION_TYPES.LOAD_ENDDATE_FILTER: {
+            return { ...state, endDateFilter: payload }
+        }
         case ACTION_TYPES.CLEAR_FILTERS: {
             return {
                 ...state,

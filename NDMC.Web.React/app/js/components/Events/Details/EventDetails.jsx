@@ -114,12 +114,6 @@ class ProjectDetails extends React.Component {
                         <br />
                         <br />
                     </TabPanel>
-                    <TabPanel>
-                        <AdaptationDetailsTab projectId={projectDetails.ProjectId} />
-                        <br />
-                        <br />
-                        <br />
-                    </TabPanel>
                 </Tabs>
                 {this.renderListEditor()}
                 <ReactTooltip />

@@ -24,7 +24,10 @@ const store = createStore(
         },
         filterData: {
             regionFilter: 0,
-            hazardFilter: 0
+            hazardFilter: 0,
+            impactFilter:0,
+            startDateFilter:0,
+            endDateFilter:0
         },
         lookupData: {
             eventTypes: [],

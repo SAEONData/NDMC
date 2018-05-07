@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch) => {
 class EventList extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
 
     //Set initial state
     this.state = {
@@ -46,16 +46,16 @@ class EventList extends React.Component {
       start: 0,
       end: 10
     }
-    this.handleScroll = this.handleScroll.bind(this);
+    this.handleScroll = this.handleScroll.bind(this)
   }
 
   handleScroll() {
 
-    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
-    const body = document.body;
-    const html = document.documentElement;
-    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-    const windowBottom = windowHeight + window.pageYOffset;
+    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight
+    const body = document.body
+    const html = document.documentElement
+    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
+    const windowBottom = windowHeight + window.pageYOffset
     const { loadMoreEvents } = this.props
     if (Math.ceil(windowBottom) >= docHeight && this.props.polygonFilter === "") {
       loadMoreEvents()
@@ -81,8 +81,8 @@ class EventList extends React.Component {
 
     setLoading(true)
 
-    let fetchURL = apiBaseURL + 'api/Events/GetAll/List?hazardId=' + hazardFilter +
-      '&regionId=' + regionFilter + '&batchSize=' + 10 + '&batchCount=' + Math.floor(end / 10)
+    let fetchURL = apiBaseURL + 'api/Events/GetAll/List?startDate=' + startDateFilter +"&endDate=" + endDateFilter + "&eventType=" + hazardFilter +
+      '&impactType=' + impactTypeFilter +'&region=' + regionFilter
 
 
     //Get project list data
@@ -106,12 +106,12 @@ class EventList extends React.Component {
 
   componentDidMount() {
     this.getEventList()
-    window.addEventListener("scroll", this.handleScroll);
-    window.scrollTo(0, this.props.listScrollPos);
+    window.addEventListener("scroll", this.handleScroll)
+    window.scrollTo(0, this.props.listScrollPos)
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll)
   }
 
   componentDidUpdate() {

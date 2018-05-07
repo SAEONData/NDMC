@@ -80,7 +80,7 @@ class Projects extends React.Component {
                   </Button>
               </div>
               <EventFilters />
-              {/* <ProjectList /> */}
+               <EventList />
           </>
       )
   }
