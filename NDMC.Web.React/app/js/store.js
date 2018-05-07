@@ -30,11 +30,12 @@ const store = createStore(
             endDateFilter:0
         },
         lookupData: {
-            eventTypes: [],
             region: [],
             regionTree: [],
             hazard: [],
-            hazardTree: []
+            hazardTree: [],
+            impacts: [],
+            impactTypeFilter: []
         }
 
     }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()

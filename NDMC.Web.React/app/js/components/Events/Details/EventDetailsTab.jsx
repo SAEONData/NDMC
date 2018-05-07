@@ -31,7 +31,7 @@ class EventDetailsTab extends React.Component {
                         col="col-md-12"
                         label="Hazard Type:"
                         id="txtHazardType"
-                        value={eventDetails.EventType}
+                        value={eventDetails.HazardType}
                     />
                 </div>
                 <br />

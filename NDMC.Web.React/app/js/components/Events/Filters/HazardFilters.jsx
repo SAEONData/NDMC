@@ -30,8 +30,8 @@ const mapDispatchToProps = (dispatch) => {
         loadHazardFilter: payload => {
             dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload })
         },
-        loadHazards: payload => {
-            dispatch({ type: ACTION_TYPES.LOAD_HAZARD, payload })
+        loadHazardType: payload => {
+            dispatch({ type: ACTION_TYPES.LOAD_HAZARD_TYPE, payload })
         }
     }
 }

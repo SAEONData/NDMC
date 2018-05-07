@@ -7,10 +7,11 @@ export const RESET_EVENT_STATE = "RESET_EVENT_STATE";
 
 
 //Lookups
-export const LOAD_EVENT_TYPE = "LOAD_EVENT_TYPE";
 export const LOAD_REGION = "LOAD_REGION";
-export const LOAD_HAZARD = "LOAD_HAZARD";
-export const LOAD_IMPACT = "LOAD_IMPACT"
+export const LOAD_HAZARD_TYPE = "LOAD_HAZARD";
+export const LOAD_IMPACTS = "LOAD_IMPACTS"
+export const LOAD_STARTDATE = "LOAD_STARTDATE"
+export const LOAD_ENDDATE = "LOAD_ENDDATE"
 
 //Filters
 export const LOAD_REGION_FILTER = "LOAD_REGION_FILTER";

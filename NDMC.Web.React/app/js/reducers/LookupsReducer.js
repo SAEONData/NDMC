@@ -13,7 +13,7 @@ export default function LookupsReducer(state = {}, action) {
         case ACTION_TYPES.LOAD_REGION_TREE: {
             return { ...state, regionTree: payload }
         }
-        case ACTION_TYPES.LOAD_HAZARD: {
+        case ACTION_TYPES.LOAD_HAZARD_TYPE: {
             return { ...state, hazard: payload }
         }
         case ACTION_TYPES.LOAD_HAZARD_TREE: {
