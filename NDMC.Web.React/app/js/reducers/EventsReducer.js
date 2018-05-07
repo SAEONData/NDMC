@@ -36,13 +36,13 @@ export default function EventsReducer(state = {}, action) {
             }
         }
         case ACTION_TYPES.LOAD_EVENTS: {
-            let { projects, end } = state
+            let { events, end } = state
 
             if(end === 10){
-                return { ...state, projects: payload }
+                return { ...state, events: payload }
             }
             else{
-                return { ...state, projects: [...projects, ...payload] }
+                return { ...state, events: [...events, ...payload] }
             }
         }
         case ACTION_TYPES.LOAD_MORE_EVENTS: {
@@ -56,6 +56,10 @@ export default function EventsReducer(state = {}, action) {
         }
         case ACTION_TYPES.SET_EVENT_SCROLL:{
             return { ...state, listScrollPos: payload }
+        }
+        case ACTION_TYPES.SET_EVENT_DETAILS_HAZARD_TYPE:{
+            let { eventDetails } = state
+            return { ...state, eventDetails: { ...eventDetails, EventHazardType: payload, state: modState } }
         }
         default: {
             return state
