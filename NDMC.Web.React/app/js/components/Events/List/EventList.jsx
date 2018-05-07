@@ -19,13 +19,13 @@ const mapDispatchToProps = (dispatch) => {
     setScrollPos: payload => {
       dispatch({ type: ACTION_TYPES.SET_EVENT_SCROLL, payload })
     },
-    loadProjects: payload => {
+    loadEvents: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_EVENTS, payload })
     },
     setLoading: payload => {
       dispatch({ type: ACTION_TYPES.SET_LOADING, payload })
     },
-    loadMoreProjects: () => {
+    loadMoreEvents: () => {
       dispatch({ type: ACTION_TYPES.LOAD_MORE_EVENTS })
     },
     resetEventCounts: () => {
@@ -67,7 +67,7 @@ class EventList extends React.Component {
 
   getEventList(resetCounts) {
 
-    let { loadProjects, setLoading, hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end, resetEventCounts } = this.props
+    let { loadEvents, setLoading, hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end, resetEventCounts } = this.props
 
     if (resetCounts === true) {
       start = 0
@@ -97,7 +97,7 @@ class EventList extends React.Component {
       })
       .then(res => res.json())
       .then(res => {
-        loadProjects(res)
+        loadEvents(res)
         setLoading(false)
       })
       .catch(res => {

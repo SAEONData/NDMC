@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class Projects extends React.Component {
+class Events extends React.Component {
 
   constructor(props) {
       super(props);
@@ -86,4 +86,4 @@ class Projects extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Projects)
+export default connect(mapStateToProps, mapDispatchToProps)(Events)
