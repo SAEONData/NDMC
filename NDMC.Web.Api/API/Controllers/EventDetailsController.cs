@@ -1,4 +1,5 @@
 ﻿using API.ControllerLogic;
+using API.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,6 @@ using System.Web.Http;
 
 namespace API.Controllers
 {
-    [Route("api/Events/{id}")]
     public class EventDetailsController : ApiController
     {
         private readonly EventDetailsControllerLogic _logic;
@@ -18,10 +18,16 @@ namespace API.Controllers
             _logic = new EventDetailsControllerLogic();
         }
 
-        [Route("Test")]
-        public string Test(int id)
+        /// <summary>
+        /// Get event details
+        /// </summary>
+        /// <param name="id">ID of event</param>
+        /// <returns>Event details</returns>
+        [HttpGet]
+        [Route("api/Events/Details/{id}")]
+        public EventDetailsViewModel GetById(int id)
         {
-            return $"TEST/{id}";
+            return _logic.GetById(id);
         }
     }
 }
