@@ -57,9 +57,8 @@ export default function EventsReducer(state = {}, action) {
         case ACTION_TYPES.SET_EVENT_SCROLL:{
             return { ...state, listScrollPos: payload }
         }
-        case ACTION_TYPES.SET_EVENT_DETAILS_HAZARD_TYPE:{
-            let { eventDetails } = state
-            return { ...state, eventDetails: { ...eventDetails, EventHazardType: payload, state: modState } }
+        case ACTION_TYPES.LOAD_EVENT_DETAILS:{
+            return { ...state, eventDetails: {...payload } }
         }
         default: {
             return state
