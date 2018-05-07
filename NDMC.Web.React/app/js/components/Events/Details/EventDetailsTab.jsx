@@ -31,17 +31,17 @@ class EventDetailsTab extends React.Component {
                         col="col-md-12"
                         label="Hazard Type:"
                         id="txtHazardType"
-                        value={eventDetails.HazardType}
+                        value={eventDetails.EventType}
                     />
                 </div>
                 <br />
                 <div className="row">
                     <RangeComponent
                         col="col-md-6"
-                        id="txtProjectYear"
                         label="Date"
+                        id="txtEventDate"
                         inputWidth="75px"
-                        valueFrom={eventDetails.StartYear} valueTo={eventDetails.EndYear}
+                        valueFrom={eventDetails.StartDate} valueTo={eventDetails.EndDate}
                     />
                 </div>
                 <br />
@@ -50,7 +50,7 @@ class EventDetailsTab extends React.Component {
                         col="col-md-12"
                         label="Region:"
                         id="txtEventRegion"
-                        value={eventDetails.Region}
+                        value={eventDetails.Regions[0]}
                     />
                 </div>
                 <br />
@@ -59,7 +59,7 @@ class EventDetailsTab extends React.Component {
                         col="col-md-4"
                         label="Impact Type"
                         id="txtImpactType"
-                        value={eventDetails.ImpactType}
+                        value={eventDetails.EventsImpacts}
                     />
                 </div>
                 <br />

@@ -88,8 +88,8 @@ class EventList extends React.Component {
       '&impactType=' + impactTypeFilter +'&region=' + regionFilter
 
 
-    //Get project list data
-    fetch(fetchURL,
+    //Get event list data
+    return fetch(fetchURL,
       {
         headers: {
           "Content-Type": "application/json"
@@ -121,11 +121,14 @@ class EventList extends React.Component {
 
     let eHazardFilter = this.props.hazardFilter
     let eRegionFilter = this.props.regionFilter
+    let eImpactTypeFilter = this.props.impactTypeFilter
+    let eStartDateFilter = this.props.startDateFilter
+    let eEndDateFilter = this.props.endDateFilter
     let eStart = this.props.start
     let eEnd = this.props.end
-    let { titleFilter, regionFilter, start, end } = this.state
+    let { titleFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end } = this.state
 
-    //If any filters changed...refetch projects
+    //If any filters changed...refetch events
     let filtersChanged = false
     if (eHazardFilter !== titleFilter || eRegionFilter !== regionFilter) {
 
@@ -139,17 +142,17 @@ class EventList extends React.Component {
     }
 
     if (filtersChanged === true || nextBatchNeeded === true) {
-      this.getEventList(filtersChanged)
+      //Promise.resolve(this.getEventList(filtersChanged))
     }
   }
 
   buildList() {
 
-    const { projects } = this.props
+    const { events } = this.props
     let ar = []
-    if (typeof projects !== 'undefined' && projects.length > 0) {
-      for (let i of projects) {
-        ar.push(<EventCard key={i.EventId} id={i.EventId} region={i.Region} startdate={i.StartDate} enddate={i.EndDate} hazardtype={i.EventType} />)
+    if (typeof events !== 'undefined' && events.length > 0) {
+      for (let i of events) {
+        ar.push(<EventCard key={i.EventId} id={i.EventId} region={i.Regions[0]} startdate={i.StartDate} enddate={i.EndDate} hazardtype={i.EventImpacts} />)
       }
       return ar
     }

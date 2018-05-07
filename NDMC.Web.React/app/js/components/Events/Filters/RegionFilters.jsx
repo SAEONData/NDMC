@@ -70,7 +70,7 @@ class RegionFilters extends React.Component {
                 loadData(res)
             })
 
-        fetch(apiBaseURL + 'api/Region/GetAll/', {
+        fetch(apiBaseURL + 'api/region/GetAll/', {
             headers: {
                 "Content-Type": "application/json"
             }

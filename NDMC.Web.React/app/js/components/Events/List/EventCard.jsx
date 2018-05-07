@@ -43,5 +43,5 @@ class EventCard extends React.Component {
   }
 }
 
-//export default ProjectCard
+//export default EventCard
 export default connect(mapStateToProps, mapDispatchToProps)(EventCard)

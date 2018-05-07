@@ -29,13 +29,13 @@ const mapDispatchToProps = (dispatch) => {
         setLoading: payload => {
             dispatch({ type: ACTION_TYPES.SET_LOADING, payload })
         },
-        resetProjectState: payload => {
+        resetEventState: payload => {
             dispatch({ type: ACTION_TYPES.RESET_EVENT_STATE, payload })
         }
     }
 }
 
-class ProjectDetails extends React.Component {
+class EventDetails extends React.Component {
 
     constructor(props) {
         super(props)
@@ -121,4 +121,4 @@ class ProjectDetails extends React.Component {
         )
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectDetails)
+export default connect(mapStateToProps, mapDispatchToProps)(EventDetails)
