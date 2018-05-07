@@ -23,8 +23,6 @@ const store = createStore(
             listScrollPos: 0
         },
         filterData: {
-            titleFilter: "",
-            titleFilterInternal: "",
             regionFilter: 0,
             hazardFilter: 0
         },
