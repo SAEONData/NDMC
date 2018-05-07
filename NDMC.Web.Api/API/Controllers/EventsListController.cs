@@ -1,4 +1,5 @@
 ﻿using API.ControllerLogic;
+using API.ViewModels;
 using Database.Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Web.Http;
 
 namespace API.Controllers
 {
-    [Route("api/Events")]
     public class EventsListController : ApiController
     {
         private readonly EventsListControllerLogic _logic;
@@ -19,15 +19,36 @@ namespace API.Controllers
             _logic = new EventsListControllerLogic();
         }
 
-        [Route("Test")]
-        public string Test()
+        /// <summary>
+        /// Get events (filtered)
+        /// </summary>
+        /// <param name="startDate">Start date filter</param>
+        /// <param name="endDate">End date filter</param>
+        /// <param name="eventType">Type of event</param>
+        /// <param name="impactType">Impact type of event</param>
+        /// <param name="region">Event region</param>
+        /// <returns>List of events with associated data</returns>
+        [Route("api/Events/List")]
+        [HttpGet]
+        public List<EventDetailsViewModel> List(string startDate = "", string endDate = "", string eventType = "", string impactType = "", string region = "")
         {
-            return "TEST";
+            return _logic.List(startDate, endDate, eventType, impactType, region);
         }
 
-        public List<Event> Get()
+        /// <summary>
+        /// Get events (filtered)
+        /// </summary>
+        /// <param name="startDate">Start date filter</param>
+        /// <param name="endDate">End date filter</param>
+        /// <param name="eventType">Type of event</param>
+        /// <param name="impactType">Impact type of event</param>
+        /// <param name="region">Event region</param>
+        /// <returns>List of events with associated data in GeoJSON format</returns>
+        [Route("api/Events/ListGEO")]
+        [HttpGet]
+        public List<EventsGeoJsonViewModel> ListGEO(string startDate = "", string endDate = "", string eventType = "", string impactType = "", string region = "")
         {
-            return _logic.Get();
+            return _logic.ListGEO(startDate, endDate, eventType, impactType, region);
         }
     }
 }
