@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { BeatLoader } from 'react-spinners'
 import { Button, Input } from 'mdbreact'
 import * as ACTION_TYPES from "../../constants/action-types"
-import { Navbar, NavbarBrand, NavbarNav, NavbarToggler, Collapse, NavItem, NavLink } from 'mdbreact';
+import { Navbar, NavbarBrand, NavbarNav, NavbarToggler, Collapse, NavItem, NavLink } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { } } = state
@@ -30,13 +30,13 @@ class CustomNavbar extends React.Component {
   onClick() {
     this.setState({
       collapse: !this.state.collapse,
-    });
+    })
   }
 
   toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
-    });
+    })
   }
 
   render() {

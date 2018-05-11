@@ -6,86 +6,86 @@ import { connect } from 'react-redux'
 import { UILookup } from "../../constants/ui_config.js"
 
 const mapStateToProps = (state, props) => {
-    let { globalData: { editMode } } = state
-    return { editMode }
+  let { globalData: { editMode } } = state
+  return { editMode }
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        setValue: (key, payload) => {
-            dispatch({ type: key, payload })
-        }
+  return {
+    setValue: (key, payload) => {
+      dispatch({ type: key, payload })
     }
+  }
 }
 
 class TextAreaComponent extends React.Component {
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props)
+  }
+
+  fixNullOrUndefinedValue(value) {
+
+    if (typeof value === 'undefined' || value === null) {
+      value = ""
     }
 
-    fixNullOrUndefinedValue(value) {
+    return value
+  }
 
-        if (typeof value === 'undefined' || value === null) {
-            value = ""
-        }
-
-        return value
+  getFontColour() {
+    if (this.props.editMode) {
+      return "steelblue"
     }
-
-    getFontColour() {
-        if (this.props.editMode) {
-            return "steelblue"
-        }
-        else {
-            return "black"
-        }
+    else {
+      return "black"
     }
+  }
 
-    valueChange(event) {
+  valueChange(event) {
 
-        let { setValue, setValueKey, parentId, editMode } = this.props
+    let { setValue, setValueKey, parentId, editMode } = this.props
 
-        if (typeof setValueKey !== 'undefined') {
-            setValue(setValueKey, { value: event.target.value, id: parentId, state: editMode === true ? "modified" : "original" })
-        }
+    if (typeof setValueKey !== 'undefined') {
+      setValue(setValueKey, { value: event.target.value, id: parentId, state: editMode === true ? "modified" : "original" })
     }
+  }
 
-    getLabelFontColour(uiconf){
-        if (typeof uiconf.required != 'undefined' && uiconf.required === true) {
-            return "red"
-        }
-        else {
-            return "black"
-        }
+  getLabelFontColour(uiconf) {
+    if (typeof uiconf.required != 'undefined' && uiconf.required === true) {
+      return "red"
     }
-
-    render() {
-
-        let { col, label, editMode, id, value } = this.props
-        value = this.fixNullOrUndefinedValue(value)
-
-        let uiconf = UILookup(id, label)
-
-        return (
-            <div className={col}>
-                <label data-tip={uiconf.tooltip} style={{ fontWeight: "bold", color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
-                <TextareaAutosize
-                    readOnly={!editMode}
-                    style={{
-                        borderStyle: "solid",
-                        borderWidth: "0px 0px 1px 0px",
-                        borderColor: "#b4b4b4",
-                        paddingBottom: "4px",
-                        color: this.getFontColour()
-                    }}
-                    value={value}
-                    onChange={this.valueChange.bind(this)}
-                />
-            </div>
-        )
-
+    else {
+      return "black"
     }
+  }
+
+  render() {
+
+    let { col, label, editMode, id, value } = this.props
+    value = this.fixNullOrUndefinedValue(value)
+
+    let uiconf = UILookup(id, label)
+
+    return (
+      <div className={col}>
+        <label data-tip={uiconf.tooltip} style={{ fontWeight: "bold", color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
+        <TextareaAutosize
+          readOnly={!editMode}
+          style={{
+            borderStyle: "solid",
+            borderWidth: "0px 0px 1px 0px",
+            borderColor: "#b4b4b4",
+            paddingBottom: "4px",
+            color: this.getFontColour()
+          }}
+          value={value}
+          onChange={this.valueChange.bind(this)}
+        />
+      </div>
+    )
+
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TextAreaComponent)

@@ -9,35 +9,35 @@ const history = createHashHistory()
 const middleware = routerMiddleware(history)
 
 const store = createStore(
-    combineReducers({ ...reducers, router: routerReducer }), {
-        ...applyMiddleware(middleware),
+  combineReducers({ ...reducers, router: routerReducer }), {
+    ...applyMiddleware(middleware),
 
-        globalData: {
-            loading: true,
-        },
-        eventData: {
-            events: [],
-            eventDetails: {},
-            start: 0,
-            end: 10,
-            listScrollPos: 0
-        },
-        filterData: {
-            regionFilter: 0,
-            hazardFilter: 0,
-            impactTypeFilter:0,
-            startDateFilter:0,
-            endDateFilter:0
-        },
-        lookupData: {
-            region: [],
-            regionTree: [],
-            hazard: [],
-            hazardTree: [],
-            impacts: [],
-            impactTypeFilter: []
-        }
+    globalData: {
+      loading: true,
+    },
+    eventData: {
+      events: [],
+      eventDetails: {},
+      start: 0,
+      end: 10,
+      listScrollPos: 0
+    },
+    filterData: {
+      regionFilter: 0,
+      hazardFilter: 0,
+      impactTypeFilter: 0,
+      startDateFilter: 0,
+      endDateFilter: 0
+    },
+    lookupData: {
+      region: [],
+      regionTree: [],
+      hazard: [],
+      hazardTree: [],
+      impacts: [],
+      impactTypeFilter: []
+    }
 
-    }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 export default store

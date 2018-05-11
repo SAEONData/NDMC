@@ -10,7 +10,7 @@ const mapStateToProps = (state, props) => {
   let { eventData: { events, start, end, listScrollPos } } = state
   let { filterData: { hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter } } = state
   return {
-    events, hazardFilter, regionFilter,startDateFilter, endDateFilter, impactTypeFilter, start, end, listScrollPos
+    events, hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter, start, end, listScrollPos
   }
 }
 
@@ -47,7 +47,7 @@ class EventList extends React.Component {
       regionFilter: 0,
       impactTypeFilter: 0,
       startDateFilter: 0,
-      endDateFilter:0,
+      endDateFilter: 0,
       start: 0,
       end: 10
     }
@@ -92,8 +92,8 @@ class EventList extends React.Component {
     //Clear details data
     clearEventDetails()
 
-    let fetchURL = apiBaseURL + 'api/events/list?startDate=' + startDateFilter +"&endDate=" + endDateFilter + "&eventType=" + hazardFilter +
-      '&impactType=' + impactTypeFilter +'&region=' + regionFilter
+    let fetchURL = apiBaseURL + 'api/events/list?startDate=' + startDateFilter + "&endDate=" + endDateFilter + "&eventType=" + hazardFilter +
+      '&impactType=' + impactTypeFilter + '&region=' + regionFilter
 
 
     //Get event list data
@@ -142,7 +142,7 @@ class EventList extends React.Component {
       || eStartDateFilter !== startDateFilter
       || eEndDateFilter !== endDateFilter) {
 
-     // filtersChanged = true
+      // filtersChanged = true
     }
 
     //If next batch needed
@@ -164,12 +164,12 @@ class EventList extends React.Component {
       for (let i of events) {
         let startdate = new Date(i.StartDate)
         let enddate = new Date(i.EndDate)
-        if(startdate.getFullYear() === 1900 ||startdate.getFullYear() === 1970) {
+        if (startdate.getFullYear() === 1900 || startdate.getFullYear() === 1970) {
           startdate = false
         } else {
           startdate = startdate.toDateString()
         }
-        if(i.EventType !== ' ' && startdate){
+        if (i.EventType !== ' ' && startdate) {
           ar.push(<EventCard key={i.EventId} eid={i.EventId} region={i.Regions[0]} startdate={startdate} enddate={enddate.toDateString()} hazardtype={i.EventType} />)
         }
       }

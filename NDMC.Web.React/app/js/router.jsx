@@ -22,9 +22,9 @@ class SwitchRouter extends React.Component {
   render() {
     return (
       <Router history={history}>
-      <Switch>
-        <Redirect exact from='/' to='/' />
-      </Switch>
+        <Switch>
+          <Redirect exact from='/' to='/' />
+        </Switch>
       </Router>
     )
   }

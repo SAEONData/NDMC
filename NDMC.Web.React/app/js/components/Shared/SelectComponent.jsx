@@ -29,7 +29,7 @@ let allowChange = false
 class SelectComponent extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.onSelect = this.onSelect.bind(this)
     this.getDisabledState = this.getDisabledState.bind(this)
@@ -83,7 +83,7 @@ class SelectComponent extends React.Component {
 
     if (typeof filteredData !== 'undefined') {
 
-      if(typeof dataFilterKey !== 'undefined' && typeof dataFilterValue !== 'undefined'){
+      if (typeof dataFilterKey !== 'undefined' && typeof dataFilterValue !== 'undefined') {
         filteredData = data.filter(x => x[dataFilterKey] == dataFilterValue)
       }
 
@@ -108,14 +108,14 @@ class SelectComponent extends React.Component {
     return ar
   }
 
-  getLabelFontColour(uiconf){
+  getLabelFontColour(uiconf) {
     if (typeof uiconf.required != 'undefined' && uiconf.required === true) {
-        return "red"
+      return "red"
     }
     else {
-        return "black"
+      return "black"
     }
-}
+  }
 
   getFontColour() {
     if (this.props.editMode) {
@@ -131,10 +131,10 @@ class SelectComponent extends React.Component {
     let { setSelectedValueKey, setSelectedValue, editMode, parentId, setEditList, data, dispatch, persist, type, dependencies, newItemTemplate } = this.props
     let selectedValue = 0
 
-    if(value === "reset"){
+    if (value === "reset") {
       allowChange = true
     }
-    else if (value !== null) {  
+    else if (value !== null) {
       selectedValue = value.value
     }
 
