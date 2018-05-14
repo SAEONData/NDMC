@@ -4,8 +4,8 @@ import React from 'react'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from "../../constants/action-types"
-import { UILookup } from "../../constants/ui_config.js"
+import * as ACTION_TYPES from '../../constants/action-types'
+import { UILookup } from '../../constants/ui_config.js'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { editMode } } = state
@@ -29,7 +29,7 @@ let allowChange = false
 class SelectComponent extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.onSelect = this.onSelect.bind(this)
     this.getDisabledState = this.getDisabledState.bind(this)
@@ -51,7 +51,7 @@ class SelectComponent extends React.Component {
     //Pre-process items
     data.map(item => {
 
-      let parentKeys = Object.keys(item).filter(key => key.startsWith("Parent") && key.endsWith("Id"))
+      let parentKeys = Object.keys(item).filter(key => key.startsWith('Parent') && key.endsWith('Id'))
 
       if (parentKeys.length > 0) {
         //Push item with parentId
@@ -83,7 +83,7 @@ class SelectComponent extends React.Component {
 
     if (typeof filteredData !== 'undefined') {
 
-      if(typeof dataFilterKey !== 'undefined' && typeof dataFilterValue !== 'undefined'){
+      if (typeof dataFilterKey !== 'undefined' && typeof dataFilterValue !== 'undefined') {
         filteredData = data.filter(x => x[dataFilterKey] == dataFilterValue)
       }
 
@@ -91,11 +91,11 @@ class SelectComponent extends React.Component {
 
       if (allowEdit === true) {
 
-        //Insert "[Edit list values...]" entry
-        if (procData.filter(x => x.value === "[Edit list values...]").length === 0) {
+        //Insert '[Edit list values...]' entry
+        if (procData.filter(x => x.value === '[Edit list values...]').length === 0) {
           procData.splice(0, 0, {
-            "id": -1,
-            "value": "[Edit list values...]",
+            'id': -1,
+            'value': '[Edit list values...]',
           })
         }
       }
@@ -108,21 +108,21 @@ class SelectComponent extends React.Component {
     return ar
   }
 
-  getLabelFontColour(uiconf){
+  getLabelFontColour(uiconf) {
     if (typeof uiconf.required != 'undefined' && uiconf.required === true) {
-        return "red"
+      return 'red'
     }
     else {
-        return "black"
+      return 'black'
     }
-}
+  }
 
   getFontColour() {
     if (this.props.editMode) {
-      return "steelblue"
+      return 'steelblue'
     }
     else {
-      return "black"
+      return 'black'
     }
   }
 
@@ -131,10 +131,10 @@ class SelectComponent extends React.Component {
     let { setSelectedValueKey, setSelectedValue, editMode, parentId, setEditList, data, dispatch, persist, type, dependencies, newItemTemplate } = this.props
     let selectedValue = 0
 
-    if(value === "reset"){
+    if (value === 'reset') {
       allowChange = true
     }
-    else if (value !== null) {  
+    else if (value !== null) {
       selectedValue = value.value
     }
 
@@ -143,7 +143,7 @@ class SelectComponent extends React.Component {
       if (selectedValue === -1) {
         //Setup and Show EditListModal
         if (typeof type === 'undefined') {
-          type = "std"
+          type = 'std'
         }
         if (typeof dependencies === 'undefined') {
           dependencies = []
@@ -157,7 +157,7 @@ class SelectComponent extends React.Component {
       else {
         //Dispatch to store
         if (typeof setSelectedValueKey !== 'undefined') {
-          setSelectedValue(setSelectedValueKey, { value: selectedValue, id: parentId, state: editMode === true ? "modified" : "original" })
+          setSelectedValue(setSelectedValueKey, { value: selectedValue, id: parentId, state: editMode === true ? 'modified' : 'original' })
         }
       }
 
@@ -170,10 +170,10 @@ class SelectComponent extends React.Component {
 
     let disabledState = true
 
-    if (typeof editModeOverride !== "undefined" && editModeOverride === true) {
+    if (typeof editModeOverride !== 'undefined' && editModeOverride === true) {
       disabledState = false
     }
-    else if (typeof editMode !== "undefined" && editMode === true) {
+    else if (typeof editMode !== 'undefined' && editMode === true) {
       disabledState = false
     }
 
@@ -191,7 +191,7 @@ class SelectComponent extends React.Component {
 
     return (
       <div className={col}>
-        <label data-tip={uiconf.tooltip} style={{ fontWeight: "bold", color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
+        <label data-tip={uiconf.tooltip} style={{ fontWeight: 'bold', color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
         <Select id={id}
           disabled={this.getDisabledState()}
           name={id}
@@ -199,7 +199,7 @@ class SelectComponent extends React.Component {
           options={this.selectOptions()}
           onChange={this.onSelect}
           onClose={this.onClose}
-          resetValue={"reset"}
+          resetValue={'reset'}
         />
       </div>
     )

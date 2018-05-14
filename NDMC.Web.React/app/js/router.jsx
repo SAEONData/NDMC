@@ -11,7 +11,6 @@ import { ConnectedRouter } from 'react-router-redux'
 
 import store from './store'
 
-
 const history = createHashHistory()
 
 class SwitchRouter extends React.Component {
@@ -22,9 +21,9 @@ class SwitchRouter extends React.Component {
   render() {
     return (
       <Router history={history}>
-      <Switch>
-        <Redirect exact from='/' to='/' />
-      </Switch>
+        <Switch>
+          <Redirect exact from='/' to='/' />
+        </Switch>
       </Router>
     )
   }

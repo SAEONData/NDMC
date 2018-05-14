@@ -3,7 +3,7 @@
 import React from 'react'
 import { Card, CardBody, CardText, CardTitle, Button } from 'mdbreact'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from "../../../constants/action-types"
+import * as ACTION_TYPES from '../../../constants/action-types'
 
 const mapStateToProps = (state, props) => {
   return {}
@@ -11,34 +11,34 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-      setScrollPos: payload => {
-          dispatch({ type: ACTION_TYPES.SET_EVENT_SCROLL, payload })
-      }
+    setScrollPos: payload => {
+      dispatch({ type: ACTION_TYPES.SET_EVENT_SCROLL, payload })
+    }
   }
 }
 
 class EventCard extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   onTouchTap() {
     this.props.setScrollPos(window.pageYOffset)
-    location.hash = "/events/" + this.props.eid
+    location.hash = '/events/' + this.props.eid
   }
 
   render() {
-    const { region: { RegionName }, startdate, enddate, hazardtype} = this.props
+    const { region: { RegionName }, startdate, enddate, hazardtype } = this.props
     return (
       <>
         <Card>
           <CardBody>
             <CardTitle>Event at {this.props.region.RegionName} </CardTitle>
             <CardText>
-              {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br/>
+              {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br />
               {hazardtype ? `Type: ${hazardtype}` : ' '}
-              </CardText>
-            <Button color="primary" className="btn-sm" onTouchTap={this.onTouchTap.bind(this)}>View</Button>
+            </CardText>
+            <Button color='primary' className='btn-sm' onTouchTap={this.onTouchTap.bind(this)}>View</Button>
           </CardBody>
         </Card>
         <br />

@@ -3,14 +3,14 @@
 import React from 'react'
 import EventCard from './EventCard.jsx'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from "../../../constants/action-types"
-import { apiBaseURL } from "../../../constants/apiBaseURL"
+import * as ACTION_TYPES from '../../../constants/action-types'
+import { apiBaseURL } from '../../../constants/apiBaseURL'
 
 const mapStateToProps = (state, props) => {
   let { eventData: { events, start, end, listScrollPos } } = state
   let { filterData: { hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter } } = state
   return {
-    events, hazardFilter, regionFilter,startDateFilter, endDateFilter, impactTypeFilter, start, end, listScrollPos
+    events, hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter, start, end, listScrollPos
   }
 }
 
@@ -47,7 +47,7 @@ class EventList extends React.Component {
       regionFilter: 0,
       impactTypeFilter: 0,
       startDateFilter: 0,
-      endDateFilter:0,
+      endDateFilter: 0,
       start: 0,
       end: 10
     }
@@ -56,13 +56,13 @@ class EventList extends React.Component {
 
   handleScroll() {
 
-    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight
+    const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
     const body = document.body
     const html = document.documentElement
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
     const windowBottom = windowHeight + window.pageYOffset
     const { loadMoreEvents } = this.props
-    if (Math.ceil(windowBottom) >= docHeight && this.props.polygonFilter === "") {
+    if (Math.ceil(windowBottom) >= docHeight && this.props.polygonFilter === '') {
       loadMoreEvents()
     }
   }
@@ -92,15 +92,15 @@ class EventList extends React.Component {
     //Clear details data
     clearEventDetails()
 
-    let fetchURL = apiBaseURL + 'api/events/list?startDate=' + startDateFilter +"&endDate=" + endDateFilter + "&eventType=" + hazardFilter +
-      '&impactType=' + impactTypeFilter +'&region=' + regionFilter
+    let fetchURL = apiBaseURL + 'api/events/list?startDate=' + startDateFilter + '&endDate=' + endDateFilter + '&eventType=' + hazardFilter +
+      '&impactType=' + impactTypeFilter + '&region=' + regionFilter
 
 
     //Get event list data
     return fetch(fetchURL,
       {
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         }
       })
       .then(res => res.json())
@@ -110,19 +110,19 @@ class EventList extends React.Component {
       })
       .catch(res => {
         setLoading(false)
-        console.log("Error details:", res)
-        alert("An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)")
+        console.log('Error details:', res)
+        alert('An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)')
       })
   }
 
   componentDidMount() {
     this.getEventList()
-    window.addEventListener("scroll", this.handleScroll)
+    window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll)
+    window.removeEventListener('scroll', this.handleScroll)
   }
 
   componentDidUpdate() {
@@ -142,7 +142,7 @@ class EventList extends React.Component {
       || eStartDateFilter !== startDateFilter
       || eEndDateFilter !== endDateFilter) {
 
-     // filtersChanged = true
+      // filtersChanged = true
     }
 
     //If next batch needed
@@ -164,12 +164,12 @@ class EventList extends React.Component {
       for (let i of events) {
         let startdate = new Date(i.StartDate)
         let enddate = new Date(i.EndDate)
-        if(startdate.getFullYear() === 1900 ||startdate.getFullYear() === 1970) {
+        if (startdate.getFullYear() === 1900 || startdate.getFullYear() === 1970) {
           startdate = false
         } else {
           startdate = startdate.toDateString()
         }
-        if(i.EventType !== ' ' && startdate){
+        if (i.EventType !== ' ' && startdate) {
           ar.push(<EventCard key={i.EventId} eid={i.EventId} region={i.Regions[0]} startdate={startdate} enddate={enddate.toDateString()} hazardtype={i.EventType} />)
         }
       }
