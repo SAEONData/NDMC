@@ -93,6 +93,10 @@
     <Compile Include="Migrations\201805061110579_AlteredRegionTebles.Designer.cs">
       <DependentUpon>201805061110579_AlteredRegionTebles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805111302046_Altered TypeSource.cs" />
+    <Compile Include="Migrations\201805111302046_Altered TypeSource.Designer.cs">
+      <DependentUpon>201805111302046_Altered TypeSource.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\EventRegion.cs" />
     <Compile Include="Models\Region.cs" />
@@ -163,6 +167,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805061110579_AlteredRegionTebles.resx">
       <DependentUpon>201805061110579_AlteredRegionTebles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805111302046_Altered TypeSource.resx">
+      <DependentUpon>201805111302046_Altered TypeSource.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

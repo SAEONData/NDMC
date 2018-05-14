@@ -1,4 +1,5 @@
 ﻿using API.ControllerLogic;
+using API.Models;
 using API.ViewModels;
 using Database.Models;
 using System;
@@ -30,9 +31,10 @@ namespace API.Controllers
         /// <returns>List of events with associated data</returns>
         [Route("api/Events/List")]
         [HttpGet]
-        public List<EventDetailsViewModel> List(string startDate = "", string endDate = "", string eventType = "", string impactType = "", string region = "")
+        public List<EventDetailsViewModel> List(string startDate = "", string endDate = "", string eventType = "", string impactType = "", 
+            string region = "", int batchSize = 0, int batchCount = 0)
         {
-            return _logic.List(startDate, endDate, eventType, impactType, region);
+            return _logic.List(startDate, endDate, eventType, impactType, region, batchSize, batchCount);
         }
 
         /// <summary>
@@ -49,6 +51,35 @@ namespace API.Controllers
         public List<EventsGeoJsonViewModel> ListGEO(string startDate = "", string endDate = "", string eventType = "", string impactType = "", string region = "")
         {
             return _logic.ListGEO(startDate, endDate, eventType, impactType, region);
+        }
+
+        /// <summary>
+        /// Get list of regions
+        /// </summary>
+        /// <returns>List of Region</returns>
+        [Route("api/Events/Regions")]
+        [HttpGet]
+        public List<Region> GetRegions()
+        {
+            return _logic.GetRegions();
+        }
+
+        /// <summary>
+        /// Get list of event types
+        /// </summary>
+        /// <returns>List of TypeEvent</returns>
+        [Route("api/Events/EventTypes")]
+        [HttpGet]
+        public List<TypeEvent> GetEventTypes()
+        {
+            return _logic.GetEventTypes();
+        }
+
+        [Route("api/Events/Publish")]
+        [HttpPost]
+        public bool PublishEvents([FromBody]List<ScraperEvent> events)
+        {
+            return _logic.PublishEvents(events);
         }
     }
 }
