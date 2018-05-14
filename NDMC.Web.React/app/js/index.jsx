@@ -23,7 +23,7 @@ import Events from './components/Events/List/Events.jsx'
 import EventDetails from './components/Events/Details/EventDetails.jsx'
 import Graphs from './components/Events/Graphs/EventGraph.jsx'
 import CustomNavbar from './components/Base/CustomNavbar.jsx'
-import { stripURLParam } from "./globalFunctions.js"
+import { stripURLParam } from './globalFunctions.js'
 
 /**
  * Tap Event
@@ -40,9 +40,9 @@ class App extends React.Component {
     super(props)
     this.getNavbar = this.getNavbar.bind(this)
     this.state = { navbar: true }
-    if (location.toString().includes("navbar=hidden")) {
+    if (location.toString().includes('navbar=hidden')) {
       this.state = { navbar: false }
-      stripURLParam("navbar=hidden")
+      stripURLParam('navbar=hidden')
     }
   }
 
@@ -54,16 +54,16 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div className='container'>
         <Router>
           <div>
             {this.getNavbar()}
             <Switch>
-              {/* <Redirect from="/" to="/projects" exact /> */}
-              <Route path="/" component={Home} exact />
-              <Route path="/events" component={Events} exact />
-              <Route path="/events/:id" component={EventDetails} exact />
-              <Route path="/graphs" component={Graphs} exact />
+              {/* <Redirect from='/' to='/projects' exact /> */}
+              <Route path='/' component={Home} exact />
+              <Route path='/events' component={Events} exact />
+              <Route path='/events/:id' component={EventDetails} exact />
+              <Route path='/graphs' component={Graphs} exact />
             </Switch>
           </div>
         </Router>

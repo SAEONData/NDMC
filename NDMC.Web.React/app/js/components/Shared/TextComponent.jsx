@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { UILookup } from "../../constants/ui_config.js"
+import { UILookup } from '../../constants/ui_config.js'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { editMode } } = state
@@ -29,7 +29,7 @@ class TextComponent extends React.Component {
   fixNullOrUndefinedValue(value) {
 
     if (typeof value === 'undefined' || value === null) {
-      value = ""
+      value = ''
     }
 
     return value
@@ -37,19 +37,19 @@ class TextComponent extends React.Component {
 
   getLabelFontColour(uiconf) {
     if (typeof uiconf.required != 'undefined' && uiconf.required === true) {
-      return "red"
+      return 'red'
     }
     else {
-      return "black"
+      return 'black'
     }
   }
 
   getFontColour() {
     if (this.props.editMode) {
-      return "steelblue"
+      return 'steelblue'
     }
     else {
-      return "black"
+      return 'black'
     }
   }
 
@@ -58,7 +58,7 @@ class TextComponent extends React.Component {
     let { setValue, setValueKey, parentId, editMode } = this.props
 
     if (typeof setValueKey !== 'undefined') {
-      setValue(setValueKey, { value: event.target.value, id: parentId, state: editMode === true ? "modified" : "original" })
+      setValue(setValueKey, { value: event.target.value, id: parentId, state: editMode === true ? 'modified' : 'original' })
     }
   }
 
@@ -71,9 +71,9 @@ class TextComponent extends React.Component {
 
     return (
       <div className={col}>
-        <label data-tip={uiconf.tooltip} style={{ fontWeight: "bold", color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
+        <label data-tip={uiconf.tooltip} style={{ fontWeight: 'bold', color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
         <input
-          id={id} type="text" readOnly={!editMode} value={value} onChange={this.valueChange.bind(this)}
+          id={id} type='text' readOnly={!editMode} value={value} onChange={this.valueChange.bind(this)}
           style={{ color: this.getFontColour() }}
         />
       </div>

@@ -4,7 +4,7 @@ import EventFilters from '../Filters/EventFilters.jsx'
 import { connect } from 'react-redux'
 import { BeatLoader } from 'react-spinners'
 import { Button, Footer, Container } from 'mdbreact'
-import * as ACTION_TYPES from "../../../constants/action-types"
+import * as ACTION_TYPES from '../../../constants/action-types'
 
 const queryString = require('query-string')
 
@@ -29,7 +29,7 @@ class Events extends React.Component {
     this.backToTop = this.backToTop.bind(this)
 
     //Read polygon filter from URL
-    const parsedHash = queryString.parse(location.hash.replace("/events?", ""))
+    const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
 
     if (typeof parsedHash.polygon !== 'undefined') {
 
@@ -53,15 +53,15 @@ class Events extends React.Component {
   render() {
     return (
       <>
-        <div className="container-fluid">
-          <div className="row">
+        <div className='container-fluid'>
+          <div className='row'>
             <div
               hidden={!this.props.loading}
-              className="card"
-              style={{ position: "fixed", right: "40%", bottom: "42%", zIndex: "99" }}>
+              className='card'
+              style={{ position: 'fixed', right: '40%', bottom: '42%', zIndex: '99' }}>
 
-              <div className="card-body" style={{ margin: "30px 80px 30px 80px" }}>
-                <label style={{ fontSize: "x-large", fontWeight: "bold", color: "#4285F4" }}>LOADING</label>
+              <div className='card-body' style={{ margin: '30px 80px 30px 80px' }}>
+                <label style={{ fontSize: 'x-large', fontWeight: 'bold', color: '#4285F4' }}>LOADING</label>
                 <BeatLoader
                   color={'#4285F4'}
                   size={30}
@@ -72,9 +72,9 @@ class Events extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ position: "fixed", right: "14%", bottom: "10px", zIndex: "99" }}>
-          <Button color="secondary" className="btn-sm" onTouchTap={this.backToTop} >
-            <i className="fa fa-arrow-circle-up" aria-hidden="true" />
+        <div style={{ position: 'fixed', right: '14%', bottom: '10px', zIndex: '99' }}>
+          <Button color='secondary' className='btn-sm' onTouchTap={this.backToTop} >
+            <i className='fa fa-arrow-circle-up' aria-hidden='true' />
             &nbsp;&nbsp;
             Back to top
                   </Button>

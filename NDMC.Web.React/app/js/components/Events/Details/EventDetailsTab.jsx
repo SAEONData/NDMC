@@ -7,8 +7,8 @@ import TextComponent from '../../Shared/TextComponent.jsx'
 import TextAreaComponent from '../../Shared/TextAreaComponent.jsx'
 import RangeComponent from '../../Shared/RangeComponent.jsx'
 import SelectComponent from '../../Shared/SelectComponent.jsx'
-import { apiBaseURL } from "../../../constants/apiBaseURL"
-import * as ACTION_TYPES from "../../../constants/action-types"
+import { apiBaseURL } from '../../../constants/apiBaseURL'
+import * as ACTION_TYPES from '../../../constants/action-types'
 
 const mapStateToProps = (state, props) => {
   let { eventData: { events, eventDetails } } = state
@@ -35,54 +35,54 @@ class EventDetailsTab extends React.Component {
     let startdate = new Date(StartDate)
     let enddate = new Date(EndDate)
     let declareddate = new Date(DeclaredDate)
-    let impactString = EventsImpacts ? EventsImpacts.reduce((prev, next) => prev += `${next.ImpactType}: ${next.Measure}\n`, "") : ""
+    let impactString = EventsImpacts ? EventsImpacts.reduce((prev, next) => prev += `${next.ImpactType}: ${next.Measure}\n`, '') : ''
     return (
       <>
         <br />
-        <div className="row">
+        <div className='row'>
           <TextComponent
-            col="col-md-4"
-            label="Hazard Type:"
-            id="txtHazardType"
-            value={EventType ? EventType : ""}
+            col='col-md-4'
+            label='Hazard Type:'
+            id='txtHazardType'
+            value={EventType ? EventType : ''}
             allowEdit={false}
           />
           <TextComponent
-            col="col-md-4"
-            label="Region:"
-            id="txtEventRegion"
-            value={Regions ? Regions[0].RegionName : ""}
+            col='col-md-4'
+            label='Region:'
+            id='txtEventRegion'
+            value={Regions ? Regions[0].RegionName : ''}
             allowEdit={false}
           />
         </div>
         <br />
-        <div className="row">
+        <div className='row'>
           <RangeComponent
-            col="col-md-8"
-            label="Date"
-            id="txtEventDate"
-            inputWidth="100px"
+            col='col-md-8'
+            label='Date'
+            id='txtEventDate'
+            inputWidth='100px'
             valueFrom={`${startdate.getFullYear()}\/${startdate.getMonth() + 1}\/${startdate.getDate()}`}
             valueTo={`${enddate.getFullYear()}\/${enddate.getMonth()}\/${enddate.getDay()}`}
             allowEdit={false}
           />
         </div>
         <br />
-        <div className="row">
+        <div className='row'>
           <TextComponent
-            col="col-md-4"
-            label="Declared Date"
-            id="txtDeclaredDate"
-            value={declareddate.getFullYear() === 1900 ? "Na" : declareddate.toDateString()}
+            col='col-md-4'
+            label='Declared Date'
+            id='txtDeclaredDate'
+            value={declareddate.getFullYear() === 1900 ? 'Na' : declareddate.toDateString()}
             allowEdit={false}
           />
         </div>
         <br />
-        <div className="row">
+        <div className='row'>
           <TextAreaComponent
-            col="col-md-6"
-            label="Impact Types"
-            id="txtImpactType"
+            col='col-md-6'
+            label='Impact Types'
+            id='txtImpactType'
             value={impactString}
             allowEdit={false}
           />

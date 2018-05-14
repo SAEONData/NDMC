@@ -1,9 +1,9 @@
 'use strict'
 
 import React from 'react'
-import TextareaAutosize from "react-textarea-autosize"
+import TextareaAutosize from 'react-textarea-autosize'
 import { connect } from 'react-redux'
-import { UILookup } from "../../constants/ui_config.js"
+import { UILookup } from '../../constants/ui_config.js'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { editMode } } = state
@@ -27,7 +27,7 @@ class TextAreaComponent extends React.Component {
   fixNullOrUndefinedValue(value) {
 
     if (typeof value === 'undefined' || value === null) {
-      value = ""
+      value = ''
     }
 
     return value
@@ -35,10 +35,10 @@ class TextAreaComponent extends React.Component {
 
   getFontColour() {
     if (this.props.editMode) {
-      return "steelblue"
+      return 'steelblue'
     }
     else {
-      return "black"
+      return 'black'
     }
   }
 
@@ -47,16 +47,16 @@ class TextAreaComponent extends React.Component {
     let { setValue, setValueKey, parentId, editMode } = this.props
 
     if (typeof setValueKey !== 'undefined') {
-      setValue(setValueKey, { value: event.target.value, id: parentId, state: editMode === true ? "modified" : "original" })
+      setValue(setValueKey, { value: event.target.value, id: parentId, state: editMode === true ? 'modified' : 'original' })
     }
   }
 
   getLabelFontColour(uiconf) {
     if (typeof uiconf.required != 'undefined' && uiconf.required === true) {
-      return "red"
+      return 'red'
     }
     else {
-      return "black"
+      return 'black'
     }
   }
 
@@ -69,14 +69,14 @@ class TextAreaComponent extends React.Component {
 
     return (
       <div className={col}>
-        <label data-tip={uiconf.tooltip} style={{ fontWeight: "bold", color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
+        <label data-tip={uiconf.tooltip} style={{ fontWeight: 'bold', color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
         <TextareaAutosize
           readOnly={!editMode}
           style={{
-            borderStyle: "solid",
-            borderWidth: "0px 0px 1px 0px",
-            borderColor: "#b4b4b4",
-            paddingBottom: "4px",
+            borderStyle: 'solid',
+            borderWidth: '0px 0px 1px 0px',
+            borderColor: '#b4b4b4',
+            paddingBottom: '4px',
             color: this.getFontColour()
           }}
           value={value}

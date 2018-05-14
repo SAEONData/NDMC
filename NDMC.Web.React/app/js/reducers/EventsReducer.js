@@ -1,6 +1,6 @@
 'use strict'
 
-import * as ACTION_TYPES from "../constants/action-types"
+import * as ACTION_TYPES from '../constants/action-types'
 
 const _ = require('lodash')
 
@@ -14,7 +14,7 @@ function extractItemAndId(array, key, value) {
 export default function EventsReducer(state = {}, action) {
   let { type, payload } = action
   let id = 0
-  let modState = "original"
+  let modState = 'original'
 
   //Check if additional data embedded in payload
   if (typeof payload !== 'undefined') {
@@ -32,7 +32,7 @@ export default function EventsReducer(state = {}, action) {
   switch (type) {
     case ACTION_TYPES.RESET_EVENT_STATE: {
       return {
-        ...state, projectDetails: { ...payload, state: "original" }
+        ...state, projectDetails: { ...payload, state: 'original' }
       }
     }
     case ACTION_TYPES.LOAD_EVENTS: {

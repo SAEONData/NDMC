@@ -4,8 +4,8 @@ import React from 'react'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from "../../constants/action-types"
-import { UILookup } from "../../constants/ui_config.js"
+import * as ACTION_TYPES from '../../constants/action-types'
+import { UILookup } from '../../constants/ui_config.js'
 
 //AntD Tree-Select
 import TreeSelect from 'antd/lib/tree-select'
@@ -43,19 +43,19 @@ class TreeSelectComponent extends React.Component {
 
   getFontColour() {
     if (this.props.editMode) {
-      return "steelblue"
+      return 'steelblue'
     }
     else {
-      return "black"
+      return 'black'
     }
   }
 
   getLabelFontColour(uiconf) {
     if (typeof uiconf.required != 'undefined' && uiconf.required === true) {
-      return "red"
+      return 'red'
     }
     else {
-      return "black"
+      return 'black'
     }
   }
 
@@ -64,10 +64,10 @@ class TreeSelectComponent extends React.Component {
 
     let disabledState = true
 
-    if (typeof editModeOverride !== "undefined" && editModeOverride === true) {
+    if (typeof editModeOverride !== 'undefined' && editModeOverride === true) {
       disabledState = false
     }
-    else if (typeof editMode !== "undefined" && editMode === true) {
+    else if (typeof editMode !== 'undefined' && editMode === true) {
       disabledState = false
     }
 
@@ -77,7 +77,7 @@ class TreeSelectComponent extends React.Component {
   transformDataTree(effectiveData, globalData, level = 0) {
 
     let treeNodes = []
-    let parentIdKey = "Parent" + Object.keys(effectiveData[0])[0].toString()
+    let parentIdKey = 'Parent' + Object.keys(effectiveData[0])[0].toString()
 
     if (typeof globalData === 'undefined') {
       globalData = effectiveData
@@ -106,18 +106,18 @@ class TreeSelectComponent extends React.Component {
     return treeNodes
   }
 
-  renderTreeSelectNodes(data, level = "top") {
+  renderTreeSelectNodes(data, level = 'top') {
 
     let { allowEdit } = this.props
 
-    if (allowEdit === true && level === "top") {
+    if (allowEdit === true && level === 'top') {
 
-      //Insert "[Edit list values...]" entry
-      if (data.filter(x => x.value === "[Edit list values...]").length === 0) {
+      //Insert '[Edit list values...]' entry
+      if (data.filter(x => x.value === '[Edit list values...]').length === 0) {
         data.splice(0, 0, {
-          "id": -1,
-          "text": "[Edit list values...]",
-          "modifiedState": false
+          'id': -1,
+          'text': '[Edit list values...]',
+          'modifiedState': false
         })
       }
     }
@@ -125,12 +125,12 @@ class TreeSelectComponent extends React.Component {
     return data.map((item) => {
       if (item.children) {
         return (
-          <TreeSelectNode value={item.text} title={(item.modifiedState === true ? "* " : "") + item.text} key={item.id} dataRef={item}>
-            {this.renderTreeSelectNodes(item.children, "child")}
+          <TreeSelectNode value={item.text} title={(item.modifiedState === true ? '* ' : '') + item.text} key={item.id} dataRef={item}>
+            {this.renderTreeSelectNodes(item.children, 'child')}
           </TreeSelectNode>
         )
       }
-      return <TreeSelectNode value={item.text} title={(item.modifiedState === true ? "* " : "") + item.text} key={item.id} />
+      return <TreeSelectNode value={item.text} title={(item.modifiedState === true ? '* ' : '') + item.text} key={item.id} />
     })
   }
 
@@ -144,10 +144,9 @@ class TreeSelectComponent extends React.Component {
     }
 
     if (selectedValue == -1) {
-
       //Setup and Show EditListModal
       if (typeof type === 'undefined') {
-        type = "std"
+        type = 'std'
       }
       if (typeof dependencies === 'undefined') {
         dependencies = []
@@ -159,26 +158,22 @@ class TreeSelectComponent extends React.Component {
       })
     }
     else {
-
       //Dispatch to store
       if (typeof setSelectedValueKey !== 'undefined') {
-        setSelectedValue(setSelectedValueKey, { value: selectedValue, id: parentId, state: editMode === true ? "modified" : "original" })
+        setSelectedValue(setSelectedValueKey, { value: selectedValue, id: parentId, state: editMode === true ? 'modified' : 'original' })
       }
     }
   }
 
   getDisabledState() {
     let { editMode, editModeOverride } = this.props
-
     let disabledState = true
-
-    if (typeof editModeOverride !== "undefined" && editModeOverride === true) {
+    if (typeof editModeOverride !== 'undefined' && editModeOverride === true) {
       disabledState = false
     }
-    else if (typeof editMode !== "undefined" && editMode === true) {
+    else if (typeof editMode !== 'undefined' && editMode === true) {
       disabledState = false
     }
-
     return disabledState
   }
 
@@ -190,10 +185,8 @@ class TreeSelectComponent extends React.Component {
     let selVal = []
 
     if (data.length > 0) {
-
       //Get tree data
       treeData = this.transformDataTree(data)
-
       //Get selected value
       let idKey = Object.keys(data[0])[0].toString()
       let valueKey = Object.keys(data[0])[1].toString()
@@ -205,22 +198,20 @@ class TreeSelectComponent extends React.Component {
 
     return (
       <div className={col}>
-        <label data-tip={uiconf.tooltip} style={{ fontWeight: "bold", color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
-
+        <label data-tip={uiconf.tooltip} style={{ fontWeight: 'bold', color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
         <TreeSelect
           disabled={this.getDisabledState()}
           showSearch
-          searchPlaceholder="Search..."
-          style={{ width: "100%" }}
+          searchPlaceholder='Search...'
+          style={{ width: '100%' }}
           value={selVal}
           dropdownStyle={{ maxHeight: 250, overflow: 'auto' }}
-          placeholder="Select..."
+          placeholder='Select...'
           allowClear
           onChange={this.dependencyTreeSelect.bind(this)}
         >
           {this.renderTreeSelectNodes(treeData)}
         </TreeSelect>
-
       </div>
     )
   }

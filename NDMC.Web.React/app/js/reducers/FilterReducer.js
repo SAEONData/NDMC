@@ -1,6 +1,6 @@
 'use strict'
 
-import * as ACTION_TYPES from "../constants/action-types"
+import * as ACTION_TYPES from '../constants/action-types'
 
 export default function FilterReducer(state = {}, action) {
 

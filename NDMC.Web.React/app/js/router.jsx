@@ -11,7 +11,6 @@ import { ConnectedRouter } from 'react-router-redux'
 
 import store from './store'
 
-
 const history = createHashHistory()
 
 class SwitchRouter extends React.Component {

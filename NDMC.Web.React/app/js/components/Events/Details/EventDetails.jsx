@@ -3,8 +3,8 @@
 import React from 'react'
 import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'mdbreact'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from "../../../constants/action-types"
-import { apiBaseURL } from "../../../constants/apiBaseURL"
+import * as ACTION_TYPES from '../../../constants/action-types'
+import { apiBaseURL } from '../../../constants/apiBaseURL'
 import EventDetailsTab from './EventDetailsTab.jsx'
 import { BeatLoader } from 'react-spinners'
 import ReactTooltip from 'react-tooltip'
@@ -65,16 +65,16 @@ class EventDetails extends React.Component {
 
   navBack() {
     this.props.setLoading(true)
-    location.hash = "/events"
+    location.hash = '/events'
   }
 
   backToList() {
     let { eventDetails } = this.props
-    let dataState = "original"
+    let dataState = 'original'
     if (eventDetails.state !== 'original') {
       dataState = eventDetails.state
     }
-    if (dataState === "original") {
+    if (dataState === 'original') {
       this.navBack()
     }
     else {
@@ -86,10 +86,10 @@ class EventDetails extends React.Component {
     let action
     action = fetch(apiBaseURL + 'api/Events/details/' + this.state.eventId, {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     }).then(res => res.json()).then(res => {
-      res.state = "original"
+      res.state = 'original'
       loadEventDetails(res)
     })
     return action
@@ -106,8 +106,8 @@ class EventDetails extends React.Component {
       })
       .catch(res => {
         setLoading(false)
-        console.log("Error details:", res)
-        alert("An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)")
+        console.log('Error details:', res)
+        alert('An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)')
       })
   }
 
@@ -122,10 +122,10 @@ class EventDetails extends React.Component {
       <>
         <div
           hidden={!this.props.loading}
-          className="card"
-          style={{ position: "fixed", right: "40%", bottom: "42%", zIndex: "99", background: "white" }}>
-          <div className="card-body" style={{ margin: "30px 80px 30px 80px" }}>
-            <label style={{ fontSize: "x-large", fontWeight: "bold", color: "#4285F4" }}>LOADING</label>
+          className='card'
+          style={{ position: 'fixed', right: '40%', bottom: '42%', zIndex: '99', background: 'white' }}>
+          <div className='card-body' style={{ margin: '30px 80px 30px 80px' }}>
+            <label style={{ fontSize: 'x-large', fontWeight: 'bold', color: '#4285F4' }}>LOADING</label>
             <BeatLoader
               color={'#4285F4'}
               size={30}
@@ -133,13 +133,13 @@ class EventDetails extends React.Component {
             />
           </div>
         </div>
-        <Button style={{ width: "100px", margin: "8px 0px 8px 0px" }} color="secondary" size="sm" id="btnBackToList" onTouchTap={this.backToList}>
-          <i className="fa fa-chevron-circle-left" aria-hidden="true"></i>&nbsp;&nbsp;Back
+        <Button style={{ width: '100px', margin: '8px 0px 8px 0px' }} color='secondary' size='sm' id='btnBackToList' onTouchTap={this.backToList}>
+          <i className='fa fa-chevron-circle-left' aria-hidden='true'></i>&nbsp;&nbsp;Back
                 </Button>
         <br />
         <Tabs forceRenderTabPanel={true}>
           <TabList>
-            <Tab><b style={{ color: "#1565c0" }}>Event Details</b></Tab>
+            <Tab><b style={{ color: '#1565c0' }}>Event Details</b></Tab>
           </TabList>
           <TabPanel>
             <EventDetailsTab />

@@ -3,8 +3,8 @@
 import React from 'react'
 import EventCard from './EventCard.jsx'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from "../../../constants/action-types"
-import { apiBaseURL } from "../../../constants/apiBaseURL"
+import * as ACTION_TYPES from '../../../constants/action-types'
+import { apiBaseURL } from '../../../constants/apiBaseURL'
 
 const mapStateToProps = (state, props) => {
   let { eventData: { events, start, end, listScrollPos } } = state
@@ -56,13 +56,13 @@ class EventList extends React.Component {
 
   handleScroll() {
 
-    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight
+    const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
     const body = document.body
     const html = document.documentElement
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
     const windowBottom = windowHeight + window.pageYOffset
     const { loadMoreEvents } = this.props
-    if (Math.ceil(windowBottom) >= docHeight && this.props.polygonFilter === "") {
+    if (Math.ceil(windowBottom) >= docHeight && this.props.polygonFilter === '') {
       loadMoreEvents()
     }
   }
@@ -92,7 +92,7 @@ class EventList extends React.Component {
     //Clear details data
     clearEventDetails()
 
-    let fetchURL = apiBaseURL + 'api/events/list?startDate=' + startDateFilter + "&endDate=" + endDateFilter + "&eventType=" + hazardFilter +
+    let fetchURL = apiBaseURL + 'api/events/list?startDate=' + startDateFilter + '&endDate=' + endDateFilter + '&eventType=' + hazardFilter +
       '&impactType=' + impactTypeFilter + '&region=' + regionFilter
 
 
@@ -100,7 +100,7 @@ class EventList extends React.Component {
     return fetch(fetchURL,
       {
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         }
       })
       .then(res => res.json())
@@ -110,19 +110,19 @@ class EventList extends React.Component {
       })
       .catch(res => {
         setLoading(false)
-        console.log("Error details:", res)
-        alert("An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)")
+        console.log('Error details:', res)
+        alert('An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)')
       })
   }
 
   componentDidMount() {
     this.getEventList()
-    window.addEventListener("scroll", this.handleScroll)
+    window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll)
+    window.removeEventListener('scroll', this.handleScroll)
   }
 
   componentDidUpdate() {

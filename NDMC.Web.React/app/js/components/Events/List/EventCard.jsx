@@ -3,7 +3,7 @@
 import React from 'react'
 import { Card, CardBody, CardText, CardTitle, Button } from 'mdbreact'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from "../../../constants/action-types"
+import * as ACTION_TYPES from '../../../constants/action-types'
 
 const mapStateToProps = (state, props) => {
   return {}
@@ -24,7 +24,7 @@ class EventCard extends React.Component {
 
   onTouchTap() {
     this.props.setScrollPos(window.pageYOffset)
-    location.hash = "/events/" + this.props.eid
+    location.hash = '/events/' + this.props.eid
   }
 
   render() {
@@ -38,7 +38,7 @@ class EventCard extends React.Component {
               {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br />
               {hazardtype ? `Type: ${hazardtype}` : ' '}
             </CardText>
-            <Button color="primary" className="btn-sm" onTouchTap={this.onTouchTap.bind(this)}>View</Button>
+            <Button color='primary' className='btn-sm' onTouchTap={this.onTouchTap.bind(this)}>View</Button>
           </CardBody>
         </Card>
         <br />

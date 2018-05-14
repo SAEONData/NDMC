@@ -2,12 +2,12 @@
 
 import React from 'react'
 import { Button } from 'mdbreact'
-import { apiBaseURL } from "../../../constants/apiBaseURL"
+import { apiBaseURL } from '../../../constants/apiBaseURL'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from "../../../constants/action-types"
+import * as ACTION_TYPES from '../../../constants/action-types'
 import ReactTooltip from 'react-tooltip'
 import { UILookup } from '../../../constants/ui_config'
-import { stripURLParam, GetUID } from "../../../globalFunctions.js"
+import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //AntD Tree
 import Tree from 'antd/lib/tree'
@@ -48,12 +48,12 @@ class RegionFilters extends React.Component {
     this.state = { expandedKeys: [] }
 
     //Read initial filter from URL
-    const parsedHash = queryString.parse(location.hash.replace("/events?", ""))
+    const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
     if (typeof parsedHash.region !== 'undefined') {
       //Dispatch to store
       let { loadRegionFilter } = this.props
       loadRegionFilter(parsedHash.region)
-      stripURLParam("region=" + parsedHash.region)
+      stripURLParam('region=' + parsedHash.region)
     }
   }
 
@@ -62,7 +62,7 @@ class RegionFilters extends React.Component {
     let { loadData, loadRegions } = this.props
     fetch(apiBaseURL + 'api/region/GetAllTree', {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     })
       .then(res => res.json())
@@ -72,7 +72,7 @@ class RegionFilters extends React.Component {
 
     fetch(apiBaseURL + 'api/region/GetAll/', {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     })
       .then(res => res.json())
@@ -96,12 +96,12 @@ class RegionFilters extends React.Component {
     return data.map((item) => {
       if (item.children) {
         return (
-          <TreeNode title={(item.modifiedState === true ? "* " : "") + item.text} key={item.id} dataRef={item}>
+          <TreeNode title={(item.modifiedState === true ? '* ' : '') + item.text} key={item.id} dataRef={item}>
             {this.renderTreeNodes(item.children)}
           </TreeNode>
         )
       }
-      return <TreeNode title={(item.modifiedState === true ? "* " : "") + item.text} key={item.id} />
+      return <TreeNode title={(item.modifiedState === true ? '* ' : '') + item.text} key={item.id} />
     })
   }
 
@@ -119,7 +119,7 @@ class RegionFilters extends React.Component {
     let parentKeys = []
     if (data.length > 0 && id > 0) {
       let idKey = Object.keys(data[0])[0].toString()
-      let parentIdKey = "Parent" + idKey
+      let parentIdKey = 'Parent' + idKey
       let selectedItem = data.filter(x => x[idKey] == id)[0]
       if (selectedItem[parentIdKey] !== null) {
         let parentId = selectedItem[parentIdKey].toString()
@@ -137,27 +137,27 @@ class RegionFilters extends React.Component {
   render() {
     let { region, regionTree, regionFilter } = this.props
     let { expandedKeys } = this.state
-    let selectedValue = "All"
+    let selectedValue = 'All'
     let treeData = typeof regionTree.dataSource === 'undefined' ? [] : regionTree.dataSource
     if (regionFilter > 0 && region.length > 0) {
       selectedValue = region.filter(x => x.RegionId === parseInt(regionFilter))[0].RegionName
     }
-    let uiconf = UILookup("treeRegionFilter", "Region filter:")
+    let uiconf = UILookup('treeRegionFilter', 'Region filter:')
     return (
       <>
-        <div className="row">
-          <div className="col-md-12">
-            <label data-tip={uiconf.tooltip} style={{ fontSize: "large" }}>{uiconf.label}&nbsp;&nbsp;</label>
-            <label data-tip={uiconf.tooltip2} style={{ fontSize: "large", fontWeight: "bold" }}>{selectedValue}</label>
+        <div className='row'>
+          <div className='col-md-12'>
+            <label data-tip={uiconf.tooltip} style={{ fontSize: 'large' }}>{uiconf.label}&nbsp;&nbsp;</label>
+            <label data-tip={uiconf.tooltip2} style={{ fontSize: 'large', fontWeight: 'bold' }}>{selectedValue}</label>
           </div>
         </div>
-        <div className="row">
-          <div className="col-md-12">
-            <Button color="secondary" size="sm" id="btnRegionTreeExpandAll" style={{ marginLeft: "0px" }} onTouchTap={this.expandAllNodes} >
-              <i className="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;&nbsp;Expand all
+        <div className='row'>
+          <div className='col-md-12'>
+            <Button color='secondary' size='sm' id='btnRegionTreeExpandAll' style={{ marginLeft: '0px' }} onTouchTap={this.expandAllNodes} >
+              <i className='fa fa-plus-circle' aria-hidden='true'></i>&nbsp;&nbsp;Expand all
                         </Button>
-            <Button color="secondary" size="sm" id="btnRegionTreeCollapseAll" onTouchTap={this.collapseAllNodes}>
-              <i className="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;&nbsp;Collapse all
+            <Button color='secondary' size='sm' id='btnRegionTreeCollapseAll' onTouchTap={this.collapseAllNodes}>
+              <i className='fa fa-minus-circle' aria-hidden='true'></i>&nbsp;&nbsp;Collapse all
                         </Button>
           </div>
         </div>
