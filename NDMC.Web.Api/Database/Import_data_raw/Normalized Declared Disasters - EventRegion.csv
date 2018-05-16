@@ -1,0 +1,686 @@
+ID_Event,EventRegionID,EventRegionName(temp)
+1,288,Elundini
+2,305,Gariep
+3,367,Maletswai
+4,456,Senqu
+5,249,Amathole
+6,246,Alfred Nzo
+7,269,Chris Hani
+8,330,Joe Gqabi
+9,434,OR Tambo
+10,6,Eastern Cape
+11,6,Eastern Cape
+12,6,Eastern Cape
+13,6,Eastern Cape
+14,6,Eastern Cape
+15,288,Elundini
+16,305,Gariep
+17,367,Maletswai
+18,456,Senqu
+19,517,Ward1
+19,518,Ward2
+19,519,Ward3
+19,520,Ward4
+19,521,Ward5
+19,522,Ward6
+19,523,Ward7
+19,524,Ward8
+19,525,Ward9
+19,526,Ward10
+19,527,Ward11
+19,528,Ward12
+19,529,Ward13
+19,530,Ward14
+19,531,Ward15
+19,532,Ward16
+19,533,Ward17
+19,534,Ward18
+19,163,Ntabankulu
+20,519,Ward3
+20,520,Ward4
+20,522,Ward6
+20,523,Ward7
+20,525,Ward9
+20,531,Ward15
+20,533,Ward17
+20,541,Ward25
+20,544,Ward28
+20,381,Mbizana
+21,520,Ward4
+21,521,Ward5
+21,522,Ward6
+21,523,Ward7
+21,524,Ward8
+21,525,Ward9
+21,527,Ward11
+21,528,Ward12
+21,532,Ward16
+21,535,Ward19
+21,536,Ward20
+21,539,Ward23
+21,541,Ward25
+21,500,Umzimvubu
+22,6,Eastern Cape
+23,6,Eastern Cape
+24,6,Eastern Cape
+25,6,Eastern Cape
+26,381,Mbizana
+27,500,Umzimvubu
+28,432,Nyandeni
+29,325,Ingquza Hill
+30,343,King Sabata Dalindyebo
+31,183,Port St Johns
+32,386,Mhlontlo
+33,391,Mnquma
+34,380,Mbhashe
+35,330,Joe Gqabi
+36,346,Kou-kamma
+37,415,Ndlambe
+38,347,Kouga
+39,364,Makana
+40,262,Cacadu
+41,417,Nelson Mandela Bay Metro
+42,6,Eastern Cape
+43,246,Alfred Nzo
+44,249,Amathole
+45,269,Chris Hani
+46,330,Joe Gqabi
+47,434,OR Tambo
+48,6,Eastern Cape
+49,6,Eastern Cape
+50,6,Eastern Cape
+51,6,Eastern Cape
+52,6,Eastern Cape
+53,246,Alfred Nzo
+54,249,Amathole
+55,262,Cacadu
+56,269,Chris Hani
+57,330,Joe Gqabi
+58,434,OR Tambo
+59,417,Nelson Mandela Bay
+60,372,Mantsopa
+61,457,Setsoto
+62,275,Dihlabeng
+63,424,Nketoana
+64,368,Maluti-a-Phofung
+65,439,Phumelela
+66,399,Moqhaka
+67,421,Ngwathe
+68,385,Metsimaholo
+69,361,Mafube
+70,358,Letsemeng
+71,345,Kopanong
+72,395,Mohokare
+73,412,Naledi
+74,376,Masilonyana
+75,477,Tokologo
+76,481,Tswelopele
+77,378,Matjhabeng
+78,411,Nala
+79,371,Mangaung Metropolitan 
+80,8,Free State
+81,8,Free State
+82,8,Free State
+83,275,Dihlabeng 
+84,368,Maluti-a-Phofung
+85,395,Mohokare
+86,8,Free State
+87,8,Free State
+88,8,Free State
+89,8,Free State
+90,6,Eastern Cape
+91,470,Thabo Mofutsanyana
+92,515,Xhariep 
+93,301,Fezile Dabi
+94,8,Free State
+95,8,Free State
+96,8,Free State
+97,8,Free State
+98,8,Free State
+99,1,Gauteng
+100,286,EKURHULENI METROPOLITAN
+101,1,Gauteng
+102,1,Gauteng
+103,1,Gauteng
+104,273,CITY OF TSHWANE METROPOLITAN
+105,1,Gauteng
+106,1,Gauteng
+107,1,Gauteng
+108,286,EKURHULENI METROPOLITAN
+109,271,CITY OF JOHANNESBURG METROPOLITAN
+110,273,CITY OF TSHWANE METROPOLITAN
+110,533,Ward17
+111,286,EKURHULENI METROPOLITAN
+112,292,EMFULENI
+113,387,MIDVAAL
+114,512,WEST RAND
+115,1,Gauteng
+116,1,Gauteng
+117,1,Gauteng
+118,298,Ethekwini Metro
+119,97,Jozini
+120,491,uMkhanyakude
+121,85,Hlabisa
+122,151,Mtubatuba
+123,488,uMhlabuyalingana
+124,295,Endumeni
+125,498,Umvoti
+126,161,Nquthu
+127,404,Msinga
+128,503,uPhongolo
+129,160,Nongoma
+130,218,Ulundi
+131,284,eDumbe
+132,243,AbaQulusi
+133,389,Mkhambathini
+134,494,uMshwathi
+135,194,Richmond
+136,403,Mpofana
+137,157,Newcastle
+138,50,Dannhauser
+139,289,eMadlangeni
+140,293,Emnambithi
+141,324,Indaka
+142,496,uMtshezi
+143,322,Imbabazane
+144,318,Hibiscus Coast
+145,486,Umdoni
+146,502,Umzumbe
+147,509,Vulamehlo
+148,497,Umuziwabantu
+149,430,Ntambanana
+150,492,Umlalazi
+151,159,Nkandla
+152,505,uThungulu
+153,505,uThungulu
+154,133,Maphumulo
+155,155,Ndwedwe
+156,113,KwaDukuza
+157,132,Mandeni
+158,311,Greater Kokstad
+159,482,Ubuhlebezwe
+160,349,KwaSani
+161,219,Umzimkhulu
+162,2,KwaZulu-Natal
+163,2,KwaZulu-Natal
+164,2,KwaZulu-Natal
+165,2,KwaZulu-Natal
+166,2,KwaZulu-Natal
+167,151,Mtubatuba
+168,85,Hlabisa
+169,491,uMkhanyakude
+170,97,Jozini
+171,488,uMhlabuyalingana
+172,517,Ward1
+172,525,Ward9
+172,133,Maphumulo
+173,525,Ward9
+173,520,Ward4
+173,155,Ndwedwe
+174,527,Ward11
+174,541,Ward25
+174,517,Ward1
+174,519,Ward3
+174,537,Ward21
+174,113,KwaDukuza
+175,293,Emnambithi
+176,523,Ward7
+176,519,Ward3
+176,517,Ward1
+176,522,Ward6
+176,520,Ward4
+176,518,Ward2
+176,525,Ward9
+176,324,Indaka
+177,433,Okhahlamba
+178,496,Umtshezi
+179,520,Ward4
+179,518,Ward2
+179,529,Ward13
+179,528,Ward12
+179,322,Imbabazane
+180,486,Umdoni
+181,502,Umzumbe
+182,509,Vulamehlo
+183,497,Umuziwabantu
+184,505,uThungulu
+185,430,Ntambanana
+186,492,uMlalazi
+187,159,Nkandla
+188,161,Nquthu
+189,517,Ward1
+189,519,Ward3
+189,525,Ward9
+189,527,Ward11
+189,404,Msinga
+190,295,Endumeni
+191,498,Umvoti
+191,520,Ward4
+191,523,Ward7
+192,494,uMshwathi
+193,194,Richmond
+194,493,Umngeni
+195,90,Impendle
+196,389,Mkhambathini
+197,518,Ward2
+197,520,Ward4
+197,403,Mpofana
+198,311,Greater Kokstad
+199,349,KwaSani
+200,482,Ubuhlebezwe
+201,2,KwaZulu-Natal
+202,218,Ulundi
+203,160,Nongoma
+204,157,Newcastle
+205,289,Emadlangeni
+206,509,Vulamehlo
+207,486,Umdoni
+208,502,Umzumbe
+209,484,Ugu
+210,298,eThekwini
+211,293,Emnambithi
+212,433,Okhahlamba
+213,2,KwaZulu-Natal
+214,2,KwaZulu-Natal
+215,298,eThekwini
+216,298,eThekwini
+217,484,Ugu
+218,486,Umdoni
+219,517,Ward1
+219,518,Ward2
+219,519,Ward3
+219,520,Ward4
+219,521,Ward5
+219,522,Ward6
+219,523,Ward7
+219,524,Ward8
+219,525,Ward9
+219,526,Ward10
+219,509,Vulamehlo
+220,509,Vulamehlo
+221,509,Vulamehlo
+222,517,Ward1
+222,518,Ward2
+222,519,Ward3
+222,521,Ward5
+222,522,Ward6
+222,523,Ward7
+222,526,Ward10
+222,530,Ward14
+222,532,Ward16
+222,535,Ward19
+222,502,Umzumbe
+223,502,Umzumbe
+224,293,Emnambithi
+225,433,Okhahlamba
+225,520,Ward4
+225,524,Ward8
+225,519,Ward3
+225,518,Ward2
+225,528,Ward12
+225,530,Ward14
+226,298,eThekwini
+227,486,Umdoni
+228,509,Vulamehlo
+229,502,Umzumbe
+230,318,Hibiscus
+231,484,Ugu
+232,517,Ward1
+232,518,Ward2
+232,519,Ward3
+233,219,Umzimkhulu
+234,219,Umzimkhulu
+235,219,Umzimkhulu
+236,489,Umhlathuze
+237,430,Ntambanana
+238,492,Umlalazi
+238,526,Ward10
+238,528,Ward12
+238,529,Ward13
+238,530,Ward14
+238,531,Ward15
+238,532,Ward16
+238,533,Ward17
+238,534,Ward18
+238,535,Ward19
+238,536,Ward20
+238,540,Ward24
+238,542,Ward26
+239,489,uMhlathuze
+240,293,Emnambithi
+240,517,Ward
+240,530,Ward14
+240,531,Ward15
+240,532,Ward16
+240,533,Ward17
+240,540,Ward24
+240,542,Ward26
+241,433,Okhahlamba
+242,322,Imbabazane 
+243,498,Umvoti
+243,518,Ward2
+243,521,Ward5
+243,520,Ward4
+243,524,Ward8
+244,527,Ward11
+244,161,Nquthu
+245,521,Ward5
+245,530,Ward14
+245,520,Ward4
+245,404,Msinga
+246,284,eDumbe
+247,243,AbaQulusi
+248,218,Ulundi
+249,160,Nongoma
+250,488,Umhlabuyalingana
+250,527,Ward11
+250,529,Ward13
+251,97,Jozini
+252,289,Emadlangeni
+253,50,Dannhauser
+254,132,Mandeni
+255,132,Mandeni
+256,113,KwaDukuza
+257,133,Maphumulo
+257,518,Ward2
+257,519,Ward3
+257,520,Ward4
+258,155,Ndwedwe
+259,2,KwaZulu-Natal
+260,2,KwaZulu-Natal
+261,2,KwaZulu-Natal
+262,2,KwaZulu-Natal
+263,2,KwaZulu-Natal
+264,498,Umvoti
+265,293,Emnambithi
+266,155,Ndwedwe
+267,298,eThekwini
+267,608,Ward92
+267,611,Ward95
+267,592,Ward76
+267,593,Ward77
+267,546,Ward30
+267,572,Ward56
+267,598,Ward82
+267,599,Ward83
+267,598,Ward82
+267,557,Ward41
+267,577,Ward61
+267,575,Ward59
+267,576,Ward60
+267,568,Ward52
+267,574,Ward58
+268,458,Sisonke
+269,527,Ward11
+269,523,Ward7
+269,517,Ward1
+269,518,Ward2
+269,157,Newcastle
+270,50,Dannhauser
+271,289,Emadlangeni
+272,484,Ugu
+273,487,uMgungundlovu
+274,501,uMzinyathi
+275,491,uMkhanyakude
+276,505,uThungulu
+276,517,Ward1
+276,520,Ward4
+276,521,Ward5
+276,522,Ward6
+276,527,Ward11
+276,520,Ward4
+276,530,Ward14
+277,516,Zululand
+278,2,KwaZulu-Natal
+279,2,KwaZulu-Natal
+280,2,KwaZulu-Natal
+281,2,KwaZulu-Natal
+282,2,KwaZulu-Natal
+283,2,KwaZulu-Natal
+284,498,Umvoti
+285,244,Aganang
+286,177,Polokwane
+287,396,Molemole
+288,256,Blouberg
+289,355,Lepelle-Nkumpi
+290,310,Greater Giyani
+291,315,Greater Tzaneen
+292,312,Greater Letaba
+293,250,Ba-Phalaborwa
+294,375,Maruleng
+295,287,Elias Motsoaledi
+296,297,Ephraim Mogale
+297,314,Greater Tubatse
+298,366,Makhuduthamaga
+299,300,FetaKgomo
+300,18,Bela-Bela
+301,140,Modimolle
+302,510,Waterberg
+303,393,Mogalakwena
+304,122,Lephalale
+305,212,Thabazimbi
+306,365,Makhado
+307,154,Mutale
+308,153,Musina
+309,475,Thulamela
+310,5,Limpopo
+311,5,Limpopo
+312,5,Limpopo
+313,5,Limpopo
+314,375,MARULENG
+315,250,BA-PHALABORWA
+316,315,GREATER TZANEEN
+317,312,GREATER LETABA
+318,398,MOPANI
+319,398,MOPANI
+320,398,MOPANI
+321,122,LEPHALALE
+322,18,BELA-BELA
+323,212,THABAZIMBI
+324,140,MODIMOLLE
+325,393,MOGALAKWENA
+326,5,Limpopo
+327,5,Limpopo
+328,5,Limpopo
+329,475,THULAMELA
+330,153,MUSINA
+331,365,MAKHADO
+332,154,MUTALE
+333,507,VHEMBE DISTRICT
+334,375,MARULENG
+335,250,BA-PHALABORWA
+336,74,GIYANi
+337,315,GREATER TZANEEN
+338,398,MOPANI
+339,398,MOPANI DISTRICT MUNICIPALITY
+340,398,MOPANI
+341,398,MOPANI
+342,398,MOPANI
+343,398,MOPANI
+344,398,MOPANI
+345,455,SEKHUKHUNE
+346,510,WATERBERG
+347,507,VHEMBE
+348,5,Limpopo
+349,5,Limpopo
+350,5,Limpopo
+351,5,Limpopo
+352,307,Gert Sibande
+353,405,Msukaligwa
+354,390,Mkhondo
+355,307,Gert Sibande
+356,308,Govan Mbeki
+357,277,Dipaleseng
+358,353,Lekwa
+359,279,Dr JS Moroka
+360,474,Thembisile Hani
+361,290,Emakhazeni
+362,468,Thaba Chweu
+363,425,Nkomazi
+364,32,Bushbuckridge
+365,490,Umjindi
+366,3,Mpumalanga
+367,3,Mpumalanga
+368,3,Mpumalanga
+369,382,Mbombela
+370,490,Umjindi
+371,32,Bushbuckridge
+372,425,Nkomazi
+373,425,Nkomazi
+374,285,Ehlanzeni
+375,405,Msukaligwa
+376,390,Mkhondo
+377,308,Govan Mbeki
+378,353,Lekwa
+379,290,Emakhazeni 
+380,291,Emalahleni
+381,474,Thembisile Hani
+382,307,Gert Sibande
+383,307,Gert Sibande
+384,382,Mbombela
+385,490,Umjindi
+386,32,Bushbuckridge
+387,425,Nkomazi
+388,468,Thaba Chweu
+389,3,Mpumalanga
+390,3,Mpumalanga
+391,3,Mpumalanga
+392,3,Mpumalanga
+393,3,Mpumalanga
+394,32,Bushbuckridge
+395,382,Mbombela
+396,425,Nkomazi
+397,474,Thembisile Hani
+398,423,Nkangala
+399,32,Bushbuckridge
+400,307,Gert Sibande
+401,3,Mpumalanga
+402,3,Mpumalanga
+403,302,Frances Baard
+404,332,John Taolo Gaetsewe
+405,440,Pixley Ka Seme
+406,414,Namakwa
+407,9,Northern Cape
+408,9,Northern Cape
+409,9,Northern Cape
+410,9,Northern Cape
+411,9,Northern Cape
+412,332,John Taolo Gaetsewe
+413,302,Frances Baard
+414,414,Namakwa
+415,362,Magareng
+415,276,Dikgatlong
+415,438,Phokwane
+415,462,Sol Plaatje
+416,339,Karoo
+417,448,Renosterberg
+417,459,Siyancuma
+417,495,Umsobomvu
+417,483,Ubuntu
+417,294,Emthanjeni
+417,473,Thembelihle
+417,338,Kareeberg
+417,461,Siyathemba
+418,478,Tsantsabane
+418,139,Mier
+419,9,Northern Cape
+420,9,Northern Cape
+421,9,Northern Cape
+422,128,Mahikeng
+423,447,Ratlou
+424,480,Tswaing
+425,445,Ramotshere Moiloa
+426,278,Ditsobotla
+427,400,Moretele
+428,360,Madibeng
+429,341,Kgetleng
+430,401,Moses Kotane
+431,196,Rustenburg
+432,223,Ventersdorp
+433,374,Maquassi Hills
+434,476,Tlokwe
+435,272,Matlosana
+436,313,Greater Taung
+437,369,Mamusa
+438,412,Naledi
+439,334,Kagisano-Molopo
+440,354,Lekwa-Teemane
+441,7,North West
+442,7,North West
+443,7,North West
+444,272,City of Matlosana Local Municipality
+445,272,City of Matlosana Local Municipality
+446,128,Mahikeng
+447,278,Ditsobotla
+448,447,Ratlou
+449,445,Ramotshere Moiloa
+450,480,Tswaing
+451,400,Moretele
+452,142,Mogwase
+453,360,Madibeng
+454,341,Kgetlengrivier
+455,196,Rustenburg
+456,313,Greater Taung
+457,412,Naledi
+458,369,Mamusa
+459,354,Lekwa-Teemane
+460,334,Kagisano-Molopo
+461,223,Ventersdorp
+462,374,Maquassi Hills
+463,476,Tlokwe
+464,360,Madibeng
+465,400,Moretele
+466,401,Moses Kotane
+467,196,Rustenburg
+468,278,Ditsobotla
+469,128,Mahikeng
+470,445,Ramotshere Moiloa
+471,447,Ratlou
+472,480,Tswaing
+473,313,Greater Taung
+474,354,Lekwa-Teemane
+475,412,Naledi
+476,476,Tlokwe
+477,185,Potchefstroom
+478,272,City of Matlosana
+479,7,North West
+480,7,North West
+481,7,North West
+482,7,North West
+483,317,Hessequa 
+484,317,Hessequa
+485,147,Mossel Bay
+486,283,Eden
+487,337,Kannaland
+488,437,Overstrand
+489,209,Swellendam
+490,436,Overberg
+491,472,Theewaterskloof
+492,264,Cape Agulhas
+493,121,Laingsburg
+494,444,Prince Albert 
+495,259,Breede Valley
+496,351,Langeberg 
+497,270,City of Cape Town
+498,270, City of Cape Town 
+499,4,Western Cape
+500,4,Western Cape
+501,4,Western Cape
+502,4,Western Cape
+503,4,Western Cape
+504,4,Western Cape
+505,4,Western Cape
+506,259,Breede
+507,351,Langeberg
+508,317,Hessequa
+509,255,Bitou
+510,164,Oudtshoorn
+511,147,Mossel bay
+512,337,Kannaland
+513,436,Overberg
+514,317,Hessequa
+515,147,Mossel Bay
+516,255,Bitou 
+517,72,George
+518,104,Knysna
+519,3,Mpumalanga

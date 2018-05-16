@@ -1,0 +1,45 @@
+ID_TypeMitigation,TypeMitigation,ParentTypeMitigation,UnitofMeasure
+1,Drought Intervention,,Rands
+2,Livestock Feed,,Rands
+3,Borehole Construction,,Rands
+4,Water Tanker and Mobile Tanks,,Rands
+5,Temporary Shelter,,Count
+6,Emergency Costs,,Rands
+7,Emergency Funding,,Rands
+8,Immediate Intervention,,Rands
+9,Post Disaster Recover and Rehabilitation,,Rands
+10,Emergency Disaster Relief Funding,,Rands
+11,Additional Funding Requested,,Rands
+12,Rehabilitation & Reconstruction,,Rands
+13,Provincial Funding,,Rands
+14,Sector Contribution,,Rands
+15,Fodder Banks,,Rands
+16,Water Infrastructure,,Rands
+17,Water Tankers,,Rands
+18,Municipal Contribution,,Rands
+19,Blankets,,Count
+20,Food Parcels,,Count
+21,Food,,
+22,Medicine,,Count
+23,Sugar Cane Industry Assistance,,Rands
+24,Emergency Program,,Rands
+25,Water Trucks,,Rands
+26,Cleared Roads,,Count
+27,Relief Materials,,Count
+28,Plastic Sheet Rolls,,Count
+29,School Repair,,
+30,Mattresses,,Count
+31,Funeral Assistance,,
+32,Trauma Counselling,,
+33,Funeral Assistance,,
+34,Social Development,,
+35,Mobile Toilets,,
+36,Bottled Water,,Litres
+37,Stakeholder Contribution,,Rands
+38,Repair Equipment,,
+39,Bridge Repair,,Count
+40,Tarpaulins,,Count
+41,Soup Kitchen,,Count
+42,Infrastructure Repair,,Rands
+43,Health Packs,,
+44,Municipal Infrastructure,,

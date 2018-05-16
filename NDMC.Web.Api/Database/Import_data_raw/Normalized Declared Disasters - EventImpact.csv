@@ -1,0 +1,783 @@
+ID_Event,ID_TypeImpact,TypeImapct,Measure
+19,3,Bridges,5
+19,5,Clinics,5
+19,10,Fatality,13
+19,18,Households,2376
+19,19,Houses,2376
+19,24,Roads,5
+19,25,Schools,43
+20,3,Bridges,
+20,18,Households,184
+20,19,Houses,184
+20,24,Roads,5
+20,25,Schools,5
+21,3,Bridges,
+21,19,Houses,93
+21,24,Roads,3
+21,25,Schools,4
+22,19,Houses,
+23,25,Schools,
+24,3,Bridges,
+24,24,Roads,
+25,5,Clinics,
+26,3,Bridges,10
+26,24,Roads,10
+27,3,Bridges,22
+27,24,Roads,22
+28,3,Bridges,22
+28,10,Fatality,4
+28,18,Households,1128
+28,19,Houses,1943
+28,24,Roads,22
+29,3,Bridges,54
+29,24,Roads,54
+30,3,Bridges,14
+30,24,Roads,14
+31,3,Bridges,27
+31,24,Roads,27
+32,3,Bridges,27
+32,24,Roads,27
+33,3,Bridges,31
+33,24,Roads,31
+34,3,Bridges,36
+34,24,Roads,36
+35,8,Dams,2
+35,13,Fire Hydrants,67
+35,31,Water Infrastracture,4
+36,19,Houses,1
+36,24,Roads,21
+36,30,Storm Water Drains,1
+37,3,Bridges,3
+37,19,Houses,1
+37,24,Roads,51
+37,30,Storm Water Drains,4
+37,31,Water Infrastracture,10
+38,6,Culverts,1
+38,24,Roads,12
+38,26,Sewer Reticulations,2
+38,30,Storm Water Drains,5
+39,3,Bridges,1
+39,24,Roads,22
+40,23,Pump Stations,1
+40,24,Roads,3
+41,23,Pump Stations,
+41,24,Roads,12
+42,3,Bridges,2
+42,6,Culverts,9
+42,24,Roads,31
+42,30,Storm Water Drains,4
+43,19,Houses,102
+43,24,Roads,26
+43,25,Schools,11
+44,19,Houses,1909
+44,24,Roads,23
+44,25,Schools,21
+45,19,Houses,543
+45,24,Roads,49
+45,25,Schools,36
+46,19,Houses,21
+46,24,Roads,8
+46,25,Schools,36
+47,19,Houses,374
+47,24,Roads,11
+47,25,Schools,12
+48,19,Houses,4652
+49,3,Bridges,
+49,24,Roads,113
+50,25,Schools,127
+51,9,Farms,6
+52,5,Clinics,1
+53,31,Water Infrastracture,
+54,31,Water Infrastracture,
+55,31,Water Infrastracture,
+56,31,Water Infrastracture,
+57,31,Water Infrastracture,
+58,31,Water Infrastracture,
+59,31,Water Infrastracture,
+83,1,Area Burnt,36922
+83,2,Hay Bales,10000
+83,9,Farms,223
+83,11,Females Affected,44
+83,64,Fences,167
+83,22,Males Affected,181
+83,67,Water Pipes,4.82
+84,1,Area Burnt,44234000
+84,9,Farms,8
+84,10,Fatality,4
+84,11,Females Affected,44
+84,64,Fences,436
+84,14,Game,116
+84,15,Goats,249
+84,17,Horses,20
+84,19,Houses,21
+84,20,Injury,3
+84,21,Jojo Tanks,2
+84,22,Males Affected,181
+84,29,Stores/Sheds,10
+84,67,Water Pipes,5.1
+85,1,Area Burnt,110000
+85,9,Farms,1
+85,10,Fatality,2
+85,11,Females Affected,4
+85,64,Fences,511
+85,16,Grazing Pasture,8141
+85,19,Houses,4
+85,20,Injury,3
+85,22,Males Affected,18
+85,28,Springboks,18
+85,29,Stores/Sheds,2
+85,67,Water Pipes,40
+85,33,Zebra's,4
+86,4,Cattle,12020
+86,9,Farms,604
+86,15,Goats,249
+86,16,Grazing Pasture,93531
+86,17,Horses,249
+86,19,Houses,
+86,27,Sheep,1207
+86,29,Stores/Sheds,
+86,32,Water Pipes,
+91,3,Bridges,80
+91,5,Clinics,14
+91,9,Farms,26
+91,19,Houses,1653
+91,24,Roads,80
+91,25,Schools,32
+92,3,Bridges,31
+92,9,Farms,8
+92,19,Houses,1900
+92,24,Roads,31
+92,25,Schools,3
+93,3,Bridges,34
+93,9,Farms,51
+93,19,Houses,918
+93,24,Roads,34
+94,9,Farms,85
+95,25,Schools,35
+96,5,Clinics,14
+97,19,Houses,4471
+98,3,Bridges,145
+98,24,Roads,145
+100,5,Clinics,16
+100,19,Houses,3379
+100,25,Schools,46
+100,34,Hostels,3
+100,35,Informal Settlements,5
+101,25,Schools,46
+102,19,Houses,3379
+104,5,Clinics,
+104,18,Households,4130
+104,19,Houses,
+104,22,Males Affected,20650
+105,19,Houses,
+106,5,Clinics,
+108,10,Fatality,1
+108,18,Households,681
+108,19,Houses,681
+108,20,Injury,182
+108,22,Males Affected,681
+108,31,Water Infrastracture,
+110,3,Bridges,1
+110,30,Storm Water Drains,1
+111,19,Houses,
+112,19,Houses,
+112,24,Roads,
+112,26,Sewer Reticulations,
+115,19,Houses,11
+116,9,Farms,42
+117,3,Bridges,11
+117,24,Roads,11
+201,2,Hay Bales,9770
+201,4,Cattle,420
+201,16,Grazing Pasture,16611
+201,27,Sheep,940
+201,31,Water Infrastracture,
+201,37,Area Damaged,20226
+206,24,Roads,100
+206,38,Creches,6
+206,39,Halls,3
+206,40,Sports Fields,1
+207,3,Bridges,7
+207,24,Roads,7
+207,41,Buildings,2
+207,42,Municipal Infrastructure,
+208,3,Bridges,28
+208,24,Roads,28
+209,3,Bridges,3
+209,24,Roads,3
+209,26,Sewer Reticulations,3
+209,30,Storm Water Drains,2
+210,3,Bridges,5
+210,24,Roads,5
+210,43,Municipal Houses,2
+211,3,Bridges,42
+211,24,Roads,42
+211,30,Storm Water Drains,36
+211,44,Street Lights,772
+211,45,Electrical Switch Houses,12
+211,46,Transformers,20
+212,3,Bridges,2
+212,24,Roads,2
+212,30,Storm Water Drains,3
+213,19,Houses,480
+214,3,Bridges,6
+214,24,Roads,6
+215,3,Bridges,3
+215,24,Roads,2
+215,43,Municipal Houses,2
+216,19,Houses,2
+217,24,Roads,3
+217,26,Sewer Reticulations,3
+217,30,Storm Water Drains,2
+217,31,Water Infrastracture,3
+218,3,Bridges,3
+218,10,Fatality,2
+218,18,Households,176
+218,20,Injury,2
+218,22,Males Affected,880
+218,24,Roads,4
+218,41,Buildings,2
+219,3,Bridges,5
+219,10,Fatality,2
+219,18,HouseHolds,176
+219,22,Males Affected,880
+219,24,Roads,74
+219,38,Creches,6
+219,39,Halls,3
+219,47,Sports Complex,a
+220,24,Roads,6
+221,19,Houses,418
+222,3,Bridges,4
+222,10,Fatality,1
+222,18,HouseHolds,153
+222,20,Injury,3
+222,22,Males Affected,765
+222,24,Roads,24
+223,19,Houses,62
+224,3,Bridges,1
+224,18,HouseHolds,4171
+224,20,Injury,6
+224,22,Males Affected,20855
+224,24,Roads,42
+224,30,Storm Water Drains,36
+224,44,Street Lights,122
+224,45,Electrical Switch Houses,12
+224,46,Transformers,2
+225,3,Bridges,1
+225,10,Fatality,2
+225,18,HouseHolds,54
+225,24,Roads,1
+225,25,Schools,
+225,30,Storm Water Drains,3
+226,10,Fatality,7
+226,18,HouseHolds,1044
+226,19,Houses,1044
+226,22,Males Affected,4537
+227,3,Bridges,1
+227,18,HouseHolds,62
+227,22,Males Affected,183
+227,24,Roads,1
+228,3,Bridges,4
+228,10,Fatality,3
+228,18,HouseHolds,451
+228,22,Males Affected,1353
+228,24,Roads,5
+229,3,Bridges,4
+229,18,HouseHolds,28
+229,22,Males Affected,84
+229,24,Roads,3
+231,24,Roads,2
+231,48,Sewer Pipeline,2
+232,3,Bridges,19
+232,18,HouseHolds,286
+232,19,Houses,286
+232,22,Males Affected,181
+232,24,Roads,19
+232,25,Schools,3
+233,10,Fatality,1
+233,18,HouseHolds,11
+233,22,Males Affected,109
+234,10,Fatality,8
+234,18,HouseHolds,1
+234,19,Houses,1
+234,22,Males Affected,8
+235,10,Fatality,2
+235,11,Females Affected,2
+235,18,HouseHolds,2
+236,18,HouseHolds,84
+236,19,Houses,
+238,3,Bridges,18
+238,18,HouseHolds,167
+238,19,Houses,167
+238,24,Roads,18
+238,25,Schools,69
+240,3,Bridges,19
+240,18,HouseHolds,413
+240,19,Houses,413
+240,20,Injury,2
+240,22,Males Affected,1467
+240,24,Roads,19
+240,25,Schools,9
+241,3,Bridges,5
+241,10,Fatality,2
+241,18,HouseHolds,2
+241,20,Injury,12
+241,22,Males Affected,14
+243,3,Bridges,49
+243,10,Fatality,7
+243,15,Goats,10
+243,18,HouseHolds,3065
+243,19,Houses,3065
+243,20,Injury,105
+243,22,Males Affected,16836
+243,24,Roads,49
+243,25,Schools,52
+243,49,Public Facilities,6
+243,50,Chickens,13
+243,51,Cows,2
+244,18,HouseHolds,88
+244,19,Houses,
+244,22,Males Affected,741
+245,10,Fatality,5
+245,18,HouseHolds,539
+245,20,Injury,88
+245,22,Males Affected,1382
+245,25,Schools,124
+246,3,Bridges,87
+246,10,Fatality,2
+246,18,HouseHolds,1300
+246,19,Houses,255
+246,20,Injury,5
+246,22,Males Affected,2056
+246,24,Roads,87
+246,25,Schools,27
+246,49,Public Facilities,2
+250,3,Bridges,7
+250,18,HouseHolds,1142
+250,19,houses,1142
+250,22,Males Affected,119
+250,24,roads,7
+250,25,Schools,4
+251,18,HouseHolds,36
+251,19,Houses,
+251,22,Males Affected,150
+252,3,Bridges,3
+252,18,HouseHolds,19
+252,19,Houses,19
+252,22,Males Affected,30
+252,24,Roads,3
+252,25,Schools,12
+254,18,HouseHolds,5
+254,20,Injury,5
+254,22,Males Affected,29
+255,10,Fatality,3
+255,20,Injury,13
+255,22,Males Affected,16
+257,18,HouseHolds,95
+257,20,Injury,10
+257,22,Males Affected,280
+259,25,Schools,
+260,52,Health Infrastructure,
+261,53,Human Settlements,
+262,54,Infrastructure,
+263,3,Bridges,
+263,24,Roads,
+264,39,Halls,
+265,3,Bridges,8
+265,10,Fatality,11
+265,18,HouseHolds,1332
+265,19,Houses,1332
+265,20,Injury,2
+265,22,Males Affected,4630
+265,65,Roads,377.5
+265,25,Schools,6
+266,10,Fatality,1
+266,18,HouseHolds,285
+266,19,Houses,285
+266,20,Injury,15
+266,22,Males Affected,1374
+266,25,Schools,17
+267,10,Fatality,3
+267,18,HouseHolds,2550
+267,19,Houses,2550
+267,20,Injury,5
+267,22,Males Affected,7650
+267,24,Roads,15
+267,25,Schools,11
+268,10,Fatality,23
+268,18,HouseHolds,68
+268,19,Houses,68
+268,20,Injury,5
+268,22,Males Affected,235
+269,10,Fatality,2
+269,18,HouseHolds,295
+269,19,Houses,295
+269,20,Injury,1
+269,22,Males Affected,823
+269,24,Roads,1
+269,25,Schools,10
+272,18,HouseHolds,257
+272,19,Houses,257
+272,22,Males Affected,605
+272,25,Schools,4
+273,10,Fatality,2
+273,18,Households,162
+273,19,Houses,162
+273,20,Injury,3
+273,22,Males Affected,1033
+273,65,Roads,229.14
+273,25,Schools,1
+274,10,Fatality,4
+274,18,Households,392
+274,19,Houses,392
+274,20,Injury,10
+274,22,Males Affected,532
+274,25,Schools,12
+275,10,Fatality,21
+275,18,Households,342
+275,19,Houses,342
+275,20,Injury,11
+275,22,Males Affected,1710
+275,55,Disabled Affected,2
+276,3,Bridges,3
+276,10,Fatality,10
+276,18,Households,217
+276,19,Houses,217
+276,20,Injury,7
+276,22,Males Affected,1090
+276,65,Roads,800.87
+276,25,Schools,35
+277,10,Fatality,10
+277,18,Households,338
+277,19,Houses,338
+277,20,Injury,7
+277,22,Males Affected,2857
+277,25,Schools,12
+278,25,Schools,58
+279,9,Farms,12
+279,66,Crops Damaged,3000
+281,19,Houses,4787
+282,3,Bridges,171
+282,24,Roads,171
+284,39,Halls,
+314,24,Roads,14
+315,19,Houses,54
+315,24,Roads,3
+315,25,Schools,1
+316,5,Clinics,2
+316,19,Houses,100
+316,24,Roads,12
+316,25,Schools,1
+317,19,Houses,19
+317,24,Roads,21
+317,25,Schools,7
+318,5,Clinics,4
+318,19,Houses,216
+318,24,Roads,21
+318,25,SChools,5
+319,24,Roads,15
+320,24,Roads,54
+321,3,Bridges,4
+321,9,Farms,76
+321,18,Households,57
+321,19,Houses,50
+321,24,Roads,6
+322,3,Bridges,1
+322,18,Households,3
+322,19,Houses,3
+322,24,Roads,2
+323,3,Bridges,1
+323,9,Farms,19
+323,24,Roads,3
+324,6,Culverts,1
+324,18,Households,352
+324,19,Houses,24
+324,24,Roads,9
+324,41,Buildings,2
+325,3,Bridges,2
+325,8,Dams,1
+325,18,Households,18
+325,19,Houses,18
+325,24,Roads,9
+325,41,Buildings,1
+326,19,Houses,
+326,24,Roads,1
+327,3,Bridges,
+327,24,Roads,
+328,19,Houses,
+329,24,Roads,11
+330,4,Cattle,172
+330,6,Culverts,6
+330,9,Farms,74
+330,15,Goats,328
+330,24,Roads,6
+330,27,Sheep,21
+330,58,Calves,8
+330,59,Crocodiles,10600
+331,3,Bridges,4
+331,24,Roads,17
+331,24,Roads,5
+332,24,Roads,44
+334,3,Bridges,
+334,9,Farms,
+334,18,Households,662
+334,19,Houses,
+334,41,Buildings,
+338,3,Bridges,
+338,24,Roads,
+339,3,Bridges,
+339,24,Roads,
+339,42,Municipal Infrastructure,
+340,36,Agriculture Infastructure,102
+341,25,Schools,3
+342,19,Houses,311
+344,3,Bridges,19
+344,9,Farms,87
+344,18,Households,284
+344,19,Houses,284
+344,24,Roads,27
+344,25,Schools,18
+345,3,Bridges,7
+345,18,Households,180
+345,19,Houses,180
+345,24,Roads,4
+345,25,Schools,21
+346,3,Bridges,5
+346,18,Households,900
+346,19,Houses,900
+346,24,Roads,7
+346,25,Schools,9
+347,3,Bridges,7
+347,9,Farms,22
+347,18,Households,1069
+347,19,Houses,1069
+347,24,Roads,39
+347,25,Schools,6
+348,9,Farms,109
+349,25,Schools,54
+350,19,Houses,2433
+351,3,Bridges,38
+351,24,Roads,77
+366,57,Livestock Feed,
+367,57,Livestock Feed,
+369,18,Households,33
+370,18,Households,64
+370,52,Health Infrastructure,1
+370,24,Roads,5
+370,6,Culverts,6
+370,19,Houses,64
+371,18,Households,245
+371,25,Schools,
+371,3,Bridges,3
+371,19,Houses,245
+372,18,Households,37
+372,52,Health Infrastructure,1
+372,24,Roads,30
+372,3,Bridges,11
+372,19,Houses,37
+373,18,Households,18
+373,24,Roads,10
+373,19,Houses,18
+374,25,Schools,
+376,18,Households,24
+376,19,Houses,24
+378,18,Households,2
+378,19,Houses,2
+379,18,Households,24
+379,19,Houses,24
+381,25,Schools,
+381,3,Bridges,3
+383,25,Schools,
+384,18,Households,59
+384,25,Schools,23
+384,9,Farms,6
+384,24,Roads,6
+384,3,Bridges,2
+384,6,Culverts,
+384,19,Houses,52
+384,61,Sanitation,62
+385,18,Households,40
+385,25,Schools,5
+385,5,Clinics,3
+385,24,Roads,9
+385,3,Bridges,4
+385,19,Houses,40
+385,61,Sanitation,47
+385,37,Area Damaged,54
+386,18,Households,130
+386,25,Schools,37
+386,5,Clinics,1
+386,9,Farms,12
+386,24,Roads,20
+386,3,Bridges,17
+386,6,Culverts,42
+386,61,Sanitation,24
+386,19,Houses,84
+386,37,Area Damaged,10011
+387,18,Households,74
+387,25,Schools,5
+387,5,Clinics,9
+387,24,Roads,11
+387,3,Bridges,4
+387,6,Culverts,1
+387,9,Farms,11
+387,19,Houses,73
+387,61,Sanitation,119
+387,37,Area Damaged,2435
+388,18,Households,27
+388,3,Bridges,3
+388,65,Roads,2
+388,19,Houses,27
+388,25,Schools,3
+389,19,Houses,248
+390,25,Schools,69
+391,5,Clinics,13
+392,9,Farms,25
+393,24,Roads,10
+393,3,Bridges,12
+393,30,Storm Water Drains,14
+394,18,Households,12
+394,19,Houses,12
+395,25,Schools,3
+396,25,Schools,1
+397,25,Schools,3
+398,25,Schools,2
+399,25,Schools,5
+400,22,Males Affected,2
+401,25,Schools,4
+402,18,Households,124
+402,19,Houses,124
+415,18,Households,1708
+415,19,Houses,1708
+415,9,Farms,1
+415,24,Roads,15
+416,18,Households,42
+416,9,Farms,10
+416,24,Roads,16
+417,18,Households,60
+417,19,Houses,617
+417,9,Farms,34
+417,3,Bridges,1
+417,24,Roads,77
+417,10,Fatality,2
+418,18,Households,1060
+418,19,Houses,1417
+418,9,Farms,618
+418,24,Roads,17
+419,24,Roads,125
+420,19,Houses,3742
+421,9,Farms,64
+444,18,Households,1446
+444,19,Houses,1446
+444,20,Injury,18
+444,22,Males Affected,500
+444,62,Children Affected,1
+444,25,Schools,61
+445,5,Clinics,3
+464,18,Households,329
+464,9,Farms,10
+464,19,Houses,329
+464,24,Roads,3
+464,3,Bridges,2
+464,25,Schools,1
+465,18,Households,7
+465,19,Houses,7
+465,25,Schools,2
+466,25,Schools,1
+467,25,Schools,3
+468,9,Farms,12
+469,25,Schools,3
+470,25,Schools,1
+470,9,Farms,8
+471,18,Households,100
+471,19,Houses,100
+471,25,Schools,3
+472,25,Schools,1
+473,18,Households,507
+473,19,Houses,507
+473,24,Roads,3
+473,30,Storm Water Drains,1
+473,25,Schools,1
+474,9,Farms,12
+475,18,Households,1292
+475,19,Houses,1292
+476,18,Households,16
+476,19,Houses,16
+477,3,Bridges,4
+478,18,Households,54
+478,19,Houses,54
+479,19,Houses,5249
+480,24,Roads,6
+480,3,Bridges,6
+481,25,Schools,16
+482,9,Farms,21
+483,24,Roads,7
+483,30,Storm Water Drains,15
+483,42,Municipal Infrastructure,1
+484,24,Roads,6
+484,9,Farms,2
+485,24,Roads,1
+485,30,Storm Water Drains,9
+486,42,Municipal Infrastructure,1
+487,42,Municipal Infrastructure,1
+487,9,Farms,33
+488,23,Pump Stations,1
+488,32,Water Pipes,2
+488,24,Roads,10
+488,3,Bridges,2
+488,42,Municipal Infrastructure,4
+488,30,Storm Water Drains,1
+488,9,Farms,1
+489,24,Roads,5
+489,30,Storm Water Drains,1
+489,32,Water Pipes,2
+489,9,Farms,18
+491,24,Roads,13
+491,19,Houses,17
+491,42,Municipal Infrastructure,
+491,9,Farms,14
+492,3,Bridges,4
+492,24,Roads,8
+492,9,Farms,4
+493,24,Roads,2
+493,30,Storm Water Drains,1
+493,23,Pump Stations,1
+493,32,Water Pipes,3
+493,9,Farms,37
+494,9,Farms,1
+495,24,Roads,6
+495,25,Schools,1
+495,9,Farms,52
+496,9,Farms,2
+497,25,Schools,21
+499,24,Roads,
+499,3,Bridges,
+500,65,Roads,52
+501,24,Roads,78
+501,3,Bridges,19
+502,24,Roads,107
+502,3,Bridges,9
+503,9,Farms,123
+504,25,Schools,21
+505,19,Houses,17
+507,3,Bridges,
+507,23,Pump Stations,
+509,63,Sewer Pump Stations,
+514,30,Storm Water Drains,29
+514,48,Sewer Pipeline,1
+514,18,Households,1063
+514,22,Males Affected,1168
+515,24,Roads,6
+515,30,Storm Water Drains,10
+515,19,Houses,16
+516,30,Storm Water Drains,7
+516,63,Sewer Pump Stations,1
+516,19,houses,56
+517,24,Roads,58
+517,30,Storm Water Drains,
+517,48,Sewer Pipeline,5
+517,26,Sewer Reticulations,3
+517,19,Houses,766
+518,30,Storm Water Drains,7
+518,24,Roads,3
+518,19,Houses,76

@@ -11,5 +11,7 @@ namespace Database.Models
 
         [Required]
         public string TypeSourceName { get; set; }
+
+        public string TypeSourceSource { get; set; }
     }
 }
