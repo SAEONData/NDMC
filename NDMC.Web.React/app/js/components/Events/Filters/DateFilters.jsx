@@ -1,7 +1,7 @@
 'use strict'
 
 import React from 'react'
-import { Button } from 'mdbreact'
+import { Button, Input, FormInline } from 'mdbreact'
 import { apiBaseURL } from '../../../constants/apiBaseURL'
 import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../constants/action-types'
@@ -44,26 +44,31 @@ class DateFilters extends React.Component {
   }
 
   render() {
-
     let { dateFilter } = this.props
 
     return (
-      <div className="col-md-4">
-        <div className="md-form form-sm">
-          <Button
-            color="primary"
-            size="sm"
-            style={{ height: "35px", marginLeft: "3px", marginTop: "2px", float: "right" }}
-            onTouchTap={this.onTouchTap.bind(this, dateFilter)} >
-            Apply
-           </Button>
-          <div style={{ overflow: "hidden", paddingRight: "5px" }}>
-            <input type="text" style={{ marginTop: "-4px", fontSize: "14px", fontWeight: "300", width: "100%" }}
-              value="test" onChange={this.onChange.bind(this)} />
+      <FormInline>
+        <div className="md-form form-sm row">
+          <div className="col-md-5">
+            <Input className="form-control" label="Start Date"/>
           </div>
+          <div className="col-md-5">
+            <Input className="form-control" label="End Date"/>
+          </div>
+          <div className="col-md-2" style={{ alignItems: "left" }}>
+            <Button
+              color="primary"
+              size="md"
+              style={{ height: "35px", float: "left" }}
+              onTouchTap={() => {}} >
+              Apply
+             </Button>
           </div>
         </div>
-        )
-      }
-    }
+      </FormInline>
+    )
+  }
+}
+
 export default connect(mapStateToProps, mapDispatchToProps)(DateFilters)
+
