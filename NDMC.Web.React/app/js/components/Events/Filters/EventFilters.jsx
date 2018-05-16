@@ -10,19 +10,29 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 //import GeneralFilters from './GeneralFilters.jsx'
 import RegionFilters from './RegionFilters.jsx'
 import HazardFilters from './HazardFilters.jsx'
+import DateFilters from './DateFilters.jsx'
 
 //prettier-ignore
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter, hazardFilter } } = state
+  let { filterData: { regionFilter, hazardFilter, startDateFilter, endDateFilter } } = state
   let { lookupData: { region, hazard } } = state
-  return { regionFilter, region, hazardFilter, hazard }
+  return { regionFilter, region, hazardFilter, hazard, startDateFilter, endDateFilter }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     clearFilters: payload => {
       dispatch({ type: ACTION_TYPES.CLEAR_FILTERS, payload })
-    }
+    },
+    clearRegionFilter: payload => {
+      dispatch({ type: ACTION_TYPES.LOAD_REGION_FILTER, payload: 0 })
+    },
+    clearHazardFilter: payload => {
+      dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload: 0 })
+    },
+    clearDateFilter: payload => {
+      dispatch({ type: ACTION_TYPES.LOAD_DATE_FILTER, payload: 0 })
+    },
   }
 }
 
@@ -31,12 +41,14 @@ class EventFilters extends React.Component {
     super(props)
     this.toggleRegion = this.toggleRegion.bind(this)
     this.toggleHazard = this.toggleHazard.bind(this)
+    this.toggleDate = this.toggleDate.bind(this)
     this.clearFilters = this.clearFilters.bind(this)
     this.renderFilterChips = this.renderFilterChips.bind(this)
 
     this.state = {
       collapseRegion: false,
-      collapsHazzard: false
+      collapsHazzard: false,
+      collapseDate: false
     }
   }
 
@@ -46,6 +58,10 @@ class EventFilters extends React.Component {
 
   toggleHazard() {
     this.setState({ collapseHazard: !this.state.collapseHazard })
+  }
+
+  toggleDate(){
+    this.setState({ collapseDate: !this.state.collapseDate })
   }
 
   getBottonColor(state) {
@@ -63,7 +79,7 @@ class EventFilters extends React.Component {
   }
 
   renderFilterChips() {
-    let { hazardFilter, regionFilter, region, hazard } = this.props
+    let { hazardFilter, regionFilter, region, hazard, startDateFilter, endDateFilter } = this.props
     let filterChips = []
     if (hazardFilter > 0 && hazard.length > 0) {
       filterChips.push(<br key='br' />)
@@ -122,6 +138,11 @@ class EventFilters extends React.Component {
             </Button>
           </div>
           <div className='col-md-3'>
+            <Button block color={this.getBottonColor(this.state.collapseDate)} className='btn-sm' onTouchTap={this.toggleDate}>
+              Date filters
+            </Button>
+          </div>
+          <div className='col-md-3'>
             <Button block color='secondary' className='btn-sm' onTouchTap={this.clearFilters}>
               <i className='fa fa-eraser' aria-hidden='true' />&nbsp;&nbsp;Clear filters
             </Button>
@@ -134,6 +155,10 @@ class EventFilters extends React.Component {
         </Collapse>
         <Collapse isOpen={this.state.collapseHazard}>
           <HazardFilters />
+          <hr />
+        </Collapse>
+        <Collapse isOpen={this.state.collapseDate}>
+          <DateFilters />
           <hr />
         </Collapse>
       </>

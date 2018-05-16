@@ -26,8 +26,7 @@ const store = createStore(
       regionFilter: 0,
       hazardFilter: 0,
       impactTypeFilter: 0,
-      startDateFilter: 0,
-      endDateFilter: 0
+      dateFilter: 0,
     },
     lookupData: {
       region: [],
