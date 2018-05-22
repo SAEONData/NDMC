@@ -92,8 +92,12 @@ class EventList extends React.Component {
     //Clear details data
     clearEventDetails()
 
-    let fetchURL = apiBaseURL + 'api/events/list?startDate=' + startDateFilter + '&endDate=' + endDateFilter + '&eventType=' + hazardFilter +
-      '&impactType=' + impactTypeFilter + '&region=' + regionFilter
+    let fetchURL = `${apiBaseURL}api/events/list?startDate=
+      ${startDateFilter}&endDate=
+      ${endDateFilter}&eventType=
+      ${hazardFilter}&impactType=
+      ${impactTypeFilter}&region=
+      ${regionFilter}`
 
 
     //Get event list data
@@ -138,11 +142,8 @@ class EventList extends React.Component {
 
     //If any filters changed...refetch events
     let filtersChanged = false
-    if (eHazardFilter !== hazardFilter || eRegionFilter !== regionFilter || eImpactTypeFilter !== impactTypeFilter
-      || eStartDateFilter !== startDateFilter
-      || eEndDateFilter !== endDateFilter) {
-
-      // filtersChanged = true
+    if (eHazardFilter !== hazardFilter){
+       filtersChanged = true
     }
 
     //If next batch needed
@@ -179,17 +180,9 @@ class EventList extends React.Component {
   }
 
   render() {
-    const ar = this.buildList()
-    let eventlist = ar
-    // if (ar.length > 0) {
-    //   eventlist = (
-    //     ar.slice(this.props.start, this.props.end)
-    //   )
-    // }
-
     return (
       <div>
-        {eventlist}
+        {this.buildList()}
       </div>
     )
   }

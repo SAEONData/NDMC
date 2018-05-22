@@ -33,7 +33,7 @@ class EventCard extends React.Component {
       <>
         <Card>
           <CardBody>
-            <CardTitle>Event at {this.props.region.RegionName} </CardTitle>
+            <CardTitle>Disaster at {this.props.region.RegionName} </CardTitle>
             <CardText>
               {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br />
               {hazardtype ? `Type: ${hazardtype}` : ' '}

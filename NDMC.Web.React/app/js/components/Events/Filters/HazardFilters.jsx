@@ -39,18 +39,14 @@ const mapDispatchToProps = (dispatch) => {
 class HazardFilters extends React.Component {
   constructor(props) {
     super(props)
-    //Set initial local state
     this.state = {
       value: "Choose Hazard Type"
     }
     this.optionClick = this.optionClick.bind(this)
     this.onClick = this.onClick.bind(this)
     this.otherDropdownsClose = this.otherDropdownsClose.bind(this)
-
-    //Read initial filter from URL
     const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
     if (typeof parsedHash.hazard !== 'undefined') {
-      //Dispatch to store
       let { loadHazardFilter } = this.props
       loadHazardFilter(parsedHash.hazard)
       stripURLParam('hazard=' + parsedHash.hazard)
@@ -66,28 +62,21 @@ class HazardFilters extends React.Component {
     }
   }
 
-  onSelect(selectedKeys, info) {
-    let { loadHazardFilter } = this.props
-    let id = selectedKeys[0]
-    if (typeof id === 'undefined') {
-      id = 0
-    }
-    loadHazardFilter(id)
-  }
-
   optionClick(value) {
-    if (value.constructor === Array) {
-      value = value.join(', ');
+    let { loadHazardFilter, hazardTree } = this.props
+    if (typeof value === 'undefined') {
+      value = 'undefined'
     }
-    this.setState({value: value});
+    this.setState({ value: value })
+    let id = hazardTree.filter(function(hazard){return hazard.TypeEventName === value})
+    loadHazardFilter(id[0].TypeEventId)
   }
 
   onClick(e) {
-    // check if select is multiple
+
     if (e.target.dataset.multiple === 'true') {
       return;
     }
-
     if (e.target.classList.contains('select-dropdown')) {
       this.otherDropdownsClose();
       if (e.target.nextElementSibling) {
@@ -99,12 +88,9 @@ class HazardFilters extends React.Component {
   }
 
   componentDidMount() {
-    //Load event HazardFilters
     let { loadData } = this.props
-
     document.addEventListener('click', this.onClick);
 
-    //fetch all types of hazards/impacts
     fetch(apiBaseURL + 'api/events/eventtypes/', {
       headers: {
         'Content-Type': 'application/json'
@@ -120,29 +106,27 @@ class HazardFilters extends React.Component {
     document.removeEventListener('click', this.onClick);
   }
 
-  buildSelectOptions(data){
+  buildHazardOptions(data) {
     return data.map((item) => {
-      console.log(item.TypeEventId)
-      if (item.TypeEventName){
-        return <SelectOption triggerOptionClick={this.optionClick} value={item.TypeEventId}> {item.TypeEventName}</SelectOption>
+      if (item.TypeEventName) {
+        return <SelectOption triggerOptionClick={this.optionClick}>{item.TypeEventName}</SelectOption>
       }
       return
     })
   }
 
   render() {
-     let { hazard, hazardTree, hazardFilter } = this.props
-//     console.log(hazardTree)
+    let { hazard, hazardTree, hazardFilter } = this.props
     return (
       <>
         <div className="row">
-        <div className="col-md-4">
-          <Select>
-            <SelectInput value={this.state.value}></SelectInput>
-            <SelectOptions>
-              {this.buildSelectOptions(hazardTree)}
-            </SelectOptions>
-          </Select>
+          <div className="col-md-4">
+            <Select>
+              <SelectInput value={this.state.value}></SelectInput>
+              <SelectOptions>
+                {this.buildHazardOptions(hazardTree)}
+              </SelectOptions>
+            </Select>
           </div>
         </div>
       </>

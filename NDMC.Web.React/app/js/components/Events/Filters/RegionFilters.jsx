@@ -60,17 +60,7 @@ class RegionFilters extends React.Component {
   componentDidMount() {
     //Load data
     let { loadData, loadRegions } = this.props
-    fetch(apiBaseURL + 'api/region/GetAllTree', {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => res.json())
-      .then(res => {
-        loadData(res)
-      })
-
-    fetch(apiBaseURL + 'api/region/GetAll/', {
+    fetch(apiBaseURL + 'api/events/regions', {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -134,15 +124,40 @@ class RegionFilters extends React.Component {
     this.setState({ expandedKeys: expandedKeys })
   }
 
+  transformDataTree(effectiveData, globalData, level = 0) {
+    let treeNodes = []
+    let parentIdKey = "Parent" + Object.keys(effectiveData[0])[0].toString()
+    if (typeof globalData === 'undefined') {
+      globalData = effectiveData
+    }
+    if (level === 0) {
+      effectiveData = effectiveData.filter(x => x[parentIdKey] === null)
+    }
+    effectiveData.map(item => {
+      let newTreeNode = {
+        id: item[Object.keys(item)[0]],
+        text: item[Object.keys(item)[1]],
+        modifiedState: item.modifiedState
+      }
+      let children = globalData.filter(x => x[parentIdKey] == newTreeNode.id)
+      if (children.length > 0) {
+        newTreeNode.children = this.transformDataTree(children, globalData, (level + 1))
+      }
+      treeNodes.push(newTreeNode)
+    })
+    return treeNodes
+  }
+
   render() {
     let { region, regionTree, regionFilter } = this.props
     let { expandedKeys } = this.state
     let selectedValue = 'All'
-    let treeData = typeof regionTree.dataSource === 'undefined' ? [] : regionTree.dataSource
+    let treeData = typeof regionTree.dataSource === 'undefined' ? [] : this.transformDataTree(regionTree.dataSource)
     if (regionFilter > 0 && region.length > 0) {
       selectedValue = region.filter(x => x.RegionId === parseInt(regionFilter))[0].RegionName
     }
     let uiconf = UILookup('treeRegionFilter', 'Region filter:')
+
     return (
       <>
         <div className='row'>
@@ -168,6 +183,7 @@ class RegionFilters extends React.Component {
           defaultSelectedKeys={[regionFilter.toString()]}
           defaultExpandedKeys={[...expandedKeys, ...this.getParentKeys(regionFilter, region), regionFilter.toString()]}
           onExpand={this.onExpand}
+          treeData={treeData}
         >
           {this.renderTreeNodes(treeData)}
         </Tree>
