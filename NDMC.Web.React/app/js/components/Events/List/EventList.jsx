@@ -170,7 +170,7 @@ class EventList extends React.Component {
         } else {
           startdate = startdate.toDateString()
         }
-        if (i.EventType !== ' ' && startdate) {
+        if (i.EventType !== ' ' && startdate && !i.Regions[0].RegionName.includes("Ward")) {
           ar.push(<EventCard key={i.EventId} eid={i.EventId} region={i.Regions[0]} startdate={startdate} enddate={enddate.toDateString()} hazardtype={i.EventType} />)
         }
       }
