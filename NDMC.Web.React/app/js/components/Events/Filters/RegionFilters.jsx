@@ -17,16 +17,13 @@ const TreeNode = Tree.TreeNode
 const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
-  let { lookupData: { regionTree, region } } = state
+  let { lookupData: { region } } = state
   let { filterData: { regionFilter } } = state
-  return { regionTree, regionFilter, region }
+  return { regionFilter, region }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loadData: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_REGION_TREE, payload })
-    },
     loadRegionFilter: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_REGION_FILTER, payload })
     },
@@ -59,7 +56,7 @@ class RegionFilters extends React.Component {
 
   componentDidMount() {
     //Load data
-    let { loadData, loadRegions } = this.props
+    let { loadRegions } = this.props
     fetch(apiBaseURL + 'api/events/regions', {
       headers: {
         'Content-Type': 'application/json'
@@ -69,17 +66,6 @@ class RegionFilters extends React.Component {
       .then(res => {
         loadRegions(res)
       })
-  }
-
-  expandAllNodes() {
-    let expandedKeys = []
-    let { region } = this.props
-    region.map(x => expandedKeys.push(x.RegionId.toString()))
-    this.setState({ expandedKeys: expandedKeys })
-  }
-
-  collapseAllNodes() {
-    this.setState({ expandedKeys: [] })
   }
 
   renderTreeNodes(data) {
@@ -120,6 +106,17 @@ class RegionFilters extends React.Component {
     return parentKeys
   }
 
+  expandAllNodes() {
+    let expandedKeys = []
+    let { region } = this.props
+    region.map(x => expandedKeys.push(x.RegionId.toString()))
+    this.setState({ expandedKeys: expandedKeys })
+  }
+
+  collapseAllNodes() {
+    this.setState({ expandedKeys: [] })
+  }
+
   onExpand(expandedKeys) {
     this.setState({ expandedKeys: expandedKeys })
   }
@@ -135,8 +132,8 @@ class RegionFilters extends React.Component {
     }
     effectiveData.map(item => {
       let newTreeNode = {
-        id: item[Object.keys(item)[0]],
-        text: item[Object.keys(item)[1]],
+        id: item[Object.keys(item)[1]],
+        text: item[Object.keys(item)[2]],
         modifiedState: item.modifiedState
       }
       let children = globalData.filter(x => x[parentIdKey] == newTreeNode.id)
@@ -149,10 +146,21 @@ class RegionFilters extends React.Component {
   }
 
   render() {
-    let { region, regionTree, regionFilter } = this.props
+    let { region, regionFilter } = this.props
     let { expandedKeys } = this.state
     let selectedValue = 'All'
-    let treeData = typeof regionTree.dataSource === 'undefined' ? [] : this.transformDataTree(regionTree.dataSource)
+
+    let treeData
+    let filteredRegions = region.filter(function (item) {
+      return !item.RegionName.includes('Ward')
+    }
+    )
+    console.log(filteredRegions)
+    if (region.length > 1) {
+      treeData = this.transformDataTree(filteredRegions)
+    }
+    console.log(treeData)
+
     if (regionFilter > 0 && region.length > 0) {
       selectedValue = region.filter(x => x.RegionId === parseInt(regionFilter))[0].RegionName
     }
@@ -183,9 +191,8 @@ class RegionFilters extends React.Component {
           defaultSelectedKeys={[regionFilter.toString()]}
           defaultExpandedKeys={[...expandedKeys, ...this.getParentKeys(regionFilter, region), regionFilter.toString()]}
           onExpand={this.onExpand}
-          treeData={treeData}
         >
-          {this.renderTreeNodes(treeData)}
+          {treeData === undefined ? [] : this.renderTreeNodes(treeData)}
         </Tree>
         <ReactTooltip />
       </>
