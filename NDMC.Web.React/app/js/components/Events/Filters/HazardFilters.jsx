@@ -1,7 +1,7 @@
 'use strict'
 
 import React from 'react'
-import { Button } from 'mdbreact'
+import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 import { apiBaseURL } from '../../../constants/apiBaseURL'
 import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../constants/action-types'
@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch) => {
     loadHazardFilter: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload })
     },
-    loadHazardType: payload => {
+    loadHazardTypes: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_HAZARD_TYPE, payload })
     }
   }
@@ -39,13 +39,13 @@ const mapDispatchToProps = (dispatch) => {
 class HazardFilters extends React.Component {
   constructor(props) {
     super(props)
-    this.expandAllNodes = this.expandAllNodes.bind(this)
-    this.collapseAllNodes = this.collapseAllNodes.bind(this)
-    this.onSelect = this.onSelect.bind(this)
-    this.onExpand = this.onExpand.bind(this)
-
-    //Set initial local
-    this.state = { expandedKeys: [] }
+    //Set initial local state
+    this.state = {
+      value: "Choose Hazard Type"
+    }
+    this.optionClick = this.optionClick.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.otherDropdownsClose = this.otherDropdownsClose.bind(this);
 
     //Read initial filter from URL
     const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
@@ -57,52 +57,13 @@ class HazardFilters extends React.Component {
     }
   }
 
-  componentDidMount() {
-    //Load data
-    let { loadData, loadHazards } = this.props
-    fetch(apiBaseURL + 'api/Hazard/GetAllTree', {
-      headers: {
-        'Content-Type': 'application/json'
+  otherDropdownsClose() {
+    let dropdowns = document.querySelectorAll('.dropdown-content');
+    for (let i = 0; i < dropdowns.length; i++) {
+      if (dropdowns[i].classList.contains('fadeIn')) {
+        dropdowns[i].classList.remove('fadeIn');
       }
-    })
-      .then(res => res.json())
-      .then(res => {
-        loadData(res)
-      })
-
-    fetch(apiBaseURL + 'api/Hazard/GetAll/', {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => res.json())
-      .then(res => {
-        loadHazards(res)
-      })
-  }
-
-  expandAllNodes() {
-    let expandedKeys = []
-    let { hazard } = this.props
-    hazard.map(x => expandedKeys.push(x.HazardID.toString()))
-    this.setState({ expandedKeys: expandedKeys })
-  }
-
-  collapseAllNodes() {
-    this.setState({ expandedKeys: [] })
-  }
-
-  renderTreeNodes(data) {
-    return data.map((item) => {
-      if (item.children) {
-        return (
-          <TreeNode title={(item.modifiedState === true ? '* ' : '') + item.text} key={item.id} dataRef={item}>
-            {this.renderTreeNodes(item.children)}
-          </TreeNode>
-        )
-      }
-      return <TreeNode title={(item.modifiedState === true ? '* ' : '') + item.text} key={item.id} />
-    })
+    }
   }
 
   onSelect(selectedKeys, info) {
@@ -114,63 +75,66 @@ class HazardFilters extends React.Component {
     loadHazardFilter(id)
   }
 
-  getParentKeys(id, data) {
-    let parentKeys = []
-    if (data.length > 0 && id > 0) {
-      let idKey = Object.keys(data[0])[0].toString()
-      let parentIdKey = 'Parent' + idKey
-      let selectedItem = data.filter(x => x[idKey] == id)[0]
-      if (selectedItem[parentIdKey] !== null) {
-        let parentId = selectedItem[parentIdKey].toString()
-        parentKeys.push(parentId)
-        parentKeys.push(...this.getParentKeys(parentId, data))
-      }
+  optionClick(value) {
+    if (value.constructor === Array) {
+      value = value.join(', ');
     }
-    return parentKeys
+    this.setState({value: value});
   }
 
-  onExpand(expandedKeys) {
-    this.setState({ expandedKeys: expandedKeys })
+  onClick(e) {
+    // check if select is multiple
+    if (e.target.dataset.multiple === 'true') {
+      return;
+    }
+
+    if (e.target.classList.contains('select-dropdown')) {
+      this.otherDropdownsClose();
+      if (e.target.nextElementSibling) {
+        e.target.nextElementSibling.classList.add('fadeIn');
+      }
+    } else {
+      this.otherDropdownsClose();
+    }
+  }
+
+  componentDidMount() {
+    //Load event HazardFilters
+    let { loadData, loadHazards } = this.props
+
+    document.addEventListener('click', this.onClick);
+
+    //fetch all types of hazards/impacts
+    fetch(apiBaseURL + 'api/events/eventtypes/', {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        loadHazards(res)
+      })
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.onClick);
   }
 
   render() {
-    let { hazard, hazardTree, hazardFilter } = this.props
-    let { expandedKeys } = this.state
-    let selectedValue = 'All'
-    let treeData = typeof hazardTree.dataSource === 'undefined' ? [] : hazardTree.dataSource
-    if (hazardFilter > 0 && hazard.length > 0) {
-      selectedValue = hazard.filter(x => x.HazardId === parseInt(hazardFilter))[0].HazardName
-    }
-    let uiconf = UILookup('treeHazardFilter', 'Hazard filter:')
+    // let { hazard, hazardTree, hazardFilter } = this.props
     return (
       <>
-        <div className='row'>
-          <div className='col-md-12'>
-            <label data-tip={uiconf.tooltip} style={{ fontSize: 'large' }}>{uiconf.label}&nbsp;&nbsp;</label>
-            <label data-tip={uiconf.tooltip2} style={{ fontSize: 'large', fontWeight: 'bold' }}>{selectedValue}</label>
-          </div>
+        <div className="row">
+          <Select>
+            <SelectInput value={this.state.value}></SelectInput>
+            <SelectOptions>
+              <SelectOption disabled>Choose your option</SelectOption>
+              <SelectOption triggerOptionClick={this.optionClick}>Option nr 1</SelectOption>
+              <SelectOption triggerOptionClick={this.optionClick}>Option nr 2</SelectOption>
+              <SelectOption triggerOptionClick={this.optionClick}>Option nr 3</SelectOption>
+            </SelectOptions>
+          </Select>
         </div>
-        <div className='row'>
-          <div className='col-md-12'>
-            <Button color='secondary' size='sm' id='btnHazardTreeExpandAll' style={{ marginLeft: '0px' }} onTouchTap={this.expandAllNodes} >
-              <i className='fa fa-plus-circle' aria-hidden='true'></i>&nbsp;&nbsp;Expand all
-                        </Button>
-            <Button color='secondary' size='sm' id='btnHazardTreeCollapseAll' onTouchTap={this.collapseAllNodes}>
-              <i className='fa fa-minus-circle' aria-hidden='true'></i>&nbsp;&nbsp;Collapse all
-                        </Button>
-          </div>
-        </div>
-        <br />
-        <Tree key={GetUID()}
-          autoExpandParent
-          onSelect={this.onSelect}
-          defaultSelectedKeys={[hazardFilter.toString()]}
-          defaultExpandedKeys={[...expandedKeys, ...this.getParentKeys(hazardFilter, hazard), hazardFilter.toString()]}
-          onExpand={this.onExpand}
-        >
-          {this.renderTreeNodes(treeData)}
-        </Tree>
-        <ReactTooltip />
       </>
     )
   }
