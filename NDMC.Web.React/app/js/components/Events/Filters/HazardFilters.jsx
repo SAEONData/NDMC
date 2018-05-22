@@ -43,9 +43,9 @@ class HazardFilters extends React.Component {
     this.state = {
       value: "Choose Hazard Type"
     }
-    this.optionClick = this.optionClick.bind(this);
-    this.onClick = this.onClick.bind(this);
-    this.otherDropdownsClose = this.otherDropdownsClose.bind(this);
+    this.optionClick = this.optionClick.bind(this)
+    this.onClick = this.onClick.bind(this)
+    this.otherDropdownsClose = this.otherDropdownsClose.bind(this)
 
     //Read initial filter from URL
     const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
@@ -100,7 +100,7 @@ class HazardFilters extends React.Component {
 
   componentDidMount() {
     //Load event HazardFilters
-    let { loadData, loadHazards } = this.props
+    let { loadData } = this.props
 
     document.addEventListener('click', this.onClick);
 
@@ -112,7 +112,7 @@ class HazardFilters extends React.Component {
     })
       .then(res => res.json())
       .then(res => {
-        loadHazards(res)
+        loadData(res)
       })
   }
 
@@ -120,20 +120,30 @@ class HazardFilters extends React.Component {
     document.removeEventListener('click', this.onClick);
   }
 
+  buildSelectOptions(data){
+    return data.map((item) => {
+      console.log(item.TypeEventId)
+      if (item.TypeEventName){
+        return <SelectOption triggerOptionClick={this.optionClick} value={item.TypeEventId}> {item.TypeEventName}</SelectOption>
+      }
+      return
+    })
+  }
+
   render() {
-    // let { hazard, hazardTree, hazardFilter } = this.props
+     let { hazard, hazardTree, hazardFilter } = this.props
+//     console.log(hazardTree)
     return (
       <>
         <div className="row">
+        <div className="col-md-4">
           <Select>
             <SelectInput value={this.state.value}></SelectInput>
             <SelectOptions>
-              <SelectOption disabled>Choose your option</SelectOption>
-              <SelectOption triggerOptionClick={this.optionClick}>Option nr 1</SelectOption>
-              <SelectOption triggerOptionClick={this.optionClick}>Option nr 2</SelectOption>
-              <SelectOption triggerOptionClick={this.optionClick}>Option nr 3</SelectOption>
+              {this.buildSelectOptions(hazardTree)}
             </SelectOptions>
           </Select>
+          </div>
         </div>
       </>
     )
