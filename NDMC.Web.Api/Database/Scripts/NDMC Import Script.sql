@@ -251,7 +251,7 @@ BEGIN
 		[NDMC_ImportData].[dbo].[Normalized Declared Disasters - EventRegion] ER
 	INNER JOIN
 		[NDMC_ImportData].[dbo].[Normalized Declared Disasters - Region] R
-		ON R.ID_Region = ER.EventRegionID
+		ON R.ID_Region = ER.RegionID
 	INNER JOIN
 		[NDMC_TEST].[dbo].[Regions] R2
 		ON R2.RegionName = R.Region
