@@ -21,14 +21,6 @@ class EventDetailsTab extends React.Component {
     super(props)
   }
 
-  // buildImpactList(e){
-  //     const { events } = this.props
-  //     let impactstring = ''
-  //     for(let i in events){
-  //         impactstring += i.ImpactType + i.measure? `: ${i.Measure}\n`: `\n` +
-  //     }
-  // }
-
   render() {
     const { eventDetails, eventDetails: { Regions, EventType, StartDate, EndDate, DeclaredDate, EventsImpacts } } = this.props
 
