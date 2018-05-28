@@ -8,9 +8,9 @@ import { apiBaseURL } from '../../../constants/apiBaseURL'
 
 const mapStateToProps = (state, props) => {
   let { eventData: { events, start, end, listScrollPos } } = state
-  let { filterData: { hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter } } = state
+  let { filterData: { hazardFilter, regionFilter, startDateFilter, endDateFilter, impactFilter } } = state
   return {
-    events, hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter, start, end, listScrollPos
+    events, hazardFilter, regionFilter, startDateFilter, endDateFilter, impactFilter, start, end, listScrollPos
   }
 }
 
@@ -69,7 +69,7 @@ class EventList extends React.Component {
 
   getEventList(resetCounts) {
 
-    let { loadEvents, setLoading, hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end, resetEventCounts, clearEventDetails } = this.props
+    let { loadEvents, setLoading, hazardFilter, regionFilter, impactFilter, startDateFilter, endDateFilter, start, end, resetEventCounts, clearEventDetails } = this.props
 
     if (resetCounts === true) {
       start = 0
@@ -78,9 +78,9 @@ class EventList extends React.Component {
     }
 
     this.setState({
-      hazardFilter: hazardFilter,
+      hazardFilter,
       regionFilter: regionFilter,
-      impactTypeFilter: impactTypeFilter,
+      impactFilter: impactFilter,
       startDateFilter: startDateFilter,
       endDateFilter: endDateFilter,
       start: start,
@@ -96,7 +96,7 @@ class EventList extends React.Component {
       ${startDateFilter}&endDate=
       ${endDateFilter}&eventType=
       ${hazardFilter}&impactType=
-      ${impactTypeFilter}&region=
+      ${impactFilter}&region=
       ${regionFilter}`
 
 
@@ -132,16 +132,16 @@ class EventList extends React.Component {
   componentDidUpdate() {
     let eHazardFilter = this.props.hazardFilter
     let eRegionFilter = this.props.regionFilter
-    let eImpactTypeFilter = this.props.impactTypeFilter
+    let eImpactFilter = this.props.impactFilter
     let eStartDateFilter = this.props.startDateFilter
     let eEndDateFilter = this.props.endDateFilter
     let eStart = this.props.start
     let eEnd = this.props.end
-    let { hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end } = this.state
+    let { hazardFilter, regionFilter, impactFilter, startDateFilter, endDateFilter, start, end } = this.state
 
     //If any filters changed...refetch events
     let filtersChanged = false
-    if (eHazardFilter !== hazardFilter || eRegionFilter !== regionFilter){
+    if (eHazardFilter !== hazardFilter || eRegionFilter !== regionFilter || eImpactFilter !== impactFilter){
        filtersChanged = true
     }
 

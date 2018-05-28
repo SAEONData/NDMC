@@ -2,16 +2,26 @@
 
 import React from 'react'
 import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
-import { apiBaseURL } from '../../../constants/apiBaseURL'
-import { connect } from 'react-redux'
-import * as ACTION_TYPES from '../../../constants/action-types'
+
+//React
 import ReactTooltip from 'react-tooltip'
+import { connect } from 'react-redux'
+
+//Local Imports
+import { apiBaseURL } from '../../../constants/apiBaseURL'
+import * as ACTION_TYPES from '../../../constants/action-types'
 import { UILookup } from '../../../constants/ui_config'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
+//GraphQL
+import { graphql } from 'graphql'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
+
 //AntD Tree
 import Tree from 'antd/lib/tree'
-import '../../../../css/antd.tree.css' //Overrides default antd.tree css
+import '../../../../css/antd.tree.css'
+
 const TreeNode = Tree.TreeNode
 
 const queryString = require('query-string')
@@ -58,14 +68,14 @@ class impactFilters extends React.Component {
     }
   }
 
-  optionClick(value) {
+  optionClick(value, id) {
     let { loadImpactFilter, impacts } = this.props
     if (typeof value === 'undefined') {
       value = 'undefined'
     }
-    this.setState({ value: value })
-    let id = impacts.filter(function(impact){return impact.TypeEventName === value})
-    loadImpactFilter(id[0].TypeEventId)
+    console.log(id)
+    this.setState({ value })
+    loadImpactFilter(id)
   }
 
   onClick(e) {
@@ -84,35 +94,23 @@ class impactFilters extends React.Component {
   }
 
   componentDidMount() {
-    let { loadData } = this.props
+    let { loadImpacts } = this.props
     document.addEventListener('click', this.onClick);
-
-    fetch(apiBaseURL + 'api/events/impacttypes/', {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => res.json())
-      .then(res => {
-        loadData(res)
-      })
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.onClick);
   }
 
-  buildImpactOptions(data) {
-    return data.map((item,index) => {
-      if (item.TypeEventName) {
-        return <SelectOption triggerOptionClick={this.optionClick} key={index}>{item.TypeEventName}</SelectOption>
-      }
-      return
-    })
-  }
-
   render() {
     let { impact, impacts } = this.props
+    const query = gql`
+    {
+      TypeImpacts {
+        typeImpactId
+        typeImpactName
+      }
+    }`
     return (
       <>
         <div className="row">
@@ -120,7 +118,19 @@ class impactFilters extends React.Component {
             <Select>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
-                {this.buildImpactOptions(impacts)}
+                {/* {this.buildImpactOptions(impacts)} */}
+                { <Query query={query}>
+                  { ({loading, error, data}) => {
+                      if(loading) return <p>Loading...</p>
+                      if(error) return <p>Erroring...</p>
+                      console.log(data)
+                      return data.TypeImpacts.map(item => {
+                          return <SelectOption triggerOptionClick={(e) => this.optionClick(e, item.typeImpactId)} key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
+                      })
+                    }
+                  }
+                  </Query>
+                }
               </SelectOptions>
             </Select>
           </div>

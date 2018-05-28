@@ -25,6 +25,13 @@ import Graphs from './components/Events/Graphs/EventGraph.jsx'
 import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 
+import ApolloClient from "apollo-boost"
+import { ApolloProvider } from "react-apollo"
+
+const client = new ApolloClient({
+  uri: "http://app01.saeon.ac.za/ndmcapi/api/GraphQL/Request"
+})
+
 /**
  * Tap Event
  * @ignore
@@ -73,8 +80,10 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <ApolloProvider client={client}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </ApolloProvider>,
   document.getElementById('app')
 )

@@ -76,6 +76,12 @@ module.exports = {
         'file-loader'
       ]
     },
+    {
+      //For Graphql imports
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: "javascript/auto",
+    }
     ]
   },
 
