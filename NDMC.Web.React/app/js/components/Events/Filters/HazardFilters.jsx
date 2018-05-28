@@ -107,9 +107,9 @@ class HazardFilters extends React.Component {
   }
 
   buildHazardOptions(data) {
-    return data.map((item) => {
+    return data.map((item,index) => {
       if (item.TypeEventName) {
-        return <SelectOption triggerOptionClick={this.optionClick}>{item.TypeEventName}</SelectOption>
+        return <SelectOption triggerOptionClick={this.optionClick} key={index}>{item.TypeEventName}</SelectOption>
       }
       return
     })
