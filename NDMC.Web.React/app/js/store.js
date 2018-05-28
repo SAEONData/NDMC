@@ -25,7 +25,7 @@ const store = createStore(
     filterData: {
       regionFilter: 0,
       hazardFilter: 0,
-      impactTypeFilter: 0,
+      impactFilter: 0,
       dateFilter: 0,
     },
     lookupData: {
@@ -33,8 +33,8 @@ const store = createStore(
       regionTree: [],
       hazard: [],
       hazardTree: [],
-      impacts: [],
-      impactTypeFilter: []
+      impact: [],
+      impacts: []
     }
 
   }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
