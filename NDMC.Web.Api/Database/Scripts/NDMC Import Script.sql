@@ -41,8 +41,8 @@ BEGIN
 			TypeSourceId
 		)
 	SELECT
-		EV1.[StartDate],
-		EV1.[EndDate],
+		DATEDIFF(second,{d '1970-01-01'},EV1.[StartDate]),
+		DATEDIFF(second,{d '1970-01-01'},EV1.[EndDate]),
 		EV1.[Location],
 		(SELECT TE.TypeEventId FROM [NDMC_TEST].[dbo].[TypeEvents] TE WHERE TE.TypeEventName = EV1.TypeEvent) as TypeEventId,
 		EV1.TypeSource AS TypeSourceId
@@ -61,7 +61,7 @@ BEGIN
 		)
 	SELECT
 		DE.ID_Event,
-		DE.DeclaredDate
+		DATEDIFF(second,{d '1970-01-01'},DE.DeclaredDate)
 	FROM
 		[NDMC_ImportData].[dbo].[Normalized Declared Disasters - DeclaredEvent] DE
 END
@@ -251,7 +251,7 @@ BEGIN
 		[NDMC_ImportData].[dbo].[Normalized Declared Disasters - EventRegion] ER
 	INNER JOIN
 		[NDMC_ImportData].[dbo].[Normalized Declared Disasters - Region] R
-		ON R.ID_Region = ER.EventRegionID
+		ON R.ID_Region = ER.RegionID
 	INNER JOIN
 		[NDMC_TEST].[dbo].[Regions] R2
 		ON R2.RegionName = R.Region

@@ -10,9 +10,9 @@ namespace Database.Models
     {
         public int EventId { get; set; }
 
-        public DateTime? StartDate { get; set; }
+        public long? StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        public long? EndDate { get; set; }
 
         public string Location_WKT { get; set; }
 
@@ -25,5 +25,9 @@ namespace Database.Models
         public int? TypeSourceId { get; set; }
         [IgnoreDataMember]
         public TypeSource TypeSource { get; set; }
+
+        public ICollection<EventImpact> EventImpacts { get; set; }
+        public ICollection<EventRegion> EventRegions { get; set; }
+        public ICollection<DeclaredEvent> DeclaredEvents { get; set; }
     }
 }
