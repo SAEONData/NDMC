@@ -34,7 +34,7 @@ namespace API.Controllers
         public List<EventDetailsViewModel> List(string startDate = "", string endDate = "", string eventType = "", string impactType = "", 
             string region = "", int batchSize = 0, int batchCount = 0)
         {
-            return _logic.List(startDate, endDate, eventType, impactType, region, batchSize, batchCount);
+            return _logic.List(0, startDate, endDate, eventType, impactType, region, batchSize, batchCount);
         }
 
         /// <summary>

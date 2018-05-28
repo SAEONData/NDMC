@@ -10,7 +10,7 @@ namespace Database.Models
     {
         public int MitigationId { get; set; }
 
-        public DateTime? Date { get; set; }
+        public long? Date { get; set; }
 
         public double? Value { get; set; }
 
