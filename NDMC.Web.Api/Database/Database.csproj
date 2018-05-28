@@ -49,72 +49,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contexts\SQLDBContext.cs" />
-    <Compile Include="Migrations\201805041239151_InitialCreate.cs" />
-    <Compile Include="Migrations\201805041239151_InitialCreate.Designer.cs">
-      <DependentUpon>201805041239151_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805041336579_RemovedParentRequirements.cs" />
-    <Compile Include="Migrations\201805041336579_RemovedParentRequirements.Designer.cs">
-      <DependentUpon>201805041336579_RemovedParentRequirements.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805041925364_UpdatedColumns.cs" />
-    <Compile Include="Migrations\201805041925364_UpdatedColumns.Designer.cs">
-      <DependentUpon>201805041925364_UpdatedColumns.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805042047110_RestructuredDatabase.cs" />
-    <Compile Include="Migrations\201805042047110_RestructuredDatabase.Designer.cs">
-      <DependentUpon>201805042047110_RestructuredDatabase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805042057542_AlteredEventModel.cs" />
-    <Compile Include="Migrations\201805042057542_AlteredEventModel.Designer.cs">
-      <DependentUpon>201805042057542_AlteredEventModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805042059301_AlteredEventModel2.cs" />
-    <Compile Include="Migrations\201805042059301_AlteredEventModel2.Designer.cs">
-      <DependentUpon>201805042059301_AlteredEventModel2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805060641138_AlteredDeclaredEvent.cs" />
-    <Compile Include="Migrations\201805060641138_AlteredDeclaredEvent.Designer.cs">
-      <DependentUpon>201805060641138_AlteredDeclaredEvent.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805060654303_AlteredMitigation.cs" />
-    <Compile Include="Migrations\201805060654303_AlteredMitigation.Designer.cs">
-      <DependentUpon>201805060654303_AlteredMitigation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805061017094_FixedFKIssues.cs" />
-    <Compile Include="Migrations\201805061017094_FixedFKIssues.Designer.cs">
-      <DependentUpon>201805061017094_FixedFKIssues.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805061100502_AlteredEventImpact.cs" />
-    <Compile Include="Migrations\201805061100502_AlteredEventImpact.Designer.cs">
-      <DependentUpon>201805061100502_AlteredEventImpact.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805061110579_AlteredRegionTebles.cs" />
-    <Compile Include="Migrations\201805061110579_AlteredRegionTebles.Designer.cs">
-      <DependentUpon>201805061110579_AlteredRegionTebles.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805111302046_Altered TypeSource.cs" />
-    <Compile Include="Migrations\201805111302046_Altered TypeSource.Designer.cs">
-      <DependentUpon>201805111302046_Altered TypeSource.cs</DependentUpon>
+    <Compile Include="Migrations\201805241839421_InitialCreateV2.cs" />
+    <Compile Include="Migrations\201805241839421_InitialCreateV2.Designer.cs">
+      <DependentUpon>201805241839421_InitialCreateV2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\EventRegion.cs" />
     <Compile Include="Models\Region.cs" />
-    <Compile Include="Models\Declaration.cs" />
-    <Compile Include="Models\DeclarationRegion.cs" />
     <Compile Include="Models\DeclaredEvent.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventImpact.cs" />
     <Compile Include="Models\Mitigation.cs" />
     <Compile Include="Models\RegionType.cs" />
-    <Compile Include="Models\Stakeholder.cs" />
     <Compile Include="Models\TypeEvent.cs" />
     <Compile Include="Models\TypeImpact.cs" />
     <Compile Include="Models\TypeMitigation.cs" />
-    <Compile Include="Models\TypePressure.cs" />
     <Compile Include="Models\TypeSource.cs" />
-    <Compile Include="Models\TypeStock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -135,41 +86,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805041239151_InitialCreate.resx">
-      <DependentUpon>201805041239151_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805041336579_RemovedParentRequirements.resx">
-      <DependentUpon>201805041336579_RemovedParentRequirements.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805041925364_UpdatedColumns.resx">
-      <DependentUpon>201805041925364_UpdatedColumns.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805042047110_RestructuredDatabase.resx">
-      <DependentUpon>201805042047110_RestructuredDatabase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805042057542_AlteredEventModel.resx">
-      <DependentUpon>201805042057542_AlteredEventModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805042059301_AlteredEventModel2.resx">
-      <DependentUpon>201805042059301_AlteredEventModel2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805060641138_AlteredDeclaredEvent.resx">
-      <DependentUpon>201805060641138_AlteredDeclaredEvent.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805060654303_AlteredMitigation.resx">
-      <DependentUpon>201805060654303_AlteredMitigation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805061017094_FixedFKIssues.resx">
-      <DependentUpon>201805061017094_FixedFKIssues.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805061100502_AlteredEventImpact.resx">
-      <DependentUpon>201805061100502_AlteredEventImpact.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805061110579_AlteredRegionTebles.resx">
-      <DependentUpon>201805061110579_AlteredRegionTebles.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805111302046_Altered TypeSource.resx">
-      <DependentUpon>201805111302046_Altered TypeSource.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201805241839421_InitialCreateV2.resx">
+      <DependentUpon>201805241839421_InitialCreateV2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

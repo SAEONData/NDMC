@@ -1,10 +1,14 @@
-﻿using API.Models;
+﻿using API.Controllers;
+using API.Models;
 using API.ViewModels;
 using Database.Contexts;
 using Database.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using System.Web;
 
 namespace API.ControllerLogic
@@ -14,9 +18,11 @@ namespace API.ControllerLogic
         /// <summary>
         /// Get Events filtered by date, type and impact
         /// </summary>
-        public List<EventDetailsViewModel> List(string startDate = "", string endDate = "", string eventType = "", string impactType = "",
-            string region = "", int batchSize = 0, int batchCount = 0)
+        public List<EventDetailsViewModel> List(int eventId, string startDate, string endDate, string eventType, string impactType,
+            string region, int batchSize, int batchCount)
         {
+            var result = new List<EventDetailsViewModel>();
+
             //Convert params
             DateTime.TryParse(startDate, out DateTime parsedStartDate);
             DateTime.TryParse(endDate, out DateTime parsedEndDate);
@@ -24,89 +30,150 @@ namespace API.ControllerLogic
             int.TryParse(impactType, out int parsedImpactType);
             int.TryParse(region, out int parsedRegion);
 
-            var result = new List<EventDetailsViewModel>();
+            //Parse dates to Unix format
+            long unixStartDate = 0;
+            long unixEndDate = 0;
 
-            using (var context = new SQLDBContext())
+            if (parsedStartDate != DateTime.MinValue)
             {
-                if (batchSize <= 0)
+                unixStartDate = new DateTimeOffset(parsedStartDate).ToUnixTimeSeconds();
+            }
+
+            if (parsedEndDate != DateTime.MinValue)
+            {
+                unixEndDate = new DateTimeOffset(parsedEndDate).ToUnixTimeSeconds();
+            }
+
+            //Query GQL
+            var gql = new GraphQLController();
+            var data = gql.Request(new GraphQLRequest()
+            {
+                query = "{" +
+                $"  Events(eventId: {eventId} startDate: {unixStartDate}, endDate: {unixEndDate}, eventType: {parsedEventType}, impactType: {parsedImpactType}, region: {parsedRegion}, batchSize: {batchSize}, batchCount: {batchCount})" + " {" +
+                "    eventId" +
+                "    startDate" +
+                "    endDate" +
+                "    declaredEvents {" +
+                "      declaredDate" +
+                "    }" +
+                "    location_WKT" +
+                "    typeEvent{" +
+                "      typeEventName" +
+                "    }" +
+                "    eventImpacts{" +
+                "      typeImpact{" +
+                "        typeImpactName" +
+                "        unitOfMeasure" +
+                "      }" +
+                "      measure" +
+                "    }" +
+                "    eventRegions{" +
+                "      region{" +
+                "        regionName" +
+                "        regionType{" +
+                "          regionTypeName" +
+                "        }" +
+                "      }" +
+                "    }" +
+                "  }" +
+                "}"
+            }).Data;
+
+            //Transform GQL response data
+            dynamic d = JObject.Parse(JsonConvert.SerializeObject(data, Formatting.Indented));
+            foreach (var eventItem in d.Events)
+            {
+                var newEvent = new EventDetailsViewModel
                 {
-                    batchSize = context.Events.Count();
+                    //EventId
+                    EventId = eventItem.eventId,
+
+                    //Location
+                    Location = eventItem.location_WKT
+                };
+
+                //StartDate
+                if (eventItem.startDate != null)
+                {
+                    newEvent.StartDate = DateTimeOffset.FromUnixTimeSeconds((long)eventItem.startDate).LocalDateTime;
                 }
 
-                if (batchCount <= 0)
+                //EndDate
+                if (eventItem.endDate != null)
                 {
-                    batchCount = 1;
+                    newEvent.EndDate = DateTimeOffset.FromUnixTimeSeconds((long)eventItem.endDate).LocalDateTime;
                 }
 
-                //Get data
-                var query = (from events in context.Events
-                             join declaredEvents in context.DeclaredEvents on events.EventId equals declaredEvents.EventId
-                             join eventTypes in context.TypeEvents on events.TypeEventId equals eventTypes.TypeEventId
-                             select new
-                             {
-                                 Events = events,
-                                 DeclaredEvents = declaredEvents,
-                                 EventTypes = eventTypes,
+                //DeclaredDate
+                if (eventItem.declaredEvents != null)
+                {
+                    foreach (var declaredEvent in eventItem.declaredEvents)
+                    {
+                        if (declaredEvent.declaredDate != null)
+                        {
+                            newEvent.DeclaredDates.Add(DateTimeOffset.FromUnixTimeSeconds((long)declaredEvent.declaredDate).LocalDateTime);
+                        }
+                    }
+                }
 
-                                 EventsImpacts = (from eventImpacts in context.EventImpacts
-                                                  join typeImpacts in context.TypeImpacts on eventImpacts.TypeImpactId equals typeImpacts.TypeImpactId
-                                                  where eventImpacts.EventId == events.EventId
-                                                  select new
-                                                  {
-                                                      TypeImpacts = typeImpacts,
-                                                      EventImpacts = eventImpacts
-                                                  }).ToList(),
+                //EventType
+                if (eventItem.typeEvent != null && eventItem.typeEvent.typeEventName != null)
+                {
+                    newEvent.EventType = eventItem.typeEvent.typeEventName;
+                }
 
-                                 Regions = context.EventRegions
-                                             .Where(er => er.EventId == events.EventId && er.Region.RegionType.RegionTypeName != "Ward")
-                                             .Select(x => new
-                                             {
-                                                 x.RegionId,
-                                                 x.Region.RegionName,
-                                                 x.Region.RegionType.RegionTypeName
-                                             }).ToList()
-                             });
+                //EventImpacts
+                if (eventItem.eventImpacts != null)
+                {
+                    foreach (var eventImpact in eventItem.eventImpacts)
+                    {
+                        var newImpact = new EventImpactViewModel
+                        {
+                            Measure = eventImpact.measure
+                        };
 
-                //Filter and construct return type
-                var subquery = query
-                                .Where(x =>
-                                    ((x.Events.StartDate >= parsedStartDate || parsedStartDate == DateTime.MinValue) && (x.Events.EndDate <= parsedEndDate || parsedEndDate == DateTime.MinValue)) &&
-                                    (x.EventTypes.TypeEventId == parsedEventType || parsedEventType == 0) &&
-                                    ((x.EventsImpacts.Count(y => y.TypeImpacts.TypeImpactId == parsedImpactType) > 0 || parsedImpactType == 0)) &&
-                                    (x.Regions.Count(y => y.RegionId == parsedRegion) > 0 || parsedRegion == 0))
-                                .Select(x => new EventDetailsViewModel
+                        if (eventImpact.typeImpact != null)
+                        {
+                            newImpact.ImpactType = eventImpact.typeImpact.typeImpactName;
+                            newImpact.UnitOfMeasure = eventImpact.typeImpact.unitOfMeasure;
+                        }
+
+                        newEvent.EventsImpacts.Add(newImpact);
+                    }
+                }
+
+                //Regions
+                if (eventItem.eventRegions != null)
+                {
+                    foreach (var eventRegion in eventItem.eventRegions)
+                    {
+                        if (eventRegion.region != null)
+                        {
+                            if (eventRegion.region.regionType != null && eventRegion.region.regionType.regionTypeName != "Ward") //Exclude Wards
+                            {
+                                var newRegion = new EventRegionViewModel
                                 {
-                                    EventId = x.Events.EventId,
-                                    StartDate = x.Events.StartDate,
-                                    EndDate = x.Events.EndDate,
-                                    DeclaredDate = x.DeclaredEvents.DeclaredDate,
-                                    Location = x.Events.Location_WKT,
-                                    EventType = x.EventTypes.TypeEventName,
+                                    RegionName = eventRegion.region.regionName
+                                };
 
-                                    EventsImpacts = x.EventsImpacts.Select(y => new EventImpactViewModel
-                                    {
-                                        ImpactType = y.TypeImpacts.TypeImpactName,
-                                        UnitOfMeasure = y.TypeImpacts.UnitOfMeasure,
-                                        Measure = y.EventImpacts.Measure
-                                    }).ToList(),
+                                if (eventRegion.region.regionType != null)
+                                {
+                                    newRegion.RegionType = eventRegion.region.regionType.regionTypeName;
+                                }
 
-                                    Regions = x.Regions.Select(y => new EventRegionViewModel
-                                    {
-                                        RegionType = y.RegionTypeName,
-                                        RegionName = y.RegionName
-                                    }).ToList()
-                                })
-                                .OrderBy(x => x.DeclaredDate)
-                                .Skip((batchCount - 1) * batchSize)
-                                .Take(batchSize);
+                                newEvent.Regions.Add(newRegion);
+                            }
+                        }
+                    }
+                }
 
-                result = subquery.ToList();
+                result.Add(newEvent);
             }
 
             return result;
         }
 
-        public List<EventsGeoJsonViewModel> ListGEO(string startDate = "", string endDate = "", string eventType = "", string impactType = "", string region = "")
+        public List<EventsGeoJsonViewModel> ListGEO(string startDate, string endDate, string eventType, string impactType, string region)
         {
             //Convert params
             DateTime.TryParse(startDate, out DateTime parsedStartDate);
@@ -115,48 +182,79 @@ namespace API.ControllerLogic
             int.TryParse(impactType, out int parsedImpactType);
             int.TryParse(region, out int parsedRegion);
 
+            //Parse dates to Unix format
+            long unixStartDate = 0;
+            long unixEndDate = 0;
+
+            if (parsedStartDate != DateTime.MinValue)
+            {
+                unixStartDate = new DateTimeOffset(parsedStartDate).ToUnixTimeSeconds();
+            }
+
+            if (parsedEndDate != DateTime.MinValue)
+            {
+                unixEndDate = new DateTimeOffset(parsedEndDate).ToUnixTimeSeconds();
+            }
+
             var result = new List<EventsGeoJsonViewModel>();
 
-            using (var context = new SQLDBContext())
+            //Query GQL
+            var gql = new GraphQLController();
+            var data = gql.Request(new GraphQLRequest()
             {
-                //Get data and filter
-                var query = from events in context.Events
-                            join declaredEvents in context.DeclaredEvents on events.EventId equals declaredEvents.EventId
-                            join eventTypes in context.TypeEvents on events.TypeEventId equals eventTypes.TypeEventId
-                            join eventImpacts in context.EventImpacts on events.EventId equals eventImpacts.EventId
-                            join typeImpacts in context.TypeImpacts on eventImpacts.TypeImpactId equals typeImpacts.TypeImpactId
-                            join eventRegions in context.EventRegions on events.EventId equals eventRegions.EventId
-                            join regions in context.Regions on eventRegions.RegionId equals regions.RegionId
-                            where
-                            (
-                                (events.StartDate >= parsedStartDate && (events.EndDate <= parsedEndDate || parsedEndDate == DateTime.MinValue))
-                                &&
-                                (eventTypes.TypeEventId == parsedEventType || parsedEventType == 0)
-                                &&
-                                (typeImpacts.TypeImpactId == parsedImpactType || parsedImpactType == 0)
-                                &&
-                                (regions.RegionType.RegionTypeName != "Ward")
-                            )
-                            orderby declaredEvents.DeclaredDate
-                            select new
-                            {
-                                events.EventId,
-                                regions.RegionId,
-                                regions.RegionName,
-                                regions.RegionType.RegionTypeName
-                            };
+                query = "{" +
+                $"  Events(startDate: {unixStartDate}, endDate: {unixEndDate}, eventType: {parsedEventType}, impactType: {parsedImpactType}, region: {parsedRegion})" + " {" +
+                "    eventId" +
+                "    eventRegions{" +
+                "      region{" +
+                "        regionId" +
+                "        regionName" +
+                "        regionType{" +
+                "          regionTypeName" +
+                "        }" +
+                "      }" +
+                "    }" +
+                "  }" +
+                "}"
+            }).Data;
 
-                //Construct return type
-                foreach (var item in query.Distinct().ToList())
+            //Transform GQL response data
+            dynamic d = JObject.Parse(JsonConvert.SerializeObject(data, Formatting.Indented));
+            foreach (var eventItem in d.Events)
+            {
+                if (eventItem.eventRegions != null)
                 {
-                    var geoItem = new EventsGeoJsonViewModel();
-                    geoItem.type = "Feature";
-                    geoItem.properties.Add("event_id", item.EventId.ToString());
-                    geoItem.properties.Add("region_id", item.RegionId.ToString());
-                    geoItem.properties.Add("region_name", item.RegionName);
-                    geoItem.properties.Add("region_type", item.RegionTypeName);
+                    foreach (var eventRegion in eventItem.eventRegions)
+                    {
+                        var geoItem = new EventsGeoJsonViewModel();
+                        geoItem.type = "Feature";
 
-                    result.Add(geoItem);
+                        //EventId
+                        if (eventItem.eventId != null)
+                        {
+                            geoItem.properties.Add("event_id", ((int)eventItem.eventId).ToString());
+                        }
+
+                        //RegionId
+                        if (eventRegion.region.regionId != null)
+                        {
+                            geoItem.properties.Add("region_id", ((int)eventRegion.region.regionId).ToString());
+                        }
+
+                        //RegionName
+                        if (eventRegion.region.regionName != null)
+                        {
+                            geoItem.properties.Add("region_name", ((string)eventRegion.region.regionName));
+                        }
+
+                        //RegionTypeName
+                        if (eventRegion.region.regionType != null && eventRegion.region.regionType.regionTypeName != null)
+                        {
+                            geoItem.properties.Add("region_type", ((string)eventRegion.region.regionType.regionTypeName));
+                        }
+
+                        result.Add(geoItem);
+                    }
                 }
             }
 
@@ -165,18 +263,96 @@ namespace API.ControllerLogic
 
         public List<Region> GetRegions()
         {
-            using (var context = new SQLDBContext())
+            var results = new List<Region>();
+
+            //Query GQL
+            var gql = new GraphQLController();
+            var data = gql.Request(new GraphQLRequest()
             {
-                return context.Regions.ToList();
+                query = "{" +
+                "  Regions{" +
+                "    regionId" +
+                "    regionName" +
+                "    parentRegionId" +
+                "    regionTypeId" +
+                "  }" +
+                "}"
+            }).Data;
+
+            //Transform GQL response data
+            dynamic d = JObject.Parse(JsonConvert.SerializeObject(data, Formatting.Indented));
+            foreach (var regionItem in d.Regions)
+            {
+                var newRegion = new Region();
+
+                //RegionId
+                if (regionItem.regionId != null)
+                {
+                    newRegion.RegionId = regionItem.regionId;
+                }
+
+                //RegionName
+                if (regionItem.regionName != null)
+                {
+                    newRegion.RegionName = regionItem.regionName;
+                }
+
+                //ParentRegionId
+                if (regionItem.parentRegionId != null)
+                {
+                    newRegion.ParentRegionId = regionItem.parentRegionId;
+                }
+
+                //RegionTypeId
+                if (regionItem.regionTypeId != null)
+                {
+                    newRegion.RegionTypeId = regionItem.regionTypeId;
+                }
+
+                results.Add(newRegion);
             }
+
+            return results;
         }
 
         public List<TypeEvent> GetEventTypes()
         {
-            using (var context = new SQLDBContext())
+            var results = new List<TypeEvent>();
+
+            //Query GQL
+            var gql = new GraphQLController();
+            var data = gql.Request(new GraphQLRequest()
             {
-                return context.TypeEvents.ToList();
+                query = "{" +
+                "  TypeEvents{" +
+                "    typeEventId" +
+                "    typeEventName" +
+                "  }" +
+                "}"
+            }).Data;
+
+            //Transform GQL response data
+            dynamic d = JObject.Parse(JsonConvert.SerializeObject(data, Formatting.Indented));
+            foreach (var typeEventItem in d.TypeEvents)
+            {
+                var newTypeEvent = new TypeEvent();
+
+                //RegionId
+                if (typeEventItem.typeEventId != null)
+                {
+                    newTypeEvent.TypeEventId = typeEventItem.typeEventId;
+                }
+
+                //RegionName
+                if (typeEventItem.typeEventName != null)
+                {
+                    newTypeEvent.TypeEventName = typeEventItem.typeEventName;
+                }
+
+                results.Add(newTypeEvent);
             }
+
+            return results;
         }
 
         public bool PublishEvents(List<ScraperEvent> events)
@@ -261,7 +437,7 @@ namespace API.ControllerLogic
                     });
 
                     //Add/Link EventImpacts
-                    foreach(var item in typeImpacts)
+                    foreach (var item in typeImpacts)
                     {
                         context.EventImpacts.Add(new EventImpact()
                         {

@@ -7,13 +7,13 @@ namespace Database.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class AlteredRegionTebles : IMigrationMetadata
+    public sealed partial class InitialCreateV2 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AlteredRegionTebles));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreateV2));
         
         string IMigrationMetadata.Id
         {
-            get { return "201805061110579_AlteredRegionTebles"; }
+            get { return "201805241839421_InitialCreateV2"; }
         }
         
         string IMigrationMetadata.Source
