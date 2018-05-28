@@ -132,8 +132,8 @@ class RegionFilters extends React.Component {
     }
     effectiveData.map(item => {
       let newTreeNode = {
-        id: item[Object.keys(item)[1]],
-        text: item[Object.keys(item)[2]],
+        id: item[Object.keys(item)[0]],
+        text: item[Object.keys(item)[1]],
         modifiedState: item.modifiedState
       }
       let children = globalData.filter(x => x[parentIdKey] == newTreeNode.id)
@@ -156,7 +156,7 @@ class RegionFilters extends React.Component {
     }
     )
     console.log(filteredRegions)
-    if (region.length > 1) {
+    if (filteredRegions.length > 1) {
       treeData = this.transformDataTree(filteredRegions)
     }
     console.log(treeData)
