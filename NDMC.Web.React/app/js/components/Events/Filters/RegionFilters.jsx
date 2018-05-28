@@ -87,7 +87,6 @@ class RegionFilters extends React.Component {
     if (typeof id === 'undefined') {
       id = 0
     }
-
     loadRegionFilter(id)
   }
 
@@ -153,14 +152,10 @@ class RegionFilters extends React.Component {
     let treeData
     let filteredRegions = region.filter(function (item) {
       return !item.RegionName.includes('Ward')
-    }
-    )
-    console.log(filteredRegions)
+    })
     if (filteredRegions.length > 1) {
       treeData = this.transformDataTree(filteredRegions)
     }
-    console.log(treeData)
-
     if (regionFilter > 0 && region.length > 0) {
       selectedValue = region.filter(x => x.RegionId === parseInt(regionFilter))[0].RegionName
     }

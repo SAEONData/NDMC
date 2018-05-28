@@ -141,7 +141,7 @@ class EventList extends React.Component {
 
     //If any filters changed...refetch events
     let filtersChanged = false
-    if (eHazardFilter !== hazardFilter){
+    if (eHazardFilter !== hazardFilter || eRegionFilter !== regionFilter){
        filtersChanged = true
     }
 
