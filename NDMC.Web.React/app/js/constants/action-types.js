@@ -9,6 +9,7 @@ export const RESET_EVENT_STATE = 'RESET_EVENT_STATE'
 //Lookups
 export const LOAD_REGION = 'LOAD_REGION'
 export const LOAD_HAZARD_TYPE = 'LOAD_HAZARD'
+export const LOAD_IMPACT = 'LOAD_IMPACT'
 export const LOAD_IMPACTS = 'LOAD_IMPACTS'
 export const LOAD_DATE = 'LOAD_DATE'
 export const LOAD_DECLAREDATE = 'LOAD_DECLAREDATE'
@@ -23,7 +24,6 @@ export const CLEAR_FILTERS = 'CLEAR_FILTERS'
 //Trees
 export const LOAD_REGION_TREE = 'LOAD_REGION_TREE'
 export const LOAD_HAZARD_TREE = 'LOAD_HAZARD_TREE'
-export const LOAD_IMPACT_TREE = 'LOAD_IMPACT_TREE'
 
 //Global
 export const SET_LOADING = 'SET_LOADING'

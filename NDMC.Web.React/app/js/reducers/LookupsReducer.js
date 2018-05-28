@@ -19,6 +19,12 @@ export default function LookupsReducer(state = {}, action) {
     case ACTION_TYPES.LOAD_HAZARD_TREE: {
       return { ...state, hazardTree: payload }
     }
+    case ACTION_TYPES.LOAD_IMPACT: {
+      return { ...state, impact: payload }
+    }
+    case ACTION_TYPES.LOAD_IMPACTS: {
+      return { ...state, impacts: payload }
+    }
     default: {
       return state
     }
