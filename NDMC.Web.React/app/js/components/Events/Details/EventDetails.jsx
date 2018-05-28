@@ -39,12 +39,6 @@ const mapDispatchToProps = (dispatch) => {
     loadImpact: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_IMPACTS, payload })
     },
-    loadStartDate: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_STARTDATE, payload })
-    },
-    loadEndDate: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_ENDDATE, payload })
-    },
     loadEventDetails: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_EVENT_DETAILS, payload })
     },

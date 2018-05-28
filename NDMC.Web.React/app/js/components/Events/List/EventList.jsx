@@ -130,7 +130,6 @@ class EventList extends React.Component {
   }
 
   componentDidUpdate() {
-
     let eHazardFilter = this.props.hazardFilter
     let eRegionFilter = this.props.regionFilter
     let eImpactTypeFilter = this.props.impactTypeFilter
@@ -170,7 +169,7 @@ class EventList extends React.Component {
         } else {
           startdate = startdate.toDateString()
         }
-        if (i.EventType !== ' ' && startdate && !i.Regions[0].RegionName.includes("Ward")) {
+        if (i.EventType !== ' ' && startdate && i.Regions[0] !== undefined) {
           ar.push(<EventCard key={i.EventId} eid={i.EventId} region={i.Regions[0]} startdate={startdate} enddate={enddate.toDateString()} hazardtype={i.EventType} />)
         }
       }
