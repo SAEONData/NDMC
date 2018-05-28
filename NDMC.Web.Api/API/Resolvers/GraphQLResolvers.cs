@@ -40,10 +40,5 @@ namespace API.Resolvers
         {
             return qc.Regions;
         }
-
-        public IQueryable<TypeEvent> TypeEvents(SQLDBContext qc)
-        {
-            return qc.TypeEvents;
-        }
     }
 }
