@@ -1,10 +1,17 @@
 'use strict'
 
+//React
 import React from 'react'
-import EventCard from './EventCard.jsx'
 import { connect } from 'react-redux'
+
+//Local
+import EventCard from './EventCard.jsx'
 import * as ACTION_TYPES from '../../../constants/action-types'
 import { apiBaseURL } from '../../../constants/apiBaseURL'
+
+//GraphQL
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
 
 const mapStateToProps = (state, props) => {
   let { eventData: { events, start, end, listScrollPos } } = state
@@ -40,22 +47,22 @@ const mapDispatchToProps = (dispatch) => {
 class EventList extends React.Component {
   constructor(props) {
     super(props)
-
-    //Set initial state
     this.state = {
       hazardFilter: 0,
       regionFilter: 0,
-      impactTypeFilter: 0,
-      startDateFilter: 0,
-      endDateFilter: 0,
+      impactFilter: 0,
+      dateFilter: {
+        startDate: 0,
+        endDate: 0
+      },
       start: 0,
-      end: 10
+      end: 10,
+      filtersChanged: false
     }
     this.handleScroll = this.handleScroll.bind(this)
   }
 
   handleScroll() {
-
     const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
     const body = document.body
     const html = document.documentElement
@@ -67,60 +74,23 @@ class EventList extends React.Component {
     }
   }
 
-  getEventList(resetCounts) {
-
-    let { loadEvents, setLoading, hazardFilter, regionFilter, impactFilter, startDateFilter, endDateFilter, start, end, resetEventCounts, clearEventDetails } = this.props
-
-    if (resetCounts === true) {
-      start = 0
-      end = 10
-      resetEventCounts()
-    }
-
+  updateEventList() {
+    let { setLoading, hazardFilter, regionFilter, impactFilter, dateFilter, start, end, resetEventCounts, clearEventDetails } = this.props
     this.setState({
       hazardFilter,
-      regionFilter: regionFilter,
-      impactFilter: impactFilter,
-      startDateFilter: startDateFilter,
-      endDateFilter: endDateFilter,
-      start: start,
-      end: end
+      regionFilter,
+      impactFilter,
+      dateFilter,
+      start,
+      end
     })
-
-    setLoading(true)
-
     //Clear details data
     clearEventDetails()
-
-    let fetchURL = `${apiBaseURL}api/events/list?startDate=
-      ${startDateFilter}&endDate=
-      ${endDateFilter}&eventType=
-      ${hazardFilter}&impactType=
-      ${impactFilter}&region=
-      ${regionFilter}`
-
-
-    //Get event list data
-    return fetch(fetchURL,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(res => res.json())
-      .then(res => {
-        loadEvents(res)
-        setLoading(false)
-      })
-      .catch(res => {
-        setLoading(false)
-        console.log('Error details:', res)
-        alert('An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)')
-      })
+    setLoading(false)
   }
 
   componentDidMount() {
-    this.getEventList()
+    this.updateEventList()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
@@ -130,59 +100,98 @@ class EventList extends React.Component {
   }
 
   componentDidUpdate() {
-    let eHazardFilter = this.props.hazardFilter
-    let eRegionFilter = this.props.regionFilter
-    let eImpactFilter = this.props.impactFilter
-    let eStartDateFilter = this.props.startDateFilter
-    let eEndDateFilter = this.props.endDateFilter
-    let eStart = this.props.start
-    let eEnd = this.props.end
-    let { hazardFilter, regionFilter, impactFilter, startDateFilter, endDateFilter, start, end } = this.state
+    let nextHazardFilter = this.props.hazardFilter
+    let nextRegionFilter = this.props.regionFilter
+    let nextImpactFilter = this.props.impactFilter
+    let nextDateFilter = this.props.dateFilter
+    let nextStart = this.props.start
+    let nextEnd = this.props.end
+    let { hazardFilter, regionFilter, impactFilter, dateFilter, start, end } = this.state
 
-    //If any filters changed...refetch events
-    let filtersChanged = false
-    if (eHazardFilter !== hazardFilter || eRegionFilter !== regionFilter || eImpactFilter !== impactFilter){
-       filtersChanged = true
+    if (nextHazardFilter !== hazardFilter || nextRegionFilter !== regionFilter || nextImpactFilter !== impactFilter) {
+      // console.log(`filters changed:\n Hazard: ${hazardFilter} -> ${nextHazardFilter} \n Impact: ${impactFilter} -> ${nextImpactFilter}`)
+      this.filtersChanged = true
     }
 
-    //If next batch needed
-    // let nextBatchNeeded = false
-    // if (eStart !== start || eEnd !== end) {
-    //   nextBatchNeeded = true
-    // }
-
-    if (filtersChanged === true /*|| nextBatchNeeded === true*/) {
-      this.getEventList(filtersChanged)
+    if (this.filtersChanged === true /*|| nextBatchNeeded === true*/) {
+      this.updateEventList()
     }
   }
 
-  buildList() {
-
-    const { events } = this.props
+  buildList(events) {
     let ar = []
-    if (typeof events !== 'undefined' && events.length > 0) {
-      for (let i of events) {
-        let startdate = new Date(i.StartDate)
-        let enddate = new Date(i.EndDate)
-        if (startdate.getFullYear() === 1900 || startdate.getFullYear() === 1970) {
-          startdate = false
-        } else {
-          startdate = startdate.toDateString()
-        }
-        if (i.EventType !== ' ' && startdate && i.Regions[0] !== undefined) {
-          ar.push(<EventCard key={i.EventId} eid={i.EventId} region={i.Regions[0]} startdate={startdate} enddate={enddate.toDateString()} hazardtype={i.EventType} />)
-        }
+    for (let i of events) {
+      let startdate = new Date(i.startDate * 1000)
+      let enddate = new Date(i.endDate * 1000)
+      if (i.typeEvent !== null && i.startDate && i.eventRegions[0] !== undefined) {
+        ar.push(<EventCard key={i.eventId} eid={i.eventId} region={i.eventRegions[0].region} startdate={startdate.toDateString()} enddate={enddate.toDateString()} hazardtype={i.typeEvent.typeEventName} />)
       }
-      return ar
     }
-    return <div />
+    return ar
   }
 
   render() {
+    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.state
+    const GET_ALL_EVENTS = gql`
+      {
+        Events {
+          eventId
+          startDate
+          endDate
+          declaredEvents {
+            declaredDate
+          }
+          typeEvent {
+            typeEventName
+            typeEventId
+          }
+          eventImpacts{
+            typeImpact{
+              typeImpactName
+              typeImpactId
+            }
+            measure
+          }
+          eventRegions {
+            region {
+              regionName
+              regionType {
+                regionTypeName
+              }
+            }
+          }
+        }
+      }
+    `
     return (
       <div>
-        {this.buildList()}
-      </div>
+        <Query query={GET_ALL_EVENTS}>
+          {({ loading, error, data }) => {
+            if (loading) return <p> Loading... </p>
+            if (error) return <p> Error Loading Data From Server </p>
+            const filteredData = data.Events.filter(event =>
+              event.typeEvent &&
+              event.startDate &&
+              event.eventRegions[0]
+            )
+            console.log(filteredData)
+            if (this.filtersChanged) {
+              console.log(filteredData
+                .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === this.props.hazardFilter)
+                .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
+              )
+              this.filtersChanged = false
+              return this.buildList(filteredData
+                .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === this.props.hazardFilter)
+                .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
+              )
+            }
+            else {
+              return this.buildList(filteredData)
+            }
+          }}
+        </Query>
+      </div >
     )
   }
 }
