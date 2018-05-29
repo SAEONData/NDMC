@@ -9,15 +9,16 @@ import 'font-awesome/css/font-awesome.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdbreact/dist/css/mdb.css'
 
+//React
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import injectTapEventPlugin from 'react-tap-event-plugin'
-import store from './store'
 import queryString from 'query-string'
 import { Button } from 'mdbreact/'
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
+//Local
 import Home from './components/Base/Home.jsx'
 import Events from './components/Events/List/Events.jsx'
 import EventDetails from './components/Events/Details/EventDetails.jsx'
@@ -25,12 +26,39 @@ import Graphs from './components/Events/Graphs/EventGraph.jsx'
 import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 
+//Graphql
 import ApolloClient from "apollo-boost"
 import { ApolloProvider } from "react-apollo"
+import { toIdValue } from 'apollo-utilities'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import gql from 'graphql-tag'
+
+import store from './store'
+
+const resolvers = {
+  Query: {
+    SingleEvent: (_, variables, { cache, getCacheKey }) => {
+      const id = getCacheKey({ __typename: 'Event', id: variables.eventId })
+      console.log(`This thing: ${ getCacheKey({ __typename: 'Event', id: variables.eventId })}`)
+      const fragment = gql`
+        fragment endOfEvent on Event {
+          endDate
+        }
+      `;
+      const endOfEvent = cache.readFragment({ fragment, id })
+      console.log(endOfEvent)
+      return endOfEvent;
+    },
+  }
+}
 
 const client = new ApolloClient({
-  uri: "http://app01.saeon.ac.za/ndmcapi/api/GraphQL/Request"
+  uri: "http://app01.saeon.ac.za/ndmcapi/api/GraphQL/Request",
+  clientState: {
+    resolvers
+  }
 })
+
 
 /**
  * Tap Event
