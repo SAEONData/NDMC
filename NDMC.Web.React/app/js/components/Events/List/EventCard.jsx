@@ -28,12 +28,12 @@ class EventCard extends React.Component {
   }
 
   render() {
-    const { region: { RegionName }, startdate, enddate, hazardtype } = this.props
+    const { region: { regionName }, startdate, enddate, hazardtype } = this.props
     return (
       <>
         <Card>
           <CardBody>
-            <CardTitle>Disaster at {this.props.region.RegionName} </CardTitle>
+            <CardTitle>Disaster at {regionName} </CardTitle>
             <CardText>
               {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br />
               {hazardtype ? `Type: ${hazardtype}` : ' '}
