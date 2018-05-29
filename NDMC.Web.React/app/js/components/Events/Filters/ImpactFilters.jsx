@@ -73,7 +73,6 @@ class impactFilters extends React.Component {
     if (typeof value === 'undefined') {
       value = 'undefined'
     }
-    console.log(id)
     this.setState({ value })
     loadImpactFilter(id)
   }
@@ -118,18 +117,16 @@ class impactFilters extends React.Component {
             <Select>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
-                {/* {this.buildImpactOptions(impacts)} */}
-                { <Query query={query}>
-                  { ({loading, error, data}) => {
-                      if(loading) return <p>Loading...</p>
-                      if(error) return <p>Erroring...</p>
-                      console.log(data)
-                      return data.TypeImpacts.map(item => {
-                          return <SelectOption triggerOptionClick={(e) => this.optionClick(e, item.typeImpactId)} key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
-                      })
-                    }
+                {<Query query={query}>
+                  {({ loading, error, data }) => {
+                    if (loading) return <p>Loading...</p>
+                    if (error) return <p>Error Loading Data From Server...</p>
+                    return data.TypeImpacts.map(item => {
+                      return <SelectOption triggerOptionClick={(e) => this.optionClick(e, item.typeImpactId)} key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
+                    })
                   }
-                  </Query>
+                  }
+                </Query>
                 }
               </SelectOptions>
             </Select>
