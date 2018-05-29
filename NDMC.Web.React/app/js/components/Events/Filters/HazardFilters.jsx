@@ -1,7 +1,10 @@
 'use strict'
 
+//React
 import React from 'react'
 import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
+
+//Local
 import { apiBaseURL } from '../../../constants/apiBaseURL'
 import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../constants/action-types'
@@ -13,6 +16,10 @@ import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 import Tree from 'antd/lib/tree'
 import '../../../../css/antd.tree.css' //Overrides default antd.tree css
 const TreeNode = Tree.TreeNode
+
+//GraphQl
+import { Query, ApolloConsumer } from 'react-apollo'
+import gql from 'graphql-tag'
 
 const queryString = require('query-string')
 
@@ -54,69 +61,54 @@ class HazardFilters extends React.Component {
   }
 
   otherDropdownsClose() {
-    let dropdowns = document.querySelectorAll('.dropdown-content');
+    let dropdowns = document.querySelectorAll('.dropdown-content')
     for (let i = 0; i < dropdowns.length; i++) {
       if (dropdowns[i].classList.contains('fadeIn')) {
-        dropdowns[i].classList.remove('fadeIn');
+        dropdowns[i].classList.remove('fadeIn')
       }
     }
   }
 
-  optionClick(value) {
+  optionClick(value, id) {
     let { loadHazardFilter, hazardTree } = this.props
     if (typeof value === 'undefined') {
       value = 'undefined'
     }
-    this.setState({ value: value })
-    let id = hazardTree.filter(function(hazard){return hazard.TypeEventName === value})
-    loadHazardFilter(id[0].TypeEventId)
+    this.setState({ value})
+    loadHazardFilter(id)
   }
 
   onClick(e) {
 
     if (e.target.dataset.multiple === 'true') {
-      return;
+      return
     }
     if (e.target.classList.contains('select-dropdown')) {
-      this.otherDropdownsClose();
+      this.otherDropdownsClose()
       if (e.target.nextElementSibling) {
-        e.target.nextElementSibling.classList.add('fadeIn');
+        e.target.nextElementSibling.classList.add('fadeIn')
       }
     } else {
-      this.otherDropdownsClose();
+      this.otherDropdownsClose()
     }
   }
 
   componentDidMount() {
-    let { loadData } = this.props
-    document.addEventListener('click', this.onClick);
-
-    fetch(apiBaseURL + 'api/events/eventtypes/', {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => res.json())
-      .then(res => {
-        loadData(res)
-      })
+    document.addEventListener('click', this.onClick)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.onClick);
-  }
-
-  buildHazardOptions(data) {
-    return data.map((item,index) => {
-      if (item.TypeEventName) {
-        return <SelectOption triggerOptionClick={this.optionClick} key={index}>{item.TypeEventName}</SelectOption>
-      }
-      return
-    })
+    document.removeEventListener('click', this.onClick)
   }
 
   render() {
-    let { hazard, hazardTree, hazardFilter } = this.props
+    const GET_HAZARDS = gql`
+    {
+      TypeEvents {
+        typeEventName
+        typeEventId
+      }
+    }`
     return (
       <>
         <div className="row">
@@ -124,7 +116,17 @@ class HazardFilters extends React.Component {
             <Select>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
-                {this.buildHazardOptions(hazardTree)}
+                {<Query query={GET_HAZARDS}>
+                  {({ data, loading, error }) => {
+                    if (error) return <p >Error Loading Data From Server </p>
+                    if (loading) return <p> wait for it... </p>
+                    return data.TypeEvents.map(item => {
+                      return <SelectOption triggerOptionClick={(e) => this.optionClick(e, item.typeEventId)} key={item.typeEventId}>{item.typeEventName}</SelectOption>
+                    })
+                  }
+                  }
+                </Query>
+                }
               </SelectOptions>
             </Select>
           </div>
