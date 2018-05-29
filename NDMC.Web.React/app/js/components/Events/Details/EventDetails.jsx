@@ -68,7 +68,7 @@ class EventDetails extends React.Component {
     if (eventDetails.state !== 'original') {
       dataState = eventDetails.state
     }
-    if (dataState === 'original') {
+    if (dataState !== 'original') {
       this.navBack()
     }
     else {
@@ -76,42 +76,15 @@ class EventDetails extends React.Component {
     }
   }
 
-  loadEvents(loadEventDetails) {
-    let action
-    action = fetch(apiBaseURL + 'api/Events/details/' + this.state.eventId, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(res => res.json()).then(res => {
-      res.state = 'original'
-      loadEventDetails(res)
-    })
-    return action
-  }
-
-  loadData() {
-    let { setLoading, loadEventDetails, loadEvents, loadRegion, loadEndDate, loadStartDate, loadImpact, loadDeclareDate } = this.props
-    setLoading(true)
-    Promise.all([
-      this.loadEvents(loadEventDetails)
-    ])
-      .then(() => {
-        setLoading(false)
-      })
-      .catch(res => {
-        setLoading(false)
-        console.log('Error details:', res)
-        alert('An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)')
-      })
-  }
-
   componentDidMount() {
+    let {setLoading} = this.props
     window.scrollTo(0, 0)
-    this.loadData()
+    setLoading(false)
   }
 
   render() {
     const { eventDetails } = this.props
+    const { eventId } = this.state
     return (
       <>
         <div
@@ -136,7 +109,7 @@ class EventDetails extends React.Component {
             <Tab><b style={{ color: '#1565c0' }}>Event Details</b></Tab>
           </TabList>
           <TabPanel>
-            <EventDetailsTab />
+            <EventDetailsTab eventId={eventId} />
             <br />
             <br />
             <br />
