@@ -46,7 +46,7 @@ class impactFilters extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: "Choose Impact Type"
+      value: 'Choose Impact Type'
     }
     this.optionClick = this.optionClick.bind(this)
     this.onClick = this.onClick.bind(this)
@@ -103,7 +103,7 @@ class impactFilters extends React.Component {
 
   render() {
     let { impact, impacts } = this.props
-    const query = gql`
+    const GET_IMPACTS = gql`
     {
       TypeImpacts {
         typeImpactId
@@ -112,12 +112,12 @@ class impactFilters extends React.Component {
     }`
     return (
       <>
-        <div className="row">
-          <div className="col-md-4">
+        <div className='row'>
+          <div className='col-md-4'>
             <Select>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
-                {<Query query={query}>
+                {<Query query={GET_IMPACTS}>
                   {({ loading, error, data }) => {
                     if (loading) return <p>Loading...</p>
                     if (error) return <p>Error Loading Data From Server...</p>
