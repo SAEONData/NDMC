@@ -15,9 +15,9 @@ import gql from 'graphql-tag'
 
 const mapStateToProps = (state, props) => {
   let { eventData: { events, start, end, listScrollPos } } = state
-  let { filterData: { hazardFilter, regionFilter, startDateFilter, endDateFilter, impactFilter } } = state
+  let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state
   return {
-    events, hazardFilter, regionFilter, startDateFilter, endDateFilter, impactFilter, start, end, listScrollPos
+    events, hazardFilter, regionFilter, dateFilter, impactFilter, start, end, listScrollPos
   }
 }
 
@@ -25,9 +25,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setScrollPos: payload => {
       dispatch({ type: ACTION_TYPES.SET_EVENT_SCROLL, payload })
-    },
-    loadEvents: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_EVENTS, payload })
     },
     clearEventDetails: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_EVENTS, payload: [] })
@@ -38,9 +35,6 @@ const mapDispatchToProps = (dispatch) => {
     loadMoreEvents: () => {
       dispatch({ type: ACTION_TYPES.LOAD_MORE_EVENTS })
     },
-    resetEventCounts: () => {
-      dispatch({ type: ACTION_TYPES.RESET_EVENT_COUNTS })
-    }
   }
 }
 
@@ -75,7 +69,7 @@ class EventList extends React.Component {
   }
 
   updateEventList() {
-    let { setLoading, hazardFilter, regionFilter, impactFilter, dateFilter, start, end, resetEventCounts, clearEventDetails } = this.props
+    let { setLoading, hazardFilter, regionFilter, impactFilter, dateFilter, start, end, clearEventDetails } = this.props
     this.setState({
       hazardFilter,
       regionFilter,
@@ -109,7 +103,6 @@ class EventList extends React.Component {
     let { hazardFilter, regionFilter, impactFilter, dateFilter, start, end } = this.state
 
     if (nextHazardFilter !== hazardFilter || nextRegionFilter !== regionFilter || nextImpactFilter !== impactFilter) {
-      // console.log(`filters changed:\n Hazard: ${hazardFilter} -> ${nextHazardFilter} \n Impact: ${impactFilter} -> ${nextImpactFilter}`)
       this.filtersChanged = true
     }
 
@@ -174,16 +167,12 @@ class EventList extends React.Component {
               event.startDate &&
               event.eventRegions[0]
             )
-            console.log(filteredData)
             if (this.filtersChanged) {
-              console.log(filteredData
-                .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === this.props.hazardFilter)
-                .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
-              )
               this.filtersChanged = false
               return this.buildList(filteredData
-                .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === this.props.hazardFilter)
+                .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
                 .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
+                .filter(event => regionFilter === 0 ? true : event.Regions[0] === regionFilter)
               )
             }
             else {
