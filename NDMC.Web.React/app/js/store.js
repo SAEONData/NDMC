@@ -13,12 +13,8 @@ const store = createStore(
     ...applyMiddleware(middleware),
 
     globalData: {
-      loading: true,
     },
     eventData: {
-      start: 0,
-      end: 10,
-      listScrollPos: 0
     },
     filterData: {
       regionFilter: 0,
