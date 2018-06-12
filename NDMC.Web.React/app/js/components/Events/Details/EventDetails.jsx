@@ -15,10 +15,9 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 
 const mapStateToProps = (state, props) => {
-  let { eventData: { eventDetails } } = state
   let { globalData: { loading } } = state
   return {
-    eventDetails, loading
+    loading
   }
 }
 

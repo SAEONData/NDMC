@@ -16,8 +16,6 @@ const store = createStore(
       loading: true,
     },
     eventData: {
-      events: [],
-      eventDetails: {},
       start: 0,
       end: 10,
       listScrollPos: 0

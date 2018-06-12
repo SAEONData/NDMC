@@ -14,10 +14,10 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const mapStateToProps = (state, props) => {
-  let { eventData: { events, start, end, listScrollPos } } = state
+  let { eventData: { start, end, listScrollPos } } = state
   let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state
   return {
-    events, hazardFilter, regionFilter, dateFilter, impactFilter, start, end, listScrollPos
+    hazardFilter, regionFilter, dateFilter, impactFilter, start, end, listScrollPos
   }
 }
 
