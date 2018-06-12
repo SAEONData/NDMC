@@ -7,15 +7,13 @@ import { connect } from 'react-redux'
 import ReactTooltip from 'react-tooltip'
 
 //Local
-import { apiBaseURL } from '../../../constants/apiBaseURL'
 import * as ACTION_TYPES from '../../../constants/action-types'
-import { UILookup } from '../../../constants/ui_config'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //AntD Tree
 import TreeSelect from 'antd/lib/tree-select'
 import Input from 'antd/lib/input'
-//import treestyle from '../../../../css/antd.tree.css' //Overrides default antd.tree css
+import treeSelectStyle from '../../../../css/antd.tree-select.css' //Overrides default antd.tree css
 
 //GraphQL
 import { graphql } from 'graphql'
@@ -39,7 +37,6 @@ const mapDispatchToProps = (dispatch) => {
 class RegionFilters extends React.Component {
   constructor(props) {
     super(props)
-    this.onSelect = this.onSelect.bind(this)
     this.onChange = this.onChange.bind(this)
     this.state = {
       treeValue: undefined
@@ -56,15 +53,6 @@ class RegionFilters extends React.Component {
   }
 
   componentDidMount() {
-  }
-
-  onSelect(selectedKeys, info) {
-    let { loadRegionFilter } = this.props
-    let id = selectedKeys[0]
-    if (typeof id === 'undefined') {
-      id = 0
-    }
-    loadRegionFilter(id)
   }
 
   onChange(value) {
@@ -118,9 +106,9 @@ class RegionFilters extends React.Component {
             return (
               <div className='row'>
                   <TreeSelect key={GetUID()}
-                    style={{ width: 300 }}
+                    style={treeSelectStyle}
                     value={this.state.treeValue}
-                   // dropdownStyle={treestyle}
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                     treeData={this.transformDataTree(regionTree)}
                     placeholder="Please select a region"
                     treeDefaultExpandAll
