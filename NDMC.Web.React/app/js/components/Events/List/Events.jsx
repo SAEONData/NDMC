@@ -9,15 +9,11 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
-  let { globalData: { loading } } = state
-  return { loading }
+  return {}
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setLoading: payload => {
-      dispatch({ type: ACTION_TYPES.SET_LOADING, payload })
-    },
   }
 }
 
@@ -47,37 +43,17 @@ class Events extends React.Component {
   }
 
   componentWillMount() {
-    this.props.setLoading(true)
   }
 
   render() {
     return (
       <>
-        <div className='container-fluid'>
-          <div className='row'>
-            <div
-              hidden={!this.props.loading}
-              className='card'
-              style={{ position: 'fixed', right: '40%', bottom: '42%', zIndex: '99' }}>
-
-              <div className='card-body' style={{ margin: '30px 80px 30px 80px' }}>
-                <label style={{ fontSize: 'x-large', fontWeight: 'bold', color: '#4285F4' }}>LOADING</label>
-                <BeatLoader
-                  color={'#4285F4'}
-                  size={30}
-                  loading={this.props.loading}
-                />
-              </div>
-              <Button />
-            </div>
-          </div>
-        </div>
         <div style={{ position: 'fixed', right: '14%', bottom: '10px', zIndex: '99' }}>
           <Button color='secondary' className='btn-sm' onTouchTap={this.backToTop} >
             <i className='fa fa-arrow-circle-up' aria-hidden='true' />
             &nbsp;&nbsp;
             Back to top
-                  </Button>
+          </Button>
         </div>
         <EventFilters />
         <EventList />
