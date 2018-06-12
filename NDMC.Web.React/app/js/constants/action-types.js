@@ -1,4 +1,3 @@
-
 //Details
 export const LOAD_EVENTS = 'LOAD_EVENTS'
 export const LOAD_EVENT_DETAILS= 'LOAD_EVENT_DETAILS'
@@ -26,7 +25,7 @@ export const LOAD_REGION_TREE = 'LOAD_REGION_TREE'
 export const LOAD_HAZARD_TREE = 'LOAD_HAZARD_TREE'
 
 //Global
-export const SET_LOADING = 'SET_LOADING'
+
 
 //General
 export const LOAD_MORE_EVENTS = 'LOAD_MORE_EVENTS'
