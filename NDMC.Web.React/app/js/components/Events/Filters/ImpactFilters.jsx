@@ -26,16 +26,12 @@ const TreeNode = Tree.TreeNode
 
 const queryString = require('query-string')
 const mapStateToProps = (state, props) => {
-  let { lookupData: { impacts, impact } } = state
   let { filterData: { impactFilter } } = state
-  return { impact, impacts, impactFilter }
+  return {impactFilter }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loadImpacts: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_IMPACTS, payload })
-    },
     loadImpactFilter: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_IMPACT_FILTER, payload })
     },

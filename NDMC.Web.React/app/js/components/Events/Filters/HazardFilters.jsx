@@ -26,21 +26,14 @@ import gql from 'graphql-tag'
 const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
-  let { lookupData: { hazardTree, hazard } } = state
   let { filterData: { hazardFilter } } = state
-  return { hazardTree, hazardFilter, hazard }
+  return {hazardFilter}
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loadData: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_HAZARD_TREE, payload })
-    },
     loadHazardFilter: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload })
-    },
-    loadHazardTypes: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_HAZARD_TYPE, payload })
     }
   }
 }

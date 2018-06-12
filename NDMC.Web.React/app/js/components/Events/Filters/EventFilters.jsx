@@ -12,8 +12,7 @@ import ImpactFilters from './ImpactFilters.jsx'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter, hazardFilter, dateFilter, impactFilter } } = state
-  let { lookupData: { region, hazard, impact } } = state
-  return { regionFilter, hazardFilter, dateFilter, impactFilter, region, impact, hazard }
+  return { regionFilter, hazardFilter, dateFilter, impactFilter}
 }
 
 const mapDispatchToProps = dispatch => {
