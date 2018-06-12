@@ -2,13 +2,12 @@
 
 //React
 import React from 'react'
-import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
+import { connect } from 'react-redux'
+import ReactTooltip from 'react-tooltip'
 
 //Local
 import { apiBaseURL } from '../../../constants/apiBaseURL'
-import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../constants/action-types'
-import ReactTooltip from 'react-tooltip'
 import { UILookup } from '../../../constants/ui_config'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
@@ -16,6 +15,9 @@ import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 import Tree from 'antd/lib/tree'
 import '../../../../css/antd.tree.css' //Overrides default antd.tree css
 const TreeNode = Tree.TreeNode
+
+//MDBReact
+import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 
 //GraphQl
 import { Query, ApolloConsumer } from 'react-apollo'
