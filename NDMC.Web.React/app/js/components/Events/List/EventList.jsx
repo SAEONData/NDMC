@@ -55,22 +55,14 @@ class EventList extends React.Component {
         bottomReached: true,
         eventListSize: this.state.eventListSize + 10
       })
-      console.log('BottomReached\n' + this.state.eventListSize + '\n' + this.state.bottomReached)
     }
   }
 
   updateEventList() {
-    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
-    this.setState({
-      hazardFilter,
-      regionFilter,
-      impactFilter,
-      dateFilter
-    })
   }
 
   componentDidMount() {
-    this.updateEventList()
+    //this.updateEventList()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
@@ -80,26 +72,6 @@ class EventList extends React.Component {
   }
 
   componentDidUpdate() {
-    let nextHazardFilter = this.props.hazardFilter
-    let nextRegionFilter = this.props.regionFilter
-    let nextImpactFilter = this.props.impactFilter
-    let nextDateFilter = this.props.dateFilter
-    let { hazardFilter, regionFilter, impactFilter, dateFilter, filtersEnabled, eventListSize } = this.state
-
-    if (nextHazardFilter !== hazardFilter || nextRegionFilter !== regionFilter || nextImpactFilter !== impactFilter || nextDateFilter !== dateFilter) {
-      console.log('filters are enabled')
-      filtersEnabled = true
-      eventListSize = 10
-    }
-    if(nextHazardFilter === 0 && nextRegionFilter === 0 && nextImpactFilter === 0 && nextDateFilter === 0) {
-      console.log('filters are disabled')
-      filtersEnabled = false
-    }
-
-    if (this.state.filtersEnabled === true /*|| nextBatchNeeded === true*/) {
-      console.log('updating list')
-      this.updateEventList()
-    }
   }
 
   buildList(events) {
@@ -115,7 +87,7 @@ class EventList extends React.Component {
   }
 
   render() {
-    let { hazardFilter, regionFilter, impactFilter, dateFilter: { startDate, endDate } } = this.state
+    let { hazardFilter, regionFilter, impactFilter, dateFilter, filtersChanged, filtersEnabled } = this.props
     const GET_ALL_EVENTS = gql`
       {
         Events {
@@ -145,8 +117,7 @@ class EventList extends React.Component {
             }
           }
         }
-      }
-    `
+      }`
     return (
       <div>
         <Query query={GET_ALL_EVENTS}>
@@ -158,32 +129,15 @@ class EventList extends React.Component {
               event.startDate &&
               event.eventRegions[0]
             )
-            let startdate = 0
-            let enddate = 0
-            if (startDate !== 0 && endDate !== 0) {
-              startdate = new Date(startDate).getTime() / 1000
-              enddate = new Date(endDate).getTime() / 1000
-            }
-            if (this.state.filtersEnabled) {
-              console.log('listing filtered events')
+              console.log(`start date: ${dateFilter.startDate}\n end date:${dateFilter.endDate}`)
               this.state.bottomReached = false
               return this.buildList(filteredData
                 .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
                 .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
                 .filter(event => regionFilter === 0 ? true : event.Regions[0] === regionFilter)
-                .filter(event => startdate === 0 && enddate === 0 ? true : event.startDate >= startdate && event.endDate <= enddate)
+                .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
                 .slice(0, this.state.eventListSize)
               )
-            }
-            if (this.state.filtersEnabled === false) {
-              console.log('listing unfiltered events' + this.state.filtersEnabled)
-              this.state.bottomReached = false
-              console.log(this.state.eventListSize)
-              return this.buildList(filteredData.slice(0, this.state.eventListSize))
-            }
-            else {
-              return
-            }
           }}
         </Query>
       </div >
