@@ -44,13 +44,11 @@ class DateFilters extends React.Component {
   }
 
   componentDidMount() {
-    //Load data
     let { loadStartDate, loadEndDate } = this.props
   }
 
   handleStartChange(event, date) {
     let test = new Date(date)
-    console.log(test.getTime())
     this.setState({ startDate: date })
   }
 
@@ -62,7 +60,6 @@ class DateFilters extends React.Component {
     let { loadDateFilter } = this.props
     if (this.state.startDate !== 0 && this.state.endDate !== 0 && this.state.startDate < this.state.endDate){
       loadDateFilter({ startDate: this.state.startDate, endDate: this.state.endDate })
-      console.log(`loading startDate:${this.state.startDate}\tendDate:${this.state.endDate}`)
   }
     else {
       console.log('incorrect date selection: start date' + this.state.startDate + 'end date' + this.state.endDate)

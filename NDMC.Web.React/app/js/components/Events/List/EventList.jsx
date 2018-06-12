@@ -173,13 +173,7 @@ class EventList extends React.Component {
               startdate = new Date(startDate).getTime()/1000
               enddate = new Date(endDate).getTime()/1000
             }
-            1244823714.903
-            1291161600
-
-            1528820520.753
-            1293840000
             if (this.filtersChanged) {
-              console.log(startdate + '\n' + enddate)
               this.filtersChanged = false
               return this.buildList(filteredData
                 .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
