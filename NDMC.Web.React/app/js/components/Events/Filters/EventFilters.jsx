@@ -3,7 +3,6 @@
 import React from 'react'
 import { Button, Collapse } from 'mdbreact'
 import { connect } from 'react-redux'
-import { Chip } from 'material-ui'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
 import RegionFilters from './RegionFilters.jsx'
@@ -42,7 +41,6 @@ class EventFilters extends React.Component {
     this.toggleDate = this.toggleDate.bind(this)
     this.toggleImpact = this.toggleImpact.bind(this)
     this.clearFilters = this.clearFilters.bind(this)
-    this.renderFilterChips = this.renderFilterChips.bind(this)
 
     this.state = {
       collapseRegion: false,
@@ -82,53 +80,9 @@ class EventFilters extends React.Component {
     location.hash = '/events'
   }
 
-  renderFilterChips() {
-    let { hazardFilter, regionFilter, dateFilter, impactFilter, region, hazard, impact } = this.props
-    let filterChips = []
-    if (hazardFilter > 0 && hazard.length > 0) {
-      filterChips.push(<br key='br' />)
-      if (hazardFilter !== '') {
-        filterChips.push(
-          <Chip
-            label={`Hazard: ${hazard.filter(x => x.HazardID === parseInt(hazardFilter))[0].HazardName}`}
-            onDelete={() => this.deleteFilterChip('title')}
-            style={{ backgroundColor: '#4285F4', marginRight: '5px' }}
-            key='hazardFilterChip'
-          />
-        )
-      }
-      if (regionFilter > 0 && region.length > 0) {
-        filterChips.push(
-          <Chip
-            label={`Region: ${region.filter(x => x.RegionId === parseInt(regionFilter))[0].RegionName}`}
-            onDelete={() => this.deleteFilterChip('region')}
-            style={{ backgroundColor: '#4285F4', marginRight: '5px' }}
-            key='regionFilterChip'
-          />
-        )
-      }
-    } else {
-      filterChips.push(<div key='br' />)
-    }
-    return filterChips
-  }
-
-  deleteFilterChip(type) {
-    switch (type) {
-      case 'region':
-        this.props.clearRegionFilter()
-        break
-      case 'hazard':
-        this.props.clearHazardFilter()
-    }
-  }
-
   render() {
     return (
       <>
-        <div className='row'>
-          <div className='col-md-12'>{this.renderFilterChips()}</div>
-        </div>
         <hr />
         <div className='row'>
           <div className='col-md-2'>
