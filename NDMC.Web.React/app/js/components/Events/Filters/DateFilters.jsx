@@ -48,19 +48,20 @@ class DateFilters extends React.Component {
   }
 
   handleStartChange(event, date) {
-    let test = new Date(date)
-    this.setState({ startDate: date })
+    let unixDate = new Date(date).getTime() / 1000
+    this.setState({ startDate: unixDate })
   }
 
   handleEndChange(event, date) {
-    this.setState({ endDate: date })
+    let unixDate = new Date(date).getTime() / 1000
+    this.setState({ endDate: unixDate })
   }
 
   applyClick() {
     let { loadDateFilter } = this.props
-    if (this.state.startDate !== 0 && this.state.endDate !== 0 && this.state.startDate < this.state.endDate){
+    if (this.state.startDate !== 0 && this.state.endDate !== 0 && this.state.startDate < this.state.endDate) {
       loadDateFilter({ startDate: this.state.startDate, endDate: this.state.endDate })
-  }
+    }
     else {
       console.log('incorrect date selection: start date' + this.state.startDate + 'end date' + this.state.endDate)
     }
