@@ -102,7 +102,7 @@ class EventList extends React.Component {
     let nextEnd = this.props.end
     let { hazardFilter, regionFilter, impactFilter, dateFilter, start, end } = this.state
 
-    if (nextHazardFilter !== hazardFilter || nextRegionFilter !== regionFilter || nextImpactFilter !== impactFilter) {
+    if (nextHazardFilter !== hazardFilter || nextRegionFilter !== regionFilter || nextImpactFilter !== impactFilter || nextDateFilter !== dateFilter) {
       this.filtersChanged = true
     }
 
@@ -124,7 +124,7 @@ class EventList extends React.Component {
   }
 
   render() {
-    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.state
+    let { hazardFilter, regionFilter, impactFilter, dateFilter: { startDate, endDate } } = this.state
     const GET_ALL_EVENTS = gql`
       {
         Events {
@@ -160,19 +160,32 @@ class EventList extends React.Component {
       <div>
         <Query query={GET_ALL_EVENTS}>
           {({ loading, error, data }) => {
-            if (loading) return <p> Loading... </p>
+            if (loading) return <p> Loading Event List... </p>
             if (error) return <p> Error Loading Data From Server </p>
             const filteredData = data.Events.filter(event =>
               event.typeEvent &&
               event.startDate &&
               event.eventRegions[0]
             )
+            let startdate = 0
+            let enddate = 0
+            if (startDate !== 0 && endDate !== 0) {
+              startdate = new Date(startDate).getTime()/1000
+              enddate = new Date(endDate).getTime()/1000
+            }
+            1244823714.903
+            1291161600
+
+            1528820520.753
+            1293840000
             if (this.filtersChanged) {
+              console.log(startdate + '\n' + enddate)
               this.filtersChanged = false
               return this.buildList(filteredData
                 .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
                 .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
                 .filter(event => regionFilter === 0 ? true : event.Regions[0] === regionFilter)
+                .filter(event => startdate === 0 && enddate === 0 ? true : event.startDate >= startdate && event.endDate <= enddate)
               )
             }
             else {

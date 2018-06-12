@@ -25,7 +25,7 @@ export default function FilterReducer(state = {}, action) {
         regionFilter: 0,
         hazardFilter: 0,
         impactFilter: 0,
-        dateFilter: 0,
+        dateFilter: { startDate: 0, endDate: 0 },
       }
     }
     default: {
