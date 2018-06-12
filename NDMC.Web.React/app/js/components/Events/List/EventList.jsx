@@ -49,9 +49,9 @@ class EventList extends React.Component {
         startDate: 0,
         endDate: 0
       },
-      start: 0,
-      end: 10,
-      filtersChanged: false
+      eventListSize: 10,
+      filtersChanged: false,
+      bottomReached: false
     }
     this.handleScroll = this.handleScroll.bind(this)
   }
@@ -62,21 +62,22 @@ class EventList extends React.Component {
     const html = document.documentElement
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
     const windowBottom = windowHeight + window.pageYOffset
-    const { loadMoreEvents } = this.props
-    if (Math.ceil(windowBottom) >= docHeight && this.props.polygonFilter === '') {
-      loadMoreEvents()
+    if (Math.ceil(windowBottom) >= docHeight) {
+      this.setState({
+        bottomReached: true,
+        eventListSize: this.state.eventListSize + 10
+      })
+      console.log('BottomReached\n' + this.state.eventListSize + '\n' + this.state.bottomReached)
     }
   }
 
   updateEventList() {
-    let { setLoading, hazardFilter, regionFilter, impactFilter, dateFilter, start, end, clearEventDetails } = this.props
+    let { setLoading, hazardFilter, regionFilter, impactFilter, dateFilter, clearEventDetails } = this.props
     this.setState({
       hazardFilter,
       regionFilter,
       impactFilter,
-      dateFilter,
-      start,
-      end
+      dateFilter
     })
     //Clear details data
     clearEventDetails()
@@ -98,12 +99,11 @@ class EventList extends React.Component {
     let nextRegionFilter = this.props.regionFilter
     let nextImpactFilter = this.props.impactFilter
     let nextDateFilter = this.props.dateFilter
-    let nextStart = this.props.start
-    let nextEnd = this.props.end
-    let { hazardFilter, regionFilter, impactFilter, dateFilter, start, end } = this.state
+    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.state
 
     if (nextHazardFilter !== hazardFilter || nextRegionFilter !== regionFilter || nextImpactFilter !== impactFilter || nextDateFilter !== dateFilter) {
       this.filtersChanged = true
+      this.state.eventListSize = 10
     }
 
     if (this.filtersChanged === true /*|| nextBatchNeeded === true*/) {
@@ -170,20 +170,24 @@ class EventList extends React.Component {
             let startdate = 0
             let enddate = 0
             if (startDate !== 0 && endDate !== 0) {
-              startdate = new Date(startDate).getTime()/1000
-              enddate = new Date(endDate).getTime()/1000
+              startdate = new Date(startDate).getTime() / 1000
+              enddate = new Date(endDate).getTime() / 1000
             }
             if (this.filtersChanged) {
               this.filtersChanged = false
+              this.state.bottomReached = false
               return this.buildList(filteredData
                 .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
                 .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
                 .filter(event => regionFilter === 0 ? true : event.Regions[0] === regionFilter)
                 .filter(event => startdate === 0 && enddate === 0 ? true : event.startDate >= startdate && event.endDate <= enddate)
+                .slice(0, this.state.eventListSize)
               )
             }
             else {
-              return this.buildList(filteredData)
+              this.state.bottomReached = false
+              console.log(this.state.eventListSize)
+              return this.buildList(filteredData.slice(0, this.state.eventListSize))
             }
           }}
         </Query>
