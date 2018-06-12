@@ -10,15 +10,11 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
-  let { globalData: { loading } } = state
-  return { loading }
+  return {  }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setLoading: payload => {
-      dispatch({ type: ACTION_TYPES.SET_LOADING, payload })
-    }
   }
 }
 
@@ -28,11 +24,6 @@ class EventGraph extends React.Component {
       <>
         <div className='container-fluid'>
           <div className='row'>
-            <div
-              hidden={!this.props.loading}
-              className='card'
-              style={{ position: 'fixed', right: '40%', bottom: '42%', zIndex: '99' }}>
-            </div>
           </div>
         </div>
         <div style={{ position: 'fixed', right: '14%', bottom: '10px', zIndex: '99' }}>

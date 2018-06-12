@@ -14,27 +14,14 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const mapStateToProps = (state, props) => {
-  let { eventData: { start, end, listScrollPos } } = state
   let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state
   return {
-    hazardFilter, regionFilter, dateFilter, impactFilter, start, end, listScrollPos
+    hazardFilter, regionFilter, dateFilter, impactFilter
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setScrollPos: payload => {
-      dispatch({ type: ACTION_TYPES.SET_EVENT_SCROLL, payload })
-    },
-    clearEventDetails: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_EVENTS, payload: [] })
-    },
-    setLoading: payload => {
-      dispatch({ type: ACTION_TYPES.SET_LOADING, payload })
-    },
-    loadMoreEvents: () => {
-      dispatch({ type: ACTION_TYPES.LOAD_MORE_EVENTS })
-    },
   }
 }
 
@@ -51,7 +38,8 @@ class EventList extends React.Component {
       },
       eventListSize: 10,
       filtersChanged: false,
-      bottomReached: false
+      bottomReached: false,
+      filtersEnabled: false
     }
     this.handleScroll = this.handleScroll.bind(this)
   }
@@ -72,16 +60,13 @@ class EventList extends React.Component {
   }
 
   updateEventList() {
-    let { setLoading, hazardFilter, regionFilter, impactFilter, dateFilter, clearEventDetails } = this.props
+    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
     this.setState({
       hazardFilter,
       regionFilter,
       impactFilter,
       dateFilter
     })
-    //Clear details data
-    clearEventDetails()
-    setLoading(false)
   }
 
   componentDidMount() {
@@ -99,14 +84,20 @@ class EventList extends React.Component {
     let nextRegionFilter = this.props.regionFilter
     let nextImpactFilter = this.props.impactFilter
     let nextDateFilter = this.props.dateFilter
-    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.state
+    let { hazardFilter, regionFilter, impactFilter, dateFilter, filtersEnabled, eventListSize } = this.state
 
     if (nextHazardFilter !== hazardFilter || nextRegionFilter !== regionFilter || nextImpactFilter !== impactFilter || nextDateFilter !== dateFilter) {
-      this.filtersChanged = true
-      this.state.eventListSize = 10
+      console.log('filters are enabled')
+      filtersEnabled = true
+      eventListSize = 10
+    }
+    if(nextHazardFilter === 0 && nextRegionFilter === 0 && nextImpactFilter === 0 && nextDateFilter === 0) {
+      console.log('filters are disabled')
+      filtersEnabled = false
     }
 
-    if (this.filtersChanged === true /*|| nextBatchNeeded === true*/) {
+    if (this.state.filtersEnabled === true /*|| nextBatchNeeded === true*/) {
+      console.log('updating list')
       this.updateEventList()
     }
   }
@@ -173,8 +164,8 @@ class EventList extends React.Component {
               startdate = new Date(startDate).getTime() / 1000
               enddate = new Date(endDate).getTime() / 1000
             }
-            if (this.filtersChanged) {
-              this.filtersChanged = false
+            if (this.state.filtersEnabled) {
+              console.log('listing filtered events')
               this.state.bottomReached = false
               return this.buildList(filteredData
                 .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
@@ -184,10 +175,14 @@ class EventList extends React.Component {
                 .slice(0, this.state.eventListSize)
               )
             }
-            else {
+            if (this.state.filtersEnabled === false) {
+              console.log('listing unfiltered events' + this.state.filtersEnabled)
               this.state.bottomReached = false
               console.log(this.state.eventListSize)
               return this.buildList(filteredData.slice(0, this.state.eventListSize))
+            }
+            else {
+              return
             }
           }}
         </Query>

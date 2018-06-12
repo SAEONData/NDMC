@@ -65,7 +65,7 @@ class impactFilters extends React.Component {
   }
 
   optionClick(value, id) {
-    let { loadImpactFilter, impacts } = this.props
+    let { loadImpactFilter } = this.props
     if (typeof value === 'undefined') {
       value = 'undefined'
     }

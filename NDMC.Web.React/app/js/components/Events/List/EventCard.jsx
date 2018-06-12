@@ -10,11 +10,7 @@ const mapStateToProps = (state, props) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    setScrollPos: payload => {
-      dispatch({ type: ACTION_TYPES.SET_EVENT_SCROLL, payload })
-    }
-  }
+  return {}
 }
 
 class EventCard extends React.Component {
@@ -23,7 +19,6 @@ class EventCard extends React.Component {
   }
 
   onTouchTap() {
-    this.props.setScrollPos(window.pageYOffset)
     location.hash = '/events/' + this.props.eid
   }
 
