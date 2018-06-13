@@ -11,9 +11,13 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //AntD Tree
+// import TreeSelect from 'antd/lib/tree-select'
+// import '../../../../css/antd.tree-select.css' //Overrides default antd.tree css
+
 import TreeSelect from 'antd/lib/tree-select'
-import Input from 'antd/lib/input'
-import treeSelectStyle from '../../../../css/antd.tree-select.css' //Overrides default antd.tree css
+import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
+import '../../../../css/antd.select.css' //Overrides default antd.select css
+const TreeSelectNode = TreeSelect.TreeNode
 
 //GraphQL
 import { graphql } from 'graphql'
@@ -62,14 +66,24 @@ class RegionFilters extends React.Component {
 
   transformDataTree(filteredRegions) {
     let regions = filteredRegions.map(i => {
-      return { regionName: i.regionName, parentRegionId: i.parentRegionId, regionId: i.regionId, children: [], label: i.regionName, value: `${i.regionId}`, key: i.regionId }
+      return {
+        regionName: i.regionName,
+        parentRegionId: i.parentRegionId,
+        regionId: i.regionId,
+        children: [],
+        label: i.regionName, //Can be removed if not used elsewhere - replaced by text
+        text: i.regionName, //Added text property
+        value: `${i.regionId}`,
+        key: i.regionId, //Can be removed if not used elsewhere - replaced by id
+        id: i.regionId //Added id property
+      }
     })
-    regions.forEach(f => { f.children = regions.filter(g => g.parentRegionId == f.regionId) })
+    regions.forEach(f => { f.children = regions.filter(g => g.parentRegionId === f.regionId) })
 
     var resultArray = regions.filter(f => f.parentRegionId == null)
-    console.log(resultArray)
     return resultArray
   }
+
 
   render() {
     let { region, regionFilter } = this.props
@@ -87,8 +101,6 @@ class RegionFilters extends React.Component {
         }
       }`
 
-    let selectedValue = 'All'
-    let treeData
     if (regionFilter > 0 && region.length > 0) {
       selectedValue = region.filter(x => x.RegionId === parseInt(regionFilter))[0].RegionName
     }
@@ -105,16 +117,18 @@ class RegionFilters extends React.Component {
             console.log(regionTree)
             return (
               <div className='row'>
-                  <TreeSelect key={GetUID()}
-                    style={treeSelectStyle}
+                <div className="col-md-6">
+                  <TreeSelect
+                    style={{ width: "100%" }}
                     value={this.state.treeValue}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                    treeData={this.transformDataTree(regionTree)}
+                    treeData={regionTree} // you were transforming the transformed data again here
                     placeholder="Please select a region"
-                    treeDefaultExpandAll
+                    // treeDefaultExpandAll - removed this prop
                     onChange={this.onChange}
                   >
                   </TreeSelect>
+                </div>
               </div>
             )
           }

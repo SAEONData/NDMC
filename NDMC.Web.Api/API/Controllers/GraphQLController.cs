@@ -70,10 +70,21 @@ namespace API.Controllers
             schema.AddType<TypeSource>().AddAllFields();
 
             //Define schema queries
+            schema.AddListField("DeclaredEvents", qc => qc.DeclaredEvents);
+            schema.AddListField("Departments", qc => qc.Departments);
+
             schema.AddListField("Events", new { eventId = 0, startDate = 0, endDate = 0, eventType = 0, impactType = 0, region = 0, batchSize = 0, batchCount = 0 }, 
                 (qc, args) => res.Events(qc, args.eventId, args.startDate, args.endDate, args.eventType, args.impactType, args.region, args.batchSize, args.batchCount));
-            schema.AddListField("Regions", qc => res.Regions(qc));
-            schema.AddListField("TypeEvents", qc => res.TypeEvents(qc));
+
+            schema.AddListField("EventImpacts", qc => qc.EventImpacts);
+            schema.AddListField("EventRegions", qc => qc.EventRegions);
+            schema.AddListField("Mitigations", qc => qc.Mitigations);
+            schema.AddListField("Regions", qc => qc.Regions);
+            schema.AddListField("RegionTypes", qc => qc.RegionTypes);
+            schema.AddListField("TypeEvents", qc => qc.TypeEvents);
+            schema.AddListField("TypeImpacts", qc => qc.TypeImpacts);
+            schema.AddListField("TypeMitigations", qc => qc.TypeMitigations);
+            schema.AddListField("TypeSources", qc => qc.TypeSources);
 
             //Complete schema
             schema.Complete();
