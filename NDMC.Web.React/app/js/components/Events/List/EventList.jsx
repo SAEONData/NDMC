@@ -13,6 +13,10 @@ import { apiBaseURL } from '../../../constants/apiBaseURL'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
+//MDBReact
+import { ToastContainer, toast } from 'react-toastify'
+import { Button } from 'mdbreact'
+
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state
   return {
@@ -42,6 +46,7 @@ class EventList extends React.Component {
       filtersEnabled: false
     }
     this.handleScroll = this.handleScroll.bind(this)
+    this.notify = this.notify.bind(this)
   }
 
   handleScroll() {
@@ -62,7 +67,6 @@ class EventList extends React.Component {
   }
 
   componentDidMount() {
-    //this.updateEventList()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
@@ -84,6 +88,29 @@ class EventList extends React.Component {
       }
     }
     return ar
+  }
+
+  notify(type) {
+    return () => {
+      switch (type) {
+        case 'info':
+          toast.info('Info message', {
+            autoClose: 3000
+          });
+          break;
+        case 'success':
+          toast.success('Success message', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          break;
+        case 'warning':
+          toast.warn('Warning message');
+          break;
+        case 'error':
+          toast.error('Error message');
+          break;
+      }
+    }
   }
 
   render() {
@@ -120,24 +147,29 @@ class EventList extends React.Component {
       }`
     return (
       <div>
+        <ToastContainer
+          hideProgressBar={true}
+          newestOnTop={true}
+          autoClose={3000}
+        />
         <Query query={GET_ALL_EVENTS}>
           {({ loading, error, data }) => {
-            if (loading) return <p> Loading Event List... </p>
-            if (error) return <p> Error Loading Data From Server </p>
+            if (loading) return <div> {toast.info('Fetching list of events')} </div>
+            if (error) return <p> {toast.error('error fetching list from server')}</p>
+            toast.success('Successfully loaded Events!')
             const filteredData = data.Events.filter(event =>
               event.typeEvent &&
               event.startDate &&
               event.eventRegions[0]
             )
-              console.log(`start date: ${dateFilter.startDate}\n end date:${dateFilter.endDate}`)
-              this.state.bottomReached = false
-              return this.buildList(filteredData
-                .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
-                .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
-                .filter(event => regionFilter === 0 ? true : event.Regions[0] === regionFilter)
-                .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
-                .slice(0, this.state.eventListSize)
-              )
+            this.state.bottomReached = false
+            return this.buildList(filteredData
+              .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
+              .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
+              .filter(event => regionFilter === 0 ? true : event.Regions[0] === regionFilter)
+              .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
+              .slice(0, this.state.eventListSize)
+            )
           }}
         </Query>
       </div >
