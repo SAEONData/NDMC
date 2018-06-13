@@ -14,7 +14,7 @@ export default function FilterReducer(state = {}, action) {
       return { ...state, hazardFilter: payload }
     }
     case ACTION_TYPES.LOAD_IMPACT_FILTER: {
-      return { ...state, impactTypeFilter: payload }
+      return { ...state, impactFilter: payload }
     }
     case ACTION_TYPES.LOAD_DATE_FILTER: {
       return { ...state, dateFilter: payload }
@@ -24,8 +24,8 @@ export default function FilterReducer(state = {}, action) {
         ...state,
         regionFilter: 0,
         hazardFilter: 0,
-        impactTypeFilter: 0,
-        dateFilter: 0,
+        impactFilter: 0,
+        dateFilter: { startDate: 0, endDate: 0 },
       }
     }
     default: {
