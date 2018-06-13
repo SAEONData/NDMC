@@ -11,9 +11,13 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //AntD Tree
+// import TreeSelect from 'antd/lib/tree-select'
+// import '../../../../css/antd.tree-select.css' //Overrides default antd.tree css
+
 import TreeSelect from 'antd/lib/tree-select'
-import Input from 'antd/lib/input'
-import treeSelectStyle from '../../../../css/antd.tree-select.css' //Overrides default antd.tree css
+import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
+import '../../../../css/antd.select.css' //Overrides default antd.select css
+const TreeSelectNode = TreeSelect.TreeNode
 
 //GraphQL
 import { graphql } from 'graphql'
@@ -71,6 +75,20 @@ class RegionFilters extends React.Component {
     return resultArray
   }
 
+  renderTreeSelectNodes(data, level = "top") {
+
+    return data.map((item) => {
+      if (item.children) {
+        return (
+          <TreeSelectNode value={item.regionName} title={item.regionName} key={item.regionId} dataRef={item}>
+            {this.renderTreeSelectNodes(item.children, "child")}
+          </TreeSelectNode>
+        )
+      }
+      return <TreeSelectNode value={item.regionName} title={item.regionName} key={item.regionId} />
+    })
+  }
+
   render() {
     let { region, regionFilter } = this.props
     let { expandedKeys } = this.state
@@ -105,8 +123,8 @@ class RegionFilters extends React.Component {
             console.log(regionTree)
             return (
               <div className='row'>
-                  <TreeSelect key={GetUID()}
-                    style={treeSelectStyle}
+                {/* <TreeSelect key={GetUID()}
+                    // style={treeSelectStyle}
                     value={this.state.treeValue}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                     treeData={this.transformDataTree(regionTree)}
@@ -114,7 +132,20 @@ class RegionFilters extends React.Component {
                     treeDefaultExpandAll
                     onChange={this.onChange}
                   >
-                  </TreeSelect>
+                  </TreeSelect> */}
+
+                <TreeSelect
+                  showSearch
+                  searchPlaceholder="Search..."
+                  style={{ width: "100%" }}
+                  value={this.state.treeValue}
+                  dropdownStyle={{ maxHeight: 250, overflow: 'auto' }}
+                  placeholder="Select..."
+                  allowClear
+                  onChange={this.onChange}
+                >
+                  {this.renderTreeSelectNodes(regionTree)}
+                </TreeSelect>
               </div>
             )
           }
