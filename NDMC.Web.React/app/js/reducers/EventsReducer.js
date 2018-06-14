@@ -35,31 +35,6 @@ export default function EventsReducer(state = {}, action) {
         ...state, projectDetails: { ...payload, state: 'original' }
       }
     }
-    case ACTION_TYPES.LOAD_EVENTS: {
-      let { events, end } = state
-
-      if (end === 10) {
-        return { ...state, events: payload }
-      }
-      else {
-        return { ...state, events: [...events, ...payload] }
-      }
-    }
-    case ACTION_TYPES.LOAD_MORE_EVENTS: {
-      const { start, end } = state
-      let newend = end + 10
-      let newstart = start
-      return { ...state, start: newstart, end: newend }
-    }
-    case ACTION_TYPES.RESET_EVENT_COUNTS: {
-      return { ...state, start: 0, end: 10 }
-    }
-    case ACTION_TYPES.SET_EVENT_SCROLL: {
-      return { ...state, listScrollPos: payload }
-    }
-    case ACTION_TYPES.LOAD_EVENT_DETAILS: {
-      return { ...state, eventDetails: { ...payload } }
-    }
     default: {
       return state
     }

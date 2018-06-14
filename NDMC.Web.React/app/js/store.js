@@ -13,28 +13,14 @@ const store = createStore(
     ...applyMiddleware(middleware),
 
     globalData: {
-      loading: true,
     },
     eventData: {
-      events: [],
-      eventDetails: {},
-      start: 0,
-      end: 10,
-      listScrollPos: 0
     },
     filterData: {
       regionFilter: 0,
       hazardFilter: 0,
-      impactTypeFilter: 0,
-      dateFilter: 0,
-    },
-    lookupData: {
-      region: [],
-      regionTree: [],
-      hazard: [],
-      hazardTree: [],
-      impacts: [],
-      impactTypeFilter: []
+      impactFilter: 0,
+      dateFilter: { startDate: 0, endDate: 0 }
     }
 
   }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()

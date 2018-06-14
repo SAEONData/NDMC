@@ -1,122 +1,72 @@
 'use strict'
 
+//React
 import React from 'react'
-import EventCard from './EventCard.jsx'
 import { connect } from 'react-redux'
+
+//Local
+import EventCard from './EventCard.jsx'
 import * as ACTION_TYPES from '../../../constants/action-types'
 import { apiBaseURL } from '../../../constants/apiBaseURL'
 
+//GraphQL
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
+
+//MDBReact
+import { ToastContainer, toast } from 'react-toastify'
+import { Button } from 'mdbreact'
+
 const mapStateToProps = (state, props) => {
-  let { eventData: { events, start, end, listScrollPos } } = state
-  let { filterData: { hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter } } = state
+  let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state
   return {
-    events, hazardFilter, regionFilter, startDateFilter, endDateFilter, impactTypeFilter, start, end, listScrollPos
+    hazardFilter, regionFilter, dateFilter, impactFilter
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setScrollPos: payload => {
-      dispatch({ type: ACTION_TYPES.SET_EVENT_SCROLL, payload })
-    },
-    loadEvents: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_EVENTS, payload })
-    },
-    clearEventDetails: payload => {
-      dispatch({ type: ACTION_TYPES.LOAD_EVENTS, payload: [] })
-    },
-    setLoading: payload => {
-      dispatch({ type: ACTION_TYPES.SET_LOADING, payload })
-    },
-    loadMoreEvents: () => {
-      dispatch({ type: ACTION_TYPES.LOAD_MORE_EVENTS })
-    },
-    resetEventCounts: () => {
-      dispatch({ type: ACTION_TYPES.RESET_EVENT_COUNTS })
-    }
   }
 }
 
 class EventList extends React.Component {
   constructor(props) {
     super(props)
-
-    //Set initial state
     this.state = {
       hazardFilter: 0,
       regionFilter: 0,
-      impactTypeFilter: 0,
-      startDateFilter: 0,
-      endDateFilter: 0,
-      start: 0,
-      end: 10
+      impactFilter: 0,
+      dateFilter: {
+        startDate: 0,
+        endDate: 0
+      },
+      eventListSize: 10,
+      filtersChanged: false,
+      bottomReached: false,
+      filtersEnabled: false
     }
     this.handleScroll = this.handleScroll.bind(this)
+    this.notify = this.notify.bind(this)
   }
 
   handleScroll() {
-
     const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
     const body = document.body
     const html = document.documentElement
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
     const windowBottom = windowHeight + window.pageYOffset
-    const { loadMoreEvents } = this.props
-    if (Math.ceil(windowBottom) >= docHeight && this.props.polygonFilter === '') {
-      loadMoreEvents()
+    if (Math.ceil(windowBottom) >= docHeight) {
+      this.setState({
+        bottomReached: true,
+        eventListSize: this.state.eventListSize + 10
+      })
     }
   }
 
-  getEventList(resetCounts) {
-
-    let { loadEvents, setLoading, hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end, resetEventCounts, clearEventDetails } = this.props
-
-    if (resetCounts === true) {
-      start = 0
-      end = 10
-      resetEventCounts()
-    }
-
-    this.setState({
-      hazardFilter: hazardFilter,
-      regionFilter: regionFilter,
-      impactTypeFilter: impactTypeFilter,
-      startDateFilter: startDateFilter,
-      endDateFilter: endDateFilter,
-      start: start,
-      end: end
-    })
-
-    setLoading(true)
-
-    //Clear details data
-    clearEventDetails()
-
-    let fetchURL = apiBaseURL + 'api/events/list?startDate=' + startDateFilter + '&endDate=' + endDateFilter + '&eventType=' + hazardFilter +
-      '&impactType=' + impactTypeFilter + '&region=' + regionFilter
-
-
-    //Get event list data
-    return fetch(fetchURL,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(res => res.json())
-      .then(res => {
-        loadEvents(res)
-        setLoading(false)
-      })
-      .catch(res => {
-        setLoading(false)
-        console.log('Error details:', res)
-        alert('An error occurred while trying to fetch data from the server. Please try again later. (See log for error details)')
-      })
+  updateEventList() {
   }
 
   componentDidMount() {
-    this.getEventList()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
@@ -126,71 +76,103 @@ class EventList extends React.Component {
   }
 
   componentDidUpdate() {
-
-    let eHazardFilter = this.props.hazardFilter
-    let eRegionFilter = this.props.regionFilter
-    let eImpactTypeFilter = this.props.impactTypeFilter
-    let eStartDateFilter = this.props.startDateFilter
-    let eEndDateFilter = this.props.endDateFilter
-    let eStart = this.props.start
-    let eEnd = this.props.end
-    let { hazardFilter, regionFilter, impactTypeFilter, startDateFilter, endDateFilter, start, end } = this.state
-
-    //If any filters changed...refetch events
-    let filtersChanged = false
-    if (eHazardFilter !== hazardFilter || eRegionFilter !== regionFilter || eImpactTypeFilter !== impactTypeFilter
-      || eStartDateFilter !== startDateFilter
-      || eEndDateFilter !== endDateFilter) {
-
-      // filtersChanged = true
-    }
-
-    //If next batch needed
-    // let nextBatchNeeded = false
-    // if (eStart !== start || eEnd !== end) {
-    //   nextBatchNeeded = true
-    // }
-
-    if (filtersChanged === true /*|| nextBatchNeeded === true*/) {
-      this.getEventList(filtersChanged)
-    }
   }
 
-  buildList() {
-
-    const { events } = this.props
+  buildList(events) {
     let ar = []
-    if (typeof events !== 'undefined' && events.length > 0) {
-      for (let i of events) {
-        let startdate = new Date(i.StartDate)
-        let enddate = new Date(i.EndDate)
-        if (startdate.getFullYear() === 1900 || startdate.getFullYear() === 1970) {
-          startdate = false
-        } else {
-          startdate = startdate.toDateString()
-        }
-        if (i.EventType !== ' ' && startdate) {
-          ar.push(<EventCard key={i.EventId} eid={i.EventId} region={i.Regions[0]} startdate={startdate} enddate={enddate.toDateString()} hazardtype={i.EventType} />)
-        }
+    for (let i of events) {
+      let startdate = new Date(i.startDate * 1000)
+      let enddate = new Date(i.endDate * 1000)
+      if (i.typeEvent !== null && i.startDate && i.eventRegions[0] !== undefined) {
+        ar.push(<EventCard key={i.eventId} eid={i.eventId} region={i.eventRegions[0].region} startdate={startdate.toDateString()} enddate={enddate.toDateString()} hazardtype={i.typeEvent.typeEventName} />)
       }
-      return ar
     }
-    return <div />
+    return ar
+  }
+
+  notify(type) {
+    return () => {
+      switch (type) {
+        case 'info':
+          toast.info('Info message', {
+            autoClose: 3000
+          });
+          break;
+        case 'success':
+          toast.success('Success message', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          break;
+        case 'warning':
+          toast.warn('Warning message');
+          break;
+        case 'error':
+          toast.error('Error message');
+          break;
+      }
+    }
   }
 
   render() {
-    const ar = this.buildList()
-    let eventlist = ar
-    // if (ar.length > 0) {
-    //   eventlist = (
-    //     ar.slice(this.props.start, this.props.end)
-    //   )
-    // }
-
+    let { hazardFilter, regionFilter, impactFilter, dateFilter, filtersChanged, filtersEnabled } = this.props
+    const GET_ALL_EVENTS = gql`
+      {
+        Events {
+          eventId
+          startDate
+          endDate
+          declaredEvents {
+            declaredDate
+          }
+          typeEvent {
+            typeEventName
+            typeEventId
+          }
+          eventImpacts{
+            typeImpact{
+              typeImpactName
+              typeImpactId
+            }
+            measure
+          }
+          eventRegions {
+            region {
+              regionName
+              regionType {
+                regionTypeName
+              }
+            }
+          }
+        }
+      }`
     return (
       <div>
-        {eventlist}
-      </div>
+        <ToastContainer
+          hideProgressBar={true}
+          newestOnTop={true}
+          autoClose={3000}
+        />
+        <Query query={GET_ALL_EVENTS}>
+          {({ loading, error, data }) => {
+            if (loading) return <div> {toast.info('Fetching list of events')} </div>
+            if (error) return <p> {toast.error('error fetching list from server')}</p>
+            toast.success('Successfully loaded Events!')
+            const filteredData = data.Events.filter(event =>
+              event.typeEvent &&
+              event.startDate &&
+              event.eventRegions[0]
+            )
+            this.state.bottomReached = false
+            return this.buildList(filteredData
+              .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
+              .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
+              .filter(event => regionFilter === 0 ? true : event.Regions[0] === regionFilter)
+              .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
+              .slice(0, this.state.eventListSize)
+            )
+          }}
+        </Query>
+      </div >
     )
   }
 }

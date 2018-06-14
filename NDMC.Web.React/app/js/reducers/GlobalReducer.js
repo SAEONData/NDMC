@@ -7,10 +7,6 @@ export default function GlobalReducer(state = {}, action) {
   const { type, payload } = action
 
   switch (type) {
-    case ACTION_TYPES.SET_LOADING: {
-      return { ...state, loading: payload }
-    }
-
     default: {
       return state
     }
