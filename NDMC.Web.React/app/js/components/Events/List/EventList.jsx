@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 //Local
 import EventCard from './EventCard.jsx'
 import * as ACTION_TYPES from '../../../constants/action-types'
-import { apiBaseURL } from '../../../constants/apiBaseURL'
 
 //GraphQL
 import { Query } from 'react-apollo'
@@ -46,7 +45,6 @@ class EventList extends React.Component {
       filtersEnabled: false
     }
     this.handleScroll = this.handleScroll.bind(this)
-    this.notify = this.notify.bind(this)
   }
 
   handleScroll() {
@@ -90,29 +88,6 @@ class EventList extends React.Component {
     return ar
   }
 
-  notify(type) {
-    return () => {
-      switch (type) {
-        case 'info':
-          toast.info('Info message', {
-            autoClose: 3000
-          });
-          break;
-        case 'success':
-          toast.success('Success message', {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-          break;
-        case 'warning':
-          toast.warn('Warning message');
-          break;
-        case 'error':
-          toast.error('Error message');
-          break;
-      }
-    }
-  }
-
   render() {
     let { hazardFilter, regionFilter, impactFilter, dateFilter, filtersChanged, filtersEnabled } = this.props
     const GET_ALL_EVENTS = gql`
@@ -148,9 +123,9 @@ class EventList extends React.Component {
     return (
       <div>
         <ToastContainer
-          hideProgressBar={true}
+          hideProgressBar={false}
           newestOnTop={true}
-          autoClose={3000}
+          autoClose={2500}
         />
         <Query query={GET_ALL_EVENTS}>
           {({ loading, error, data }) => {

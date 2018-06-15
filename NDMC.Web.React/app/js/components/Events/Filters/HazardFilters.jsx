@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import ReactTooltip from 'react-tooltip'
 
 //Local
-import { apiBaseURL } from '../../../constants/apiBaseURL'
 import * as ACTION_TYPES from '../../../constants/action-types'
 import { UILookup } from '../../../constants/ui_config'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'

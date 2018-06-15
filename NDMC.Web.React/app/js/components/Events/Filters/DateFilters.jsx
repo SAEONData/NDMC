@@ -9,7 +9,6 @@ import ReactTooltip from 'react-tooltip'
 import * as ACTION_TYPES from '../../../constants/action-types'
 import { UILookup } from '../../../constants/ui_config'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
-import { apiBaseURL } from '../../../constants/apiBaseURL'
 
 //MDBReact
 import { DatePicker } from 'material-ui'
