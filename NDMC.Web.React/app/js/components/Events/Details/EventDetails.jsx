@@ -1,15 +1,19 @@
 'use strict'
-
+//React
 import React from 'react'
-import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'mdbreact'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from '../../../constants/action-types'
-import EventDetailsTab from './EventDetailsTab.jsx'
 import { BeatLoader } from 'react-spinners'
 import ReactTooltip from 'react-tooltip'
+
+//Local
+import * as ACTION_TYPES from '../../../constants/action-types'
+import EventDetailsTab from './EventDetailsTab.jsx'
 import { UILookup } from '../../../constants/ui_config'
 
-//react-tabs
+//MDBReact
+import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'mdbreact'
+
+//React Tabs
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 

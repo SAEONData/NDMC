@@ -1,10 +1,12 @@
 'use strict'
 
+//React
 import React from 'react'
 import { Button, Collapse } from 'mdbreact'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from '../../../constants/action-types'
 
+//Local
+import * as ACTION_TYPES from '../../../constants/action-types'
 import RegionFilters from './RegionFilters.jsx'
 import HazardFilters from './HazardFilters.jsx'
 import DateFilters from './DateFilters.jsx'

@@ -1,10 +1,16 @@
+//React
 import React from 'react'
-import EventList from './EventList.jsx'
-import EventFilters from '../Filters/EventFilters.jsx'
 import { connect } from 'react-redux'
 import { BeatLoader } from 'react-spinners'
-import { Button, Footer, Container } from 'mdbreact'
+
+//Local
+import EventList from './EventList.jsx'
+import EventFilters from '../Filters/EventFilters.jsx'
 import * as ACTION_TYPES from '../../../constants/action-types'
+
+//MDBReact
+import { Button, Footer, Container } from 'mdbreact'
+
 
 const queryString = require('query-string')
 
