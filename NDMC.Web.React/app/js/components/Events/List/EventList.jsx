@@ -105,6 +105,8 @@ class EventList extends React.Component {
           eventRegions {
             region {
               regionName
+              regionId
+              parentRegionId
               regionType {
                 regionTypeName
               }
@@ -130,10 +132,11 @@ class EventList extends React.Component {
               event.eventRegions[0]
             )
             this.state.bottomReached = false
+            console.log(regionFilter)
             return this.buildList(filteredData
               .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
               .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
-              .filter(event => regionFilter === 0 ? true : event.Regions[0] === regionFilter)
+              .filter(event => regionFilter === 0 ? true : event.eventRegions.map(x => x.region.regionId || x.region.parentRegionId).includes(regionFilter))
               .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
               .slice(0, this.state.eventListSize)
             )

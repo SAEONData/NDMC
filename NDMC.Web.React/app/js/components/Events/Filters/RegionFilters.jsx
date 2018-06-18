@@ -38,7 +38,7 @@ const mapDispatchToProps = (dispatch) => {
 class RegionFilters extends React.Component {
   constructor(props) {
     super(props)
-    this.onChange = this.onChange.bind(this)
+    this.onSelect = this.onSelect.bind(this)
     this.state = {
       treeValue: undefined
     }
@@ -56,36 +56,30 @@ class RegionFilters extends React.Component {
   componentDidMount() {
   }
 
-  onChange(value) {
-    console.log(value)
+  onSelect(value, node, extra) {
+    let { loadRegionFilter } = this.props
     this.setState({ treeValue: value })
+    loadRegionFilter(parseInt(value))
   }
 
   transformDataTree(filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
-        regionName: i.regionName,
         parentRegionId: i.parentRegionId,
         regionId: i.regionId,
         children: [],
-        label: i.regionName, //Can be removed if not used elsewhere - replaced by text
-        text: i.regionName, //Added text property
+        label: i.regionName,
         value: `${i.regionId}`,
-        key: i.regionId, //Can be removed if not used elsewhere - replaced by id
-        id: i.regionId //Added id property
+        key: i.regionId
       }
     })
     regions.forEach(f => { f.children = regions.filter(g => g.parentRegionId === f.regionId) })
-
     var resultArray = regions.filter(f => f.parentRegionId == null)
     return resultArray
   }
 
-
   render() {
-    let { region, regionFilter } = this.props
-    let { expandedKeys } = this.state
-
+    let { regionFilter } = this.props
     const GET_REGIONS = gql`
       {
         Regions {
@@ -97,11 +91,6 @@ class RegionFilters extends React.Component {
           }
         }
       }`
-
-    if (regionFilter > 0 && region.length > 0) {
-      selectedValue = region.filter(x => x.RegionId === parseInt(regionFilter))[0].RegionName
-    }
-
     return (
       <>
         <br />
@@ -119,10 +108,9 @@ class RegionFilters extends React.Component {
                     style={{ width: "100%" }}
                     value={this.state.treeValue}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                    treeData={regionTree} // you were transforming the transformed data again here
+                    treeData={regionTree}
                     placeholder="Please select a region"
-                    // treeDefaultExpandAll - removed this prop
-                    onChange={this.onChange}
+                    onSelect={this.onSelect}
                   >
                   </TreeSelect>
                 </div>
