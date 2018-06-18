@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 
 //Local Imports
 import * as ACTION_TYPES from '../../../constants/action-types'
-import { UILookup } from '../../../constants/ui_config'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //GraphQL

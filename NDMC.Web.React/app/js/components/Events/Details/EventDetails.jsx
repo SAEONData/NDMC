@@ -8,7 +8,6 @@ import ReactTooltip from 'react-tooltip'
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
 import EventDetailsTab from './EventDetailsTab.jsx'
-import { UILookup } from '../../../constants/ui_config'
 
 //MDBReact
 import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'mdbreact'
