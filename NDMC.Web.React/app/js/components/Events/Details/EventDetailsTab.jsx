@@ -93,7 +93,7 @@ class EventDetailsTab extends React.Component {
                 id='txtEventDate'
                 inputWidth='100px'
                 valueFrom={`${startdate.getFullYear()}\/${startdate.getMonth() + 1}\/${startdate.getDate()}`}
-                valueTo={`${enddate.getFullYear()}\/${enddate.getMonth()}\/${enddate.getDay()}`}
+                valueTo={`${enddate.getFullYear()}\/${enddate.getMonth() + 1}\/${enddate.getDay()}`}
                 allowEdit={false}
               />
             </div>
