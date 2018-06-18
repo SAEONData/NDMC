@@ -1,13 +1,11 @@
 'use strict'
 
-import React from 'react'
-import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
-
 //React
+import React from 'react'
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux'
 
-//Local Imports
+//Local
 import * as ACTION_TYPES from '../../../constants/action-types'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
@@ -19,6 +17,9 @@ import gql from 'graphql-tag'
 //AntD Tree
 import Tree from 'antd/lib/tree'
 import '../../../../css/antd.tree.css'
+
+//MDBReact
+import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 
 const TreeNode = Tree.TreeNode
 
