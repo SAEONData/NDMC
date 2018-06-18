@@ -40,9 +40,7 @@ class EventList extends React.Component {
         endDate: 0
       },
       eventListSize: 10,
-      filtersChanged: false,
       bottomReached: false,
-      filtersEnabled: false
     }
     this.handleScroll = this.handleScroll.bind(this)
   }
@@ -61,9 +59,6 @@ class EventList extends React.Component {
     }
   }
 
-  updateEventList() {
-  }
-
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
@@ -71,9 +66,6 @@ class EventList extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll)
-  }
-
-  componentDidUpdate() {
   }
 
   buildList(events) {
@@ -89,7 +81,7 @@ class EventList extends React.Component {
   }
 
   render() {
-    let { hazardFilter, regionFilter, impactFilter, dateFilter, filtersChanged, filtersEnabled } = this.props
+    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
     const GET_ALL_EVENTS = gql`
       {
         Events {
