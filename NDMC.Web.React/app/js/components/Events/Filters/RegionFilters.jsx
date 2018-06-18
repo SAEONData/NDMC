@@ -59,7 +59,16 @@ class RegionFilters extends React.Component {
   onSelect(value, node, extra) {
     let { loadRegionFilter } = this.props
     this.setState({ treeValue: value })
-    loadRegionFilter(parseInt(value))
+
+    //Check if selected node is top level, if it is, dispatch an array of second level region id's so that we can filter events with third level region id's easily
+    if (node.props.parentRegionId === null) {
+      let regionFilterArray = node.props.children.map(child => parseInt(child.key))
+      regionFilterArray.push(parseInt(value))
+      loadRegionFilter(regionFilterArray)
+    }
+    else {
+      loadRegionFilter(parseInt(value))
+    }
   }
 
   transformDataTree(filteredRegions) {
@@ -96,11 +105,10 @@ class RegionFilters extends React.Component {
         <br />
         {<Query query={GET_REGIONS}>
           {({ data, loading, error }) => {
-            if (loading) return <p>Loading...</p>
-            if (error) return <p>Error Loading Data From Server...</p>
+            if (loading) return <p>Loading Region List...</p>
+            if (error) return <p>Error Loading Region List From Server...</p>
             let filteredRegions = data.Regions.filter(region => !region.regionName.includes("Ward"))
             let regionTree = this.transformDataTree(filteredRegions)
-            console.log(regionTree)
             return (
               <div className='row'>
                 <div className="col-md-6">
