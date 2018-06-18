@@ -11,9 +11,6 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //AntD Tree
-// import TreeSelect from 'antd/lib/tree-select'
-// import '../../../../css/antd.tree-select.css' //Overrides default antd.tree css
-
 import TreeSelect from 'antd/lib/tree-select'
 import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
 import '../../../../css/antd.select.css' //Overrides default antd.select css
