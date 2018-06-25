@@ -60,7 +60,8 @@ class RegionFilters extends React.Component {
     let { loadRegionFilter } = this.props
     this.setState({ treeValue: value })
 
-    //Check if selected node is top level, if it is, dispatch an array of second level region id's so that we can filter events with third level region id's easily
+    // Check if selected node is top level, if it is, create an array of second level
+    // region id's so that we can filter events with third level region id's easily
     if (node.props.parentRegionId === null) {
       let regionFilterArray = node.props.children.map(child => parseInt(child.key))
       regionFilterArray.push(parseInt(value))
@@ -71,15 +72,14 @@ class RegionFilters extends React.Component {
     }
   }
 
+  /* TransformDataTree
+  Converts a flat array of regions that contain regionId's and parentRegionId's into a region tree
+  in a format for antd's tree-select
+  */
   transformDataTree(filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
-        parentRegionId: i.parentRegionId,
-        regionId: i.regionId,
-        children: [],
-        label: i.regionName,
-        value: `${i.regionId}`,
-        key: i.regionId
+        parentRegionId: i.parentRegionId, regionId: i.regionId, children: [], label: i.regionName, value: `${i.regionId}`, key: i.regionId
       }
     })
     regions.forEach(f => { f.children = regions.filter(g => g.parentRegionId === f.regionId) })

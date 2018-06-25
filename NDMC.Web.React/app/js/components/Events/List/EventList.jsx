@@ -45,6 +45,11 @@ class EventList extends React.Component {
     this.handleScroll = this.handleScroll.bind(this)
   }
 
+
+  /*
+  Checks for if the user scrolls to the bottom of the page and if they do change state
+  to reflect this and increase the amount of events that can be displayed on the page
+  */
   handleScroll() {
     const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
     const body = document.body
@@ -54,7 +59,7 @@ class EventList extends React.Component {
     if (Math.ceil(windowBottom) >= docHeight) {
       this.setState({
         bottomReached: true,
-        eventListSize: this.state.eventListSize + 10
+        eventListSize: this.state.eventListSize + 10 //increase the amount of events that should be displayed by 10
       })
     }
   }
@@ -68,6 +73,9 @@ class EventList extends React.Component {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
+  /*
+  Create a list of event cards to be used to populate the events page and parse in the relevant information for each event
+  */
   buildList(events) {
     let ar = []
     for (let i of events) {
@@ -132,11 +140,16 @@ class EventList extends React.Component {
               event.eventRegions[0]
             )
             this.state.bottomReached = false
+
+            /*  Builds a list of events based on the relevant filters selected by the user.
+                Region Filters need two filter methods as third level regions have no identifier for what
+                their top level region is.
+             */
             return this.buildList(filteredData
               .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
               .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
               .filter(event => regionFilter === 0 ? true :
-                event.eventRegions.map(x => x.region.parentRegionId ).some(x => Array.isArray(regionFilter) ? regionFilter.includes(x) : x === regionFilter)
+                event.eventRegions.map(x => x.region.parentRegionId).some(x => Array.isArray(regionFilter) ? regionFilter.includes(x) : x === regionFilter)
                 ||
                 event.eventRegions.map(x => x.region.regionId).some(x => Array.isArray(regionFilter) ? regionFilter.includes(x) : x === regionFilter))
               .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
