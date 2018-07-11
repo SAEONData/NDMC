@@ -27,17 +27,7 @@ class Events extends React.Component {
 
   constructor(props) {
     super(props)
-
     this.backToTop = this.backToTop.bind(this)
-
-    //Read polygon filter from URL
-    const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
-
-    if (typeof parsedHash.polygon !== 'undefined') {
-
-      //Dispatch to store
-      this.props.loadPolygonFilter(parsedHash.polygon)
-    }
   }
 
   backToTop() {
