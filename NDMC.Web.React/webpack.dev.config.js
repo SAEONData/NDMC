@@ -1,9 +1,15 @@
-const path = require('path')
+//Webpack
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const cwd = process.cwd()
+const CopywebpackPlugin = require('copy-webpack-plugin')
 
+// CesiumJs
+const cesiumSource = '../node_modules/cesium/Source'
+const cesiumWorkers = '../Build/Cesium/Workers'
+
+const path = require('path')
 const mode = 'development'
+const cwd = process.cwd()
 
 /**
  * Config
@@ -15,68 +21,82 @@ module.exports = {
   entry: {
     app: ['./js/index.jsx'],
     react: ['react', 'react-dom', 'react-router-dom', 'react-router', 'redux', 'react-redux', 'react-router-redux', 'react-tap-event-plugin', 'history'],
-    //styles: ['font-awesome/css/font-awesome.min.css', 'bootstrap/dist/css/bootstrap.min.css', 'mdbreact/docs/css/mdb.min.css']
   },
-
+  devServer: {
+    contentBase: path.join(__dirname, "dist")
+  },
   output: {
     path: path.resolve('dev-dist'),
-    filename: 'bundle_dev_[name].js'
+    filename: 'bundle_dev_[name].js',
+    // Needed to compile multiline strings in Cesium
+    sourcePrefix: '',
+  },
+  amd: {
+    // Enable webpack-friendly use of require in Cesium
+    toUrlUndefined: true
+  },
+  node: {
+    // Resolve node module use of fs
+    fs: 'empty'
+  },
+  resolve: {
+    alias: {
+      // Cesium module name
+      cesium: path.resolve(__dirname + '/node_modules/cesium/Source')
+    }
   },
 
   module: {
+    // Ignore Cesium warnings
+    unknownContextCritical: false,
     rules: [{
       test: /\.jsx?$/,
       use: ['babel-loader'],
       exclude: /node_modules/
-    },
-    {
+    }, {
       test: /\.json$/,
       use: [
         'json-loader'
       ]
-    },
-    {
+    }, {
       test: /\.css$/,
       use: [
         'style-loader',
         'css-loader'
       ]
-    },
-    {
+    }, {
       test: /\.less$/,
       use: [
         'style-loader',
         'css-loader',
         'less-loader'
       ]
-    },
-    {
+    }, {
       test: /\.scss$/,
       use: [
         'style-loader',
         'css-loader',
         'scss-loader'
       ]
-    },
-    {
+    }, {
       test: /\.(png|jpg|jpeg|svg|gif)$/,
       use: [
         'file-loader'
       ]
-    },
-    {
+    }, {
       test: /\.(woff|woff2|eot|ttf|otf)$/,
       use: [
         'file-loader'
       ]
-    },
-    {
+    }, {
       //For Graphql imports
       test: /\.mjs$/,
       include: /node_modules/,
       type: "javascript/auto",
-    }
-    ]
+    }, {
+      test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
+      use: ['url-loader']
+    }]
   },
 
   plugins: [
@@ -85,9 +105,17 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       CONSTANTS: {
-        PRODUCTION: mode === 'production'
+        PRODUCTION: mode === 'PRODUCTION'
       }
     }),
-    new webpack.IgnorePlugin(/^(fs|ipc)$/)
+    new webpack.IgnorePlugin(/^(fs|ipc)$/),
+    // Copy Cesium Assets, Widgets, and Workers to a static directory
+    new CopywebpackPlugin([{ from: path.join(cesiumSource, cesiumWorkers), to: 'Workers' }]),
+    new CopywebpackPlugin([{ from: path.join(cesiumSource, 'Assets'), to: 'Assets' }]),
+    new CopywebpackPlugin([{ from: path.join(cesiumSource, 'Widgets'), to: 'Widgets' }]),
+    new webpack.DefinePlugin({
+      // Define relative base path in cesium for loading assets
+      CESIUM_BASE_URL: JSON.stringify('')
+    })
   ]
 }

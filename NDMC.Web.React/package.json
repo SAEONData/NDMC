@@ -1,12 +1,13 @@
 {
   "name": "ndmc",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
     "start": "npm run webpack-app --optimize-minimize --progress & echo 'Output files are saved in ./dist'",
     "app-dev": "./node_modules/.bin/webpack-dev-server --watch-poll --progress=true --config ./webpack.dev.config.js",
     "webpack-app": "./node_modules/.bin/webpack -p",
-    "webpack-dev": "./node_modules/.bin/webpack --progress=true --config ./webpack.dev.config.js"
+    "webpack-dev": "./node_modules/.bin/webpack --progress=true --config ./webpack.dev.config.js",
+    "build": "node_modules/.bin/webpack --config webpack.config.js"
   },
   "author": "SAEON",
   "license": "MIT",
@@ -17,7 +18,6 @@
     "apollo-cache-inmemory": "^1.2.1",
     "apollo-client": "^2.3.1",
     "bootstrap": "^4.0.0",
-    "copy-webpack-plugin": "^4.5.1",
     "font-awesome": "^4.7.0",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
@@ -50,6 +50,8 @@
     "@babel/preset-env": "^7.0.0-beta.44",
     "@babel/preset-react": "^7.0.0-beta.44",
     "babel-loader": "^8.0.0-beta",
+    "cesium": "^1.47.0",
+    "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^0.28.10",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.0.6",
@@ -57,6 +59,7 @@
     "less-loader": "^4.0.6",
     "react-hot-loader": "^4.0.0",
     "style-loader": "^0.20.2",
+    "url-loader": "^1.0.1",
     "webpack": "^4.12.0",
     "webpack-cli": "^2.0.10",
     "webpack-dev-server": "^3.1.4"

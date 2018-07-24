@@ -1,11 +1,15 @@
-const path = require('path')
+// Webpack
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const cwd = process.cwd()
-
-const mode = 'production'
-
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+//CesiumJs
+const cesiumSource = '../node_modules/cesium/Source'
+const cesiumWorkers = '../Build/Cesium/Workers'
+
+const path = require('path')
+const cwd = process.cwd()
+const mode = 'production'
 
 const config = {
   plugins: [
@@ -26,7 +30,26 @@ module.exports = {
 
   output: {
     path: path.resolve('dist'),
-    filename: 'bundle_[name].js'
+    filename: 'bundle_[name].js',
+    // Needed to compile multiline strings in Cesium
+    sourcePrefix: ''
+  },
+
+  amd: {
+    // Enable webpack-friendly use of require in Cesium
+    toUrlUndefined: true
+  },
+
+  node: {
+    // Resolve node module use of fs
+    fs: 'empty'
+  },
+
+  resolve: {
+    alias: {
+      // Cesium module name
+      cesium: path.resolve(__dirname + 'node_modules/cesium/Source')
+    }
   },
 
   module: {
@@ -95,12 +118,17 @@ module.exports = {
       }
     }),
     new webpack.IgnorePlugin(/^(fs|ipc|cfg)$/),
-    new CopyWebpackPlugin([
-      {
-        from: 'js/constants/ui_config.cfg',
-        to: 'ui_config.cfg',
-        toType: 'file'
-      }
-    ])
+    new CopyWebpackPlugin([{
+      from: 'js/constants/ui_config.cfg', to: 'ui_config.cfg', toType: 'file'
+    }
+    ]),
+    // Copy Cesium Assets, Widgets, and Workers to a static directory
+    new CopywebpackPlugin([{ from: path.join(cesiumSource, cesiumWorkers), to: 'Workers' }]),
+    new CopywebpackPlugin([{ from: path.join(cesiumSource, 'Assets'), to: 'Assets' }]),
+    new CopywebpackPlugin([{ from: path.join(cesiumSource, 'Widgets'), to: 'Widgets' }]),
+    new webpack.DefinePlugin({
+      // Define relative base path in cesium for loading assets
+      CESIUM_BASE_URL: JSON.stringify('')
+  })
   ]
 }
