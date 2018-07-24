@@ -22,7 +22,7 @@ import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import Home from './components/Base/Home.jsx'
 import Events from './components/Events/List/Events.jsx'
 import EventDetails from './components/Events/Details/EventDetails.jsx'
-import Graphs from './components/Events/Graphs/EventGraph.jsx'
+import Mapp from './components/Events/Overview/Map.jsx'
 import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 
@@ -98,7 +98,7 @@ class App extends React.Component {
               <Route path='/' component={Home} exact />
               <Route path='/events' component={Events} exact />
               <Route path='/events/:id' component={EventDetails} exact />
-              <Route path='/graphs' component={Graphs} exact />
+              <Route path='/graphs' component={Mapp} exact />
             </Switch>
           </div>
         </Router>
