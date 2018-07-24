@@ -27,85 +27,78 @@ module.exports = {
     app: ['./js/index.jsx'],
     react: ['react', 'react-dom', 'react-router-dom', 'react-router', 'redux', 'react-redux', 'react-router-redux', 'react-tap-event-plugin', 'history'],
   },
-
+  devServer: {
+    contentBase: path.join(__dirname, "dist")
+  },
   output: {
     path: path.resolve('dist'),
     filename: 'bundle_[name].js',
     // Needed to compile multiline strings in Cesium
     sourcePrefix: ''
   },
-
   amd: {
     // Enable webpack-friendly use of require in Cesium
     toUrlUndefined: true
   },
-
   node: {
     // Resolve node module use of fs
     fs: 'empty'
   },
-
   resolve: {
     alias: {
       // Cesium module name
       cesium: path.resolve(__dirname + 'node_modules/cesium/Source')
     }
   },
-
   module: {
     rules: [{
       test: /\.jsx?$/,
       use: ['babel-loader'],
       exclude: /node_modules/
-    },
-    {
+    }, {
       test: /\.json$/,
       use: [
         'json-loader'
       ]
-    },
-    {
+    }, {
       test: /\.css$/,
       use: [
         'style-loader',
         'css-loader'
       ]
-    },
-    {
+    }, {
       test: /\.less$/,
       use: [
         'style-loader',
         'css-loader',
         'less-loader'
       ]
-    },
-    {
+    }, {
       test: /\.scss$/,
       use: [
         'style-loader',
         'css-loader',
         'scss-loader'
       ]
-    },
-    {
+    }, {
       test: /\.(png|jpg|jpeg|svg|gif)$/,
       use: [
         'file-loader'
       ]
-    },
-    {
+    }, {
       test: /\.(woff|woff2|eot|ttf|otf)$/,
       use: [
         'file-loader'
       ]
-    },
-    {
+    }, {
       //For Graphql imports
       test: /\.mjs$/,
       include: /node_modules/,
       type: "javascript/auto",
-    }
-    ]
+    }, {
+      test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
+      use: ['url-loader']
+    }]
   },
 
   plugins: [
@@ -114,7 +107,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       CONSTANTS: {
-        PRODUCTION: mode === 'production'
+        PRODUCTION: mode === 'PRODUCTION'
       }
     }),
     new webpack.IgnorePlugin(/^(fs|ipc|cfg)$/),
@@ -129,6 +122,6 @@ module.exports = {
     new webpack.DefinePlugin({
       // Define relative base path in cesium for loading assets
       CESIUM_BASE_URL: JSON.stringify('')
-  })
+    })
   ]
 }

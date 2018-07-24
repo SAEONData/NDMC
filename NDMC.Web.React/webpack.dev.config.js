@@ -45,7 +45,6 @@ module.exports = {
       cesium: path.resolve(__dirname + '/node_modules/cesium/Source')
     }
   },
-
   module: {
     // Ignore Cesium warnings
     unknownContextCritical: false,
