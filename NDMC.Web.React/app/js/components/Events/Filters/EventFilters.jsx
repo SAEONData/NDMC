@@ -87,27 +87,29 @@ class EventFilters extends React.Component {
         <hr />
         <div className='row'>
           <div className='col-md-2'>
-            <Button block color={this.getBottonColor(this.state.collapseRegion)} className='btn-sm' onTouchTap={this.toggleRegion}>
+            <Button block color={this.getBottonColor(this.state.collapseRegion)} className='btn-sm' onClick={this.toggleRegion}>
               Region filters
             </Button>
           </div>
           <div className='col-md-2'>
-            <Button block color={this.getBottonColor(this.state.collapseHazard)} className='btn-sm' onTouchTap={this.toggleHazard}>
+            <Button block color={this.getBottonColor(this.state.collapseHazard)} className='btn-sm' onClick={this.toggleHazard}>
               Hazard filters
             </Button>
           </div>
           <div className='col-md-2'>
-            <Button block color={this.getBottonColor(this.state.collapseDate)} className='btn-sm' onTouchTap={this.toggleDate}>
+            <Button block color={this.getBottonColor(this.state.collapseDate)} className='btn-sm' onClick={this.toggleDate}>
               Date filters
             </Button>
           </div>
           <div className='col-md-2'>
-            <Button block color={this.getBottonColor(this.state.collapseImpact)} className='btn-sm' onTouchTap={this.toggleImpact}>
+            <Button block color={this.getBottonColor(this.state.collapseImpact)} className='btn-sm' onClick={this.toggleImpact}>
               Impact filters
             </Button>
           </div>
+          <div className='col-md-1'>
+          </div>
           <div className='col-md-3'>
-            <Button block color='secondary' className='btn-sm' onTouchTap={this.clearFilters}>
+            <Button block color='secondary' className='btn-sm' onClick={this.clearFilters}>
               <i className='fa fa-eraser' aria-hidden='true' />&nbsp;&nbsp;Clear filters
             </Button>
           </div>

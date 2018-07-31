@@ -33,7 +33,7 @@ class EventCard extends React.Component {
               {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br />
               {hazardtype ? `Type: ${hazardtype}` : ' '}
             </CardText>
-            <Button color='primary' className='btn-sm' onTouchTap={this.onTouchTap.bind(this)}>View</Button>
+            <Button color='primary' className='btn-sm' onClick={this.onTouchTap.bind(this)}>View</Button>
           </CardBody>
         </Card>
         <br />

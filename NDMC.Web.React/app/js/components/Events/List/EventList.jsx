@@ -131,8 +131,14 @@ class EventList extends React.Component {
         />
         <Query query={GET_ALL_EVENTS}>
           {({ loading, error, data }) => {
-            if (loading) return <div> {toast.info('Fetching list of events')} </div>
-            if (error) return <p> {toast.error('error fetching list from server')}</p>
+            if (loading) {
+              toast.info('Fetching list of events')
+              return <div>Loading...</div>
+            }
+            if (error) {
+              toast.error('error fetching list from server')
+              return <div>Unable to load events, please contact the site administrator</div>
+            }
             toast.success('Successfully loaded Events!')
             const filteredData = data.Events.filter(event =>
               event.typeEvent &&

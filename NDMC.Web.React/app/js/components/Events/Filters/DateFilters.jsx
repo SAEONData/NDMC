@@ -95,7 +95,7 @@ class DateFilters extends React.Component {
             color="primary"
             size="md"
             style={{ height: "35px", float: "left" }}
-            onTouchTap={this.applyClick} >
+            onClick={this.applyClick} >
             Apply
              </Button>
         </div>

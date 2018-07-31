@@ -5,6 +5,9 @@ import React from 'react'
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux'
 
+//MDBReact
+import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
+
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
@@ -18,15 +21,12 @@ import gql from 'graphql-tag'
 import Tree from 'antd/lib/tree'
 import '../../../../css/antd.tree.css'
 
-//MDBReact
-import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
-
 const TreeNode = Tree.TreeNode
 
 const queryString = require('query-string')
 const mapStateToProps = (state, props) => {
   let { filterData: { impactFilter } } = state
-  return {impactFilter }
+  return { impactFilter }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -37,11 +37,13 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+let _data = { TypeImpacts: [] }
+
 class impactFilters extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: 'Choose Impact Type'
+      value: 'Choose your option'
     }
     this.optionClick = this.optionClick.bind(this)
     this.onClick = this.onClick.bind(this)
@@ -63,13 +65,19 @@ class impactFilters extends React.Component {
     }
   }
 
-  optionClick(value, id) {
+  optionClick(value) {
     let { loadImpactFilter } = this.props
-    if (typeof value === 'undefined') {
-      value = 'undefined'
+    let id = 0
+
+    let filteredData = _data.TypeImpacts.filter(x => x.typeImpactName === value)
+    if (filteredData.length > 0) {
+      id = filteredData[0].typeImpactId
     }
-    this.setState({ value })
-    loadImpactFilter(id)
+
+    if (value !== this.state.value) {
+      this.setState({ value })
+      loadImpactFilter(id)
+    }
   }
 
   onClick(e) {
@@ -109,15 +117,19 @@ class impactFilters extends React.Component {
       <>
         <div className='row'>
           <div className='col-md-4'>
-            <Select>
+            <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
                 {<Query query={GET_IMPACTS}>
                   {({ loading, error, data }) => {
                     if (loading) return <p>Loading...</p>
                     if (error) return <p>Error Loading Data From Server...</p>
+
+                    //Keep data for later
+                    _data = data
+
                     return data.TypeImpacts.map(item => {
-                      return <SelectOption triggerOptionClick={(e) => this.optionClick(e, item.typeImpactId)} key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
+                      return <SelectOption key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
                     })
                   }
                   }

@@ -79,7 +79,7 @@ class RegionFilters extends React.Component {
   transformDataTree(filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
-        parentRegionId: i.parentRegionId, regionId: i.regionId, children: [], label: i.regionName, value: `${i.regionId}`, key: i.regionId
+        parentRegionId: i.parentRegionId, regionId: i.regionId, children: [], title: i.regionName, value: `${i.regionId}`, key: i.regionId
       }
     })
     regions.forEach(f => { f.children = regions.filter(g => g.parentRegionId === f.regionId) })

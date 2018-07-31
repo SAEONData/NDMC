@@ -3,6 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { UILookup } from '../../constants/ui_config.js'
+import { Input } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { editMode } } = state
@@ -118,21 +119,30 @@ class RangeComponent extends React.Component {
 
         {this.getLabel()}
 
-        {this.getPrefix()}
-        <input id={this.getId('from')} type='text' readOnly={!editMode}
-          style={{ color: this.getFontColour(), width: inputWidth }} value={this.fixNullOrUndefinedValue(valueFrom)}
-          onChange={this.valueFromChange.bind(this)}
-        />
-        {this.getSuffix()}
+        <div className="row" style={{marginTop: "8px"}}>
 
-        <label style={{ marginLeft: '10px', marginRight: '10px' }}> - </label>
+          <span style={{ width: "16px" }} />
 
-        {this.getPrefix()}
-        <input id={this.getId('to')} type='text' readOnly={!editMode}
-          style={{ color: this.getFontColour(), width: inputWidth }} value={this.fixNullOrUndefinedValue(valueTo)}
-          onChange={this.valueToChange.bind(this)}
-        />
-        {this.getSuffix()}
+          {this.getPrefix()}
+
+          <Input size="sm" id={this.getId("from")} readOnly={!editMode}
+            style={{ marginTop: "-31px", marginBottom: "-25px", color: this.getFontColour(), width: inputWidth, border: "1px solid lightgrey", borderRadius: "5px", padding: "5px" }}
+            value={this.fixNullOrUndefinedValue(valueFrom)}
+            onChange={this.valueFromChange.bind(this)} />
+
+          {this.getSuffix()}
+
+          <h6 style={{ marginTop: "5px", marginLeft: "10px", marginRight: "10px" }}> - </h6>
+
+          {this.getPrefix()}
+
+          <Input size="sm" id={this.getId("to")} readOnly={!editMode}
+            style={{ marginTop: "-31px", marginBottom: "-25px", color: this.getFontColour(), width: inputWidth, border: "1px solid lightgrey", borderRadius: "5px", padding: "5px" }}
+            value={this.fixNullOrUndefinedValue(valueTo)}
+            onChange={this.valueToChange.bind(this)} />
+
+          {this.getSuffix()}
+        </div>
       </div>
     )
   }

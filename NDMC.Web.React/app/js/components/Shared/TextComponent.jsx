@@ -3,6 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { UILookup } from '../../constants/ui_config.js'
+import { Input } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { editMode } } = state
@@ -71,11 +72,9 @@ class TextComponent extends React.Component {
 
     return (
       <div className={col}>
-        <label data-tip={uiconf.tooltip} style={{ fontWeight: 'bold', color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
-        <input
-          id={id} type='text' readOnly={!editMode} value={value} onChange={this.valueChange.bind(this)}
-          style={{ color: this.getFontColour() }}
-        />
+        <label data-tip={uiconf.tooltip} style={{ fontWeight: 'bold', color: this.getLabelFontColour(uiconf), marginBottom: "0px" }}>{uiconf.label}</label>
+        <Input size="sm" id={id} readOnly={!editMode} value={value} onChange={this.valueChange.bind(this)}
+          style={{ marginTop: "-15px", color: this.getFontColour(), border: "1px solid lightgrey", borderRadius: "5px", padding: "5px" }} />
       </div>
     )
   }

@@ -45,7 +45,7 @@ class Events extends React.Component {
     return (
       <>
         <div style={{ position: 'fixed', right: '14%', bottom: '10px', zIndex: '99' }}>
-          <Button color='secondary' className='btn-sm' onTouchTap={this.backToTop} >
+          <Button color='secondary' className='btn-sm' onClick={this.backToTop} >
             <i className='fa fa-arrow-circle-up' aria-hidden='true' />
             &nbsp;&nbsp;
             Back to top
