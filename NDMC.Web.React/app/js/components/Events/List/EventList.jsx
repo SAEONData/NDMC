@@ -14,7 +14,7 @@ import gql from 'graphql-tag'
 
 //MDBReact
 import { ToastContainer, toast } from 'react-toastify'
-import { Button } from 'mdbreact'
+import { Button, Chip } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state
@@ -32,9 +32,9 @@ class EventList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      hazardFilter: 0,
-      regionFilter: 0,
-      impactFilter: 0,
+      hazardFilter: { id: 0, name: '' },
+      regionFilter: { id: 0, name: '' },
+      impactFilter: { id: 0, name: '' },
       dateFilter: {
         startDate: 0,
         endDate: 0
@@ -43,6 +43,7 @@ class EventList extends React.Component {
       bottomReached: false,
     }
     this.handleScroll = this.handleScroll.bind(this)
+    this.handleTags = this.handleTags.bind(this)
   }
 
 
@@ -88,6 +89,28 @@ class EventList extends React.Component {
     return ar
   }
 
+  handleTags() {
+    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
+    let taglist = []
+    if (hazardFilter.name) {
+      taglist.push(<Chip waves close> {hazardFilter.name} </Chip>)
+    }
+    if (regionFilter.name) {
+      taglist.push(<Chip waves close> {regionFilter.name} </Chip>)
+    }
+    if (impactFilter.name) {
+      taglist.push(<Chip waves close> {impactFilter.name} </Chip>)
+    }
+    if (dateFilter.startDate) {
+      let start = new Date(dateFilter.startDate * 1000)
+      let end = new Date(dateFilter.endDate * 1000)
+      let startdate = `${start.getDate()}\/${start.getMonth()}\/${start.getFullYear()}`
+      let endDate = `${end.getDate()}\/${end.getMonth()}\/${end.getFullYear()}`
+      taglist.push(<Chip waves close> {`${startdate}-${endDate}`} </Chip>)
+    }
+    return taglist
+  }
+
   render() {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
     const GET_ALL_EVENTS = gql`
@@ -124,6 +147,7 @@ class EventList extends React.Component {
       }`
     return (
       <div>
+        <div> {this.handleTags()} </div>
         <ToastContainer
           hideProgressBar={true}
           newestOnTop={true}
@@ -146,18 +170,17 @@ class EventList extends React.Component {
               event.eventRegions[0]
             )
             this.state.bottomReached = false
-
             /*  Builds a list of events based on the relevant filters selected by the user.
                 Region Filters need two filter methods as third level regions have no identifier for what
                 their top level region is.
              */
             return this.buildList(filteredData
-              .filter(event => hazardFilter === 0 ? true : event.typeEvent.typeEventId === hazardFilter)
-              .filter(event => impactFilter === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter))
-              .filter(event => regionFilter === 0 ? true :
-                event.eventRegions.map(x => x.region.parentRegionId).some(x => Array.isArray(regionFilter) ? regionFilter.includes(x) : x === regionFilter)
+              .filter(event => hazardFilter.id === 0 ? true : event.typeEvent.typeEventId === hazardFilter.id)
+              .filter(event => impactFilter.id === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter.id))
+              .filter(event => regionFilter.id === 0 ? true :
+                event.eventRegions.map(x => x.region.parentRegionId).some(x => Array.isArray(regionFilter.id) ? regionFilter.id.includes(x) : x === regionFilter.id)
                 ||
-                event.eventRegions.map(x => x.region.regionId).some(x => Array.isArray(regionFilter) ? regionFilter.includes(x) : x === regionFilter))
+                event.eventRegions.map(x => x.region.regionId).some(x => Array.isArray(regionFilter.id) ? regionFilter.id.includes(x) : x === regionFilter.id))
               .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
               .slice(0, this.state.eventListSize)
             )
