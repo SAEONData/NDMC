@@ -101,7 +101,7 @@ class EventDetailsTab extends React.Component {
                   col='col-md-4'
                   label='Declared Date'
                   id='txtDeclaredDate'
-                  value={declareddate ? 'No date available' : declareddate.toDateString()}
+                  value={declareddate ? 'No declared date available' : declareddate.toDateString()}
                   allowEdit={false}
                 />
               </div>
