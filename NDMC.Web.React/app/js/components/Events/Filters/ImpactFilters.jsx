@@ -2,7 +2,6 @@
 
 //React
 import React from 'react'
-import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux'
 
 //MDBReact
@@ -13,15 +12,8 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //GraphQL
-import { graphql } from 'graphql'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
-
-//AntD Tree
-import Tree from 'antd/lib/tree'
-import '../../../../css/antd.tree.css'
-
-const TreeNode = Tree.TreeNode
 
 const queryString = require('query-string')
 const mapStateToProps = (state, props) => {
@@ -38,7 +30,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 let _data = { TypeImpacts: [] }
-
 class impactFilters extends React.Component {
   constructor(props) {
     super(props)
@@ -48,19 +39,13 @@ class impactFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
     this.onClick = this.onClick.bind(this)
     this.otherDropdownsClose = this.otherDropdownsClose.bind(this)
-    const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
-    if (typeof parsedHash.impacts !== 'undefined') {
-      let { loadImpactFilter } = this.props
-      loadImpactFilter(parsedHash.impact)
-      stripURLParam('impact=' + parsedHash.impact)
-    }
   }
 
   otherDropdownsClose() {
     let dropdowns = document.querySelectorAll('.dropdown-content');
     for (let i = 0; i < dropdowns.length; i++) {
       if (dropdowns[i].classList.contains('fadeIn')) {
-        dropdowns[i].classList.remove('fadeIn');
+        dropdowns[i].classList.remove('fadeIn')
       }
     }
   }
@@ -68,12 +53,10 @@ class impactFilters extends React.Component {
   optionClick(value) {
     let { loadImpactFilter } = this.props
     let id = 0
-
     let filteredData = _data.TypeImpacts.filter(x => x.typeImpactName === value)
     if (filteredData.length > 0) {
       id = filteredData[0].typeImpactId
     }
-
     if (value !== this.state.value) {
       this.setState({ value })
       loadImpactFilter(id)
@@ -81,22 +64,20 @@ class impactFilters extends React.Component {
   }
 
   onClick(e) {
-
     if (e.target.dataset.multiple === 'true') {
-      return;
+      return
     }
     if (e.target.classList.contains('select-dropdown')) {
-      this.otherDropdownsClose();
+      this.otherDropdownsClose()
       if (e.target.nextElementSibling) {
-        e.target.nextElementSibling.classList.add('fadeIn');
+        e.target.nextElementSibling.classList.add('fadeIn')
       }
     } else {
-      this.otherDropdownsClose();
+      this.otherDropdownsClose()
     }
   }
 
   componentDidMount() {
-    let { loadImpacts } = this.props
     document.addEventListener('click', this.onClick);
   }
 
@@ -105,7 +86,6 @@ class impactFilters extends React.Component {
   }
 
   render() {
-    let { impact, impacts } = this.props
     const GET_IMPACTS = gql`
     {
       TypeImpacts {
@@ -124,15 +104,15 @@ class impactFilters extends React.Component {
                   {({ loading, error, data }) => {
                     if (loading) return <p>Loading...</p>
                     if (error) return <p>Error Loading Data From Server...</p>
-
-                    //Keep data for later
+                    // Sort impacts alphabetically
+                    let sorted = data.TypeImpacts.map(x => { return { typeImpactName: x.typeImpactName, typeImpactId: x.typeImpactId } })
+                      .sort((c, n) => c.typeImpactName.localeCompare(n.typeImpactName))
+                    console.log(sorted)
                     _data = data
-
-                    return data.TypeImpacts.map(item => {
+                    return sorted.map(item => {
                       return <SelectOption key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
                     })
-                  }
-                  }
+                  }}
                 </Query>
                 }
               </SelectOptions>
