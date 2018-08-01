@@ -25,7 +25,7 @@ const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter } } = state
-  return {hazardFilter}
+  return { hazardFilter }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -36,11 +36,16 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+
+let _data = { TypeEvents: [] }
+
 class HazardFilters extends React.Component {
+
   constructor(props) {
     super(props)
     this.state = {
-      value: "Choose Hazard Type"
+      value: "Choose your option",
+      data: []
     }
     this.optionClick = this.optionClick.bind(this)
     this.onClick = this.onClick.bind(this)
@@ -62,13 +67,20 @@ class HazardFilters extends React.Component {
     }
   }
 
-  optionClick(value, id) {
-    let { loadHazardFilter, hazardTree } = this.props
-    if (typeof value === 'undefined') {
-      value = 'undefined'
+  optionClick(value) {
+
+    let { loadHazardFilter } = this.props
+    let id = 0
+
+    let filteredData = _data.TypeEvents.filter(x => x.typeEventName === value)
+    if (filteredData.length > 0) {
+      id = filteredData[0].typeEventId
     }
-    this.setState({ value})
-    loadHazardFilter(id)
+
+    if (value !== this.state.value) {
+      this.setState({ value })
+      loadHazardFilter(id)
+    }
   }
 
   onClick(e) {
@@ -106,15 +118,19 @@ class HazardFilters extends React.Component {
       <>
         <div className="row">
           <div className="col-md-4">
-            <Select>
+            <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
                 {<Query query={GET_HAZARDS}>
                   {({ data, loading, error }) => {
-                    if (error) return <p >Error Loading Data From Server </p>
-                    if (loading) return <p> wait for it... </p>
+                    if (error) return <p>Error Loading Data From Server</p>
+                    if (loading) return <p>Loading...</p>
+
+                    //Keep data for later
+                    _data = data
+
                     return data.TypeEvents.map(item => {
-                      return <SelectOption triggerOptionClick={(e) => this.optionClick(e, item.typeEventId)} key={item.typeEventId}>{item.typeEventName}</SelectOption>
+                      return <SelectOption key={item.typeEventId}>{item.typeEventName}</SelectOption>
                     })
                   }
                   }

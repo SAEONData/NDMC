@@ -59,7 +59,7 @@ class EventDetails extends React.Component {
     const { eventId } = this.state
     return (
       <>
-        <Button style={{ width: '100px', margin: '8px 0px 8px 0px' }} color='secondary' size='sm' id='btnBackToList' onTouchTap={this.backToList}>
+        <Button style={{ width: '100px', margin: '8px 0px 8px 0px' }} color='secondary' size='sm' id='btnBackToList' onClick={this.backToList}>
           <i className='fa fa-chevron-circle-left' aria-hidden='true'></i>&nbsp;&nbsp;Back
         </Button>
         <br />

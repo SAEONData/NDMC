@@ -69,15 +69,15 @@ class TextAreaComponent extends React.Component {
 
     return (
       <div className={col}>
-        <label data-tip={uiconf.tooltip} style={{ fontWeight: 'bold', color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
+        <label data-tip={uiconf.tooltip} style={{ fontWeight: "bold", color: this.getLabelFontColour(uiconf) }}>{uiconf.label}</label>
         <TextareaAutosize
           readOnly={!editMode}
           style={{
-            borderStyle: 'solid',
-            borderWidth: '0px 0px 1px 0px',
-            borderColor: '#b4b4b4',
-            paddingBottom: '4px',
-            color: this.getFontColour()
+            border: "1px solid lightgrey",
+            borderRadius: "5px",
+            padding: "5px",
+            color: this.getFontColour(),
+            width: "100%"
           }}
           value={value}
           onChange={this.valueChange.bind(this)}
