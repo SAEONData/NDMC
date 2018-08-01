@@ -4,23 +4,18 @@
 import React from 'react'
 import { Button } from 'mdbreact'
 import { connect } from 'react-redux'
-import ReactTooltip from 'react-tooltip'
 
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
-import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //AntD Tree
 import TreeSelect from 'antd/lib/tree-select'
 import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
 import '../../../../css/antd.select.css' //Overrides default antd.select css
-const TreeSelectNode = TreeSelect.TreeNode
 
 //GraphQL
-import { graphql } from 'graphql'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
-const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter } } = state
@@ -42,21 +37,12 @@ class RegionFilters extends React.Component {
     this.state = {
       treeValue: undefined
     }
-
-    //Read initial filter from URL
-    const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
-    if (typeof parsedHash.region !== 'undefined') {
-      //Dispatch to store
-      let { loadRegionFilter } = this.props
-      loadRegionFilter(parsedHash.region)
-      stripURLParam('region=' + parsedHash.region)
-    }
   }
 
   componentDidMount() {
   }
 
-  onSelect(value, node, extra) {
+  onSelect(value, node) {
     let { loadRegionFilter } = this.props
     this.setState({ treeValue: value })
 
@@ -65,10 +51,10 @@ class RegionFilters extends React.Component {
     if (node.props.parentRegionId === null) {
       let regionFilterArray = node.props.children.map(child => parseInt(child.key))
       regionFilterArray.push(parseInt(value))
-      loadRegionFilter(regionFilterArray)
+      loadRegionFilter({ id: regionFilterArray, name: node.props.title })
     }
     else {
-      loadRegionFilter(parseInt(value))
+      loadRegionFilter({ id: parseInt(value), name: node.props.title })
     }
   }
 
@@ -88,7 +74,6 @@ class RegionFilters extends React.Component {
   }
 
   render() {
-    let { regionFilter } = this.props
     const GET_REGIONS = gql`
       {
         Regions {

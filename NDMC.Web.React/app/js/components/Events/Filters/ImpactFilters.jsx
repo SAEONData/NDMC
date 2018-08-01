@@ -9,13 +9,11 @@ import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbrea
 
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
-import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //GraphQL
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
-const queryString = require('query-string')
 const mapStateToProps = (state, props) => {
   let { filterData: { impactFilter } } = state
   return { impactFilter }
@@ -59,7 +57,7 @@ class impactFilters extends React.Component {
     }
     if (value !== this.state.value) {
       this.setState({ value })
-      loadImpactFilter(id)
+      loadImpactFilter({id: id, name: value})
     }
   }
 
@@ -107,7 +105,6 @@ class impactFilters extends React.Component {
                     // Sort impacts alphabetically
                     let sorted = data.TypeImpacts.map(x => { return { typeImpactName: x.typeImpactName, typeImpactId: x.typeImpactId } })
                       .sort((c, n) => c.typeImpactName.localeCompare(n.typeImpactName))
-                    console.log(sorted)
                     _data = data
                     return sorted.map(item => {
                       return <SelectOption key={item.typeImpactId}>{item.typeImpactName}</SelectOption>

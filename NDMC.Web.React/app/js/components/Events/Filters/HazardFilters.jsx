@@ -3,25 +3,16 @@
 //React
 import React from 'react'
 import { connect } from 'react-redux'
-import ReactTooltip from 'react-tooltip'
 
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
-import { stripURLParam, GetUID } from '../../../globalFunctions.js'
-
-//AntD Tree
-import Tree from 'antd/lib/tree'
-import '../../../../css/antd.tree.css' //Overrides default antd.tree css
-const TreeNode = Tree.TreeNode
 
 //MDBReact
 import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 
 //GraphQl
-import { Query, ApolloConsumer } from 'react-apollo'
+import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
-
-const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter } } = state
@@ -35,12 +26,9 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 }
-
-
 let _data = { TypeEvents: [] }
 
 class HazardFilters extends React.Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -50,12 +38,7 @@ class HazardFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
     this.onClick = this.onClick.bind(this)
     this.otherDropdownsClose = this.otherDropdownsClose.bind(this)
-    const parsedHash = queryString.parse(location.hash.replace('/events?', ''))
-    if (typeof parsedHash.hazard !== 'undefined') {
-      let { loadHazardFilter } = this.props
-      loadHazardFilter(parsedHash.hazard)
-      stripURLParam('hazard=' + parsedHash.hazard)
-    }
+
   }
 
   otherDropdownsClose() {
@@ -68,23 +51,19 @@ class HazardFilters extends React.Component {
   }
 
   optionClick(value) {
-
     let { loadHazardFilter } = this.props
     let id = 0
-
     let filteredData = _data.TypeEvents.filter(x => x.typeEventName === value)
     if (filteredData.length > 0) {
       id = filteredData[0].typeEventId
     }
-
     if (value !== this.state.value) {
       this.setState({ value })
-      loadHazardFilter(id)
+      loadHazardFilter({id: id, name: value})
     }
   }
 
   onClick(e) {
-
     if (e.target.dataset.multiple === 'true') {
       return
     }
@@ -125,10 +104,8 @@ class HazardFilters extends React.Component {
                   {({ data, loading, error }) => {
                     if (error) return <p>Error Loading Data From Server</p>
                     if (loading) return <p>Loading...</p>
-
                     //Keep data for later
                     _data = data
-
                     return data.TypeEvents.map(item => {
                       return <SelectOption key={item.typeEventId}>{item.typeEventName}</SelectOption>
                     })
