@@ -22,9 +22,9 @@ export default function FilterReducer(state = {}, action) {
     case ACTION_TYPES.CLEAR_FILTERS: {
       return {
         ...state,
-        regionFilter: 0,
-        hazardFilter: 0,
-        impactFilter: 0,
+        regionFilter: {id: 0, name: ''},
+        hazardFilter: {id: 0, name: ''},
+        impactFilter: {id: 0, name: ''},
         dateFilter: { startDate: 0, endDate: 0 },
       }
     }
