@@ -9,7 +9,7 @@ import { Navbar, NavbarBrand, NavbarNav, NavbarToggler, Collapse, NavItem, NavLi
 
 const mapStateToProps = (state, props) => {
   let { globalData: { } } = state
-  return {  }
+  return {}
 }
 
 class CustomNavbar extends React.Component {
@@ -42,26 +42,38 @@ class CustomNavbar extends React.Component {
   render() {
 
     return (
-      <Navbar size="sm" color="indigo" expand="md" dark >
-        {!this.state.isWideEnough && <NavbarToggler onClick={this.onClick} />}
+      <Navbar size="sm" color="indigo" expand="md" dark expand="md" style={{ boxShadow: "none", borderTop: "1px solid gainsboro" }}>
+        {!this.state.isWideEnough && <NavbarToggler style={{ backgroundColor: "#2BBBAD" }} onClick={this.onClick} />}
         <Collapse isOpen={this.state.collapse} navbar>
-          <NavbarBrand tag="span">
-            NDMC
-            </NavbarBrand>
           <NavbarNav left>
-            <NavItem>
+            <NavItem style={{ marginRight: "15px" }}>
               <a className="nav-link" href="#">Home</a>
             </NavItem>
-            <NavItem>
+            <NavItem style={{ marginRight: "15px" }}>
               <a className="nav-link" href="#/events">Events</a>
             </NavItem>
-            <NavItem>
+            <NavItem style={{ marginRight: "15px" }}>
               <a className="nav-link" href="#/graphs">Graphs</a>
             </NavItem>
           </NavbarNav>
         </Collapse>
       </Navbar>
     )
+         /*  (
+      <Navbar size="sm" color="white" dark expand="md" style={{ boxShadow: "none", borderTop: "1px solid gainsboro" }} >
+        {!this.state.isWideEnough && <NavbarToggler style={{ backgroundColor: "#2BBBAD" }} onClick={this.onClick} />}
+        <Collapse isOpen={this.state.collapse} navbar>
+          <NavbarNav left>
+            <NavItem style={{ borderBottom: (locationHash === "#/" ? "4px solid dimgrey" : "0px solid white"), marginRight: "15px" }}>
+              <a className="nav-link" href="#"><b style={{ color: "black" }}>Home</b></a>
+            </NavItem>
+            <NavItem style={{ borderBottom: (locationHash.startsWith("#/projects") ? "4px solid dimgrey" : "0px solid white"), marginRight: "15px" }}>
+              <a className="nav-link" href="#/projects"><b style={{ color: "black" }}>Projects</b></a>
+            </NavItem>
+          </NavbarNav>
+        </Collapse>
+      </Navbar>
+      )*/
   }
 }
 
