@@ -1,7 +1,16 @@
 {
-    "presets": [
+  "presets": [
+    [
       "@babel/preset-env",
-      "@babel/preset-react"
+      {
+        "modules": false
+      }
     ],
-    "plugins": [ "@babel/plugin-proposal-object-rest-spread", "emotion"]
+    "@babel/preset-react"
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-object-rest-spread",
+    "emotion",
+    "react-hot-loader/babel"
+  ]
 }
