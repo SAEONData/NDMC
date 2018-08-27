@@ -56,24 +56,17 @@ class CustomNavbar extends React.Component {
               <a className="nav-link" href="#/graphs">Graphs</a>
             </NavItem>
           </NavbarNav>
-        </Collapse>
-      </Navbar>
-    )
-         /*  (
-      <Navbar size="sm" color="white" dark expand="md" style={{ boxShadow: "none", borderTop: "1px solid gainsboro" }} >
-        {!this.state.isWideEnough && <NavbarToggler style={{ backgroundColor: "#2BBBAD" }} onClick={this.onClick} />}
-        <Collapse isOpen={this.state.collapse} navbar>
-          <NavbarNav left>
-            <NavItem style={{ borderBottom: (locationHash === "#/" ? "4px solid dimgrey" : "0px solid white"), marginRight: "15px" }}>
-              <a className="nav-link" href="#"><b style={{ color: "black" }}>Home</b></a>
+          <NavbarNav right>
+            <NavItem style={{ marginRight: "15px" }}>
+              <a className="nav-link" href="#">Login</a>
             </NavItem>
-            <NavItem style={{ borderBottom: (locationHash.startsWith("#/projects") ? "4px solid dimgrey" : "0px solid white"), marginRight: "15px" }}>
-              <a className="nav-link" href="#/projects"><b style={{ color: "black" }}>Projects</b></a>
+            <NavItem style={{ marginRight: "15px" }}>
+              <a className="nav-link" href="#/events">Register</a>
             </NavItem>
           </NavbarNav>
         </Collapse>
       </Navbar>
-      )*/
+    )
   }
 }
 

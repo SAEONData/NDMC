@@ -57,7 +57,7 @@ class App extends React.Component {
             {navbar && <Header/>}
             {navbar && <CustomNavbar />}
             <Switch>
-              {/* <Redirect from='/' to='/projects' exact /> */}
+              {/* <Redirect from='/' to='/events' exact /> */}
               <Route path='/' component={Home} exact />
               <Route path='/events' component={Events} exact />
               <Route path='/events/:id' component={EventDetails} exact />
