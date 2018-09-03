@@ -14,27 +14,20 @@ using System.Threading.Tasks;
 namespace APIv2.Controllers
 {
     [Produces("application/json")]
-    [ODataRoutePrefix("Events")]
+    [ODataRoutePrefix("TypeSource")]
     [EnableCors("CORSPolicy")]
-    public class EventsController : ODataController
+    public class TypeSourcesController : ODataController
     {
         public SQLDBContext _context { get; }
-        public EventsController(SQLDBContext context)
+        public TypeSourcesController(SQLDBContext context)
         {
             _context = context;
         }
 
         [EnableQuery]
-        public IQueryable<Event> Get()
+        public IQueryable<TypeSource> Get()
         {
-            return _context.Events.AsQueryable();
-        }
-
-        [EnableQuery]
-        [ODataRoute("({id})")]
-        public SingleResult<Event> Get(int id)
-        {
-            return SingleResult.Create(_context.Events.Where(x => x.EventId == id));
+            return _context.TypeSources.AsQueryable();
         }
     }
 }

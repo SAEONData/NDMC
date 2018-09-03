@@ -4,6 +4,7 @@ using APIv2.Database.Models;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
@@ -14,27 +15,27 @@ using System.Threading.Tasks;
 namespace APIv2.Controllers
 {
     [Produces("application/json")]
-    [ODataRoutePrefix("Events")]
+    [ODataRoutePrefix("Mitigations")]
     [EnableCors("CORSPolicy")]
-    public class EventsController : ODataController
+    public class MitigationsController : ODataController
     {
         public SQLDBContext _context { get; }
-        public EventsController(SQLDBContext context)
+        public MitigationsController(SQLDBContext context)
         {
             _context = context;
         }
 
         [EnableQuery]
-        public IQueryable<Event> Get()
+        public IQueryable<Mitigation> Get()
         {
-            return _context.Events.AsQueryable();
+            return _context.Mitigations.AsQueryable();
         }
 
         [EnableQuery]
         [ODataRoute("({id})")]
-        public SingleResult<Event> Get(int id)
+        public SingleResult<Mitigation> Get(int id)
         {
-            return SingleResult.Create(_context.Events.Where(x => x.EventId == id));
+            return SingleResult.Create(_context.Mitigations.Where(x => x.EventId == id));
         }
     }
 }
