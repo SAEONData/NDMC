@@ -10,9 +10,9 @@ import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbrea
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
 
-//GraphQL
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { impactFilter } } = state
@@ -57,7 +57,7 @@ class impactFilters extends React.Component {
     }
     if (value !== this.state.value) {
       this.setState({ value })
-      loadImpactFilter({id: id, name: value})
+      loadImpactFilter({ id: id, name: value })
     }
   }
 
@@ -84,13 +84,9 @@ class impactFilters extends React.Component {
   }
 
   render() {
-    const GET_IMPACTS = gql`
-    {
-      TypeImpacts {
-        typeImpactId
-        typeImpactName
-      }
-    }`
+    const impactsQuery = {
+      select: ['typeEventId', 'typeEventName']
+    }
     return (
       <>
         <div className='row'>
@@ -98,20 +94,18 @@ class impactFilters extends React.Component {
             <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
-                {<Query query={GET_IMPACTS}>
+                <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
                   {({ loading, error, data }) => {
-                    if (loading) return <p>Loading...</p>
-                    if (error) return <p>Error Loading Data From Server...</p>
+                    if (loading) { return <div>Loading...</div> }
+                    if (error) { return <div>Error Loading Data From Server</div> }
                     // Sort impacts alphabetically
                     let sorted = data.TypeImpacts.map(x => { return { typeImpactName: x.typeImpactName, typeImpactId: x.typeImpactId } })
                       .sort((c, n) => c.typeImpactName.localeCompare(n.typeImpactName))
-                    _data = data
                     return sorted.map(item => {
                       return <SelectOption key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
                     })
                   }}
-                </Query>
-                }
+                </OData>
               </SelectOptions>
             </Select>
           </div>

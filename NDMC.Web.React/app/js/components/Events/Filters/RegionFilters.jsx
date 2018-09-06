@@ -2,7 +2,6 @@
 
 //React
 import React from 'react'
-import { Button } from 'mdbreact'
 import { connect } from 'react-redux'
 
 //Local
@@ -13,9 +12,9 @@ import TreeSelect from 'antd/lib/tree-select'
 import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
 import '../../../../css/antd.select.css' //Overrides default antd.select css
 
-//GraphQL
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter } } = state
@@ -74,24 +73,17 @@ class RegionFilters extends React.Component {
   }
 
   render() {
-    const GET_REGIONS = gql`
-      {
-        Regions {
-            regionName
-            regionId
-            parentRegionId
-            regionType {
-              regionTypeName
-          }
-        }
-      }`
+    const impactsQuery = {
+      select: ['typeEventId', 'typeEventName']
+    }
     return (
       <>
         <br />
-        {<Query query={GET_REGIONS}>
-          {({ data, loading, error }) => {
-            if (loading) return <p>Loading Region List...</p>
-            if (error) return <p>Error Loading Region List From Server...</p>
+        <OData baseUrl={'http://app01.saeon.ac.za/ndmcapi/odata/regions'} query={''}>
+          {({ loading, error, data }) => {
+            if (loading) { return <div>Loading...</div> }
+            if (error) { return <div>Error Loading Data From Server</div> }
+            console.log(data)
             let filteredRegions = data.Regions.filter(region => !region.regionName.includes("Ward"))
             let regionTree = this.transformDataTree(filteredRegions)
             return (
@@ -109,10 +101,17 @@ class RegionFilters extends React.Component {
                 </div>
               </div>
             )
-          }
-          }
-        </Query>
-        }
+          }}
+        </OData>
+        <OData baseUrl={baseUrl} query={impactsQuery}>
+          {({ loading, error, data }) => (
+            <div>
+              {loading && {/* handle loading here */ }}
+              {error && {/* handle error here */ }}
+              {data && {/* handle data here */ }}
+            </div>
+          )}
+        </OData>
       </>
     )
   }

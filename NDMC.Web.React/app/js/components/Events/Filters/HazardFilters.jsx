@@ -8,11 +8,11 @@ import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
 //MDBReact
-import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
+import {Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 
-//GraphQl
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter } } = state
@@ -59,7 +59,7 @@ class HazardFilters extends React.Component {
     }
     if (value !== this.state.value) {
       this.setState({ value })
-      loadHazardFilter({id: id, name: value})
+      loadHazardFilter({ id: id, name: value })
     }
   }
 
@@ -86,13 +86,9 @@ class HazardFilters extends React.Component {
   }
 
   render() {
-    const GET_HAZARDS = gql`
-    {
-      TypeEvents {
-        typeEventName
-        typeEventId
-      }
-    }`
+    const hazardsQuery = {
+      select: ['typeEventId','typeEventName']
+    }
     return (
       <>
         <div className="row">
@@ -100,19 +96,16 @@ class HazardFilters extends React.Component {
             <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
-                {<Query query={GET_HAZARDS}>
-                  {({ data, loading, error }) => {
-                    if (error) return <p>Error Loading Data From Server</p>
-                    if (loading) return <p>Loading...</p>
-                    //Keep data for later
+                <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardsQuery}>
+                  {({ loading, error, data }) => {
+                    if (loading) {return <div>Loading...</div>}
+                    if (error) {return <div>Error Loading Data From Server</div>}
                     _data = data
                     return data.TypeEvents.map(item => {
                       return <SelectOption key={item.typeEventId}>{item.typeEventName}</SelectOption>
                     })
-                  }
-                  }
-                </Query>
-                }
+                  }}
+                </OData>
               </SelectOptions>
             </Select>
           </div>
