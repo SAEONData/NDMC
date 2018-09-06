@@ -12,10 +12,9 @@ import RangeComponent from '../../Shared/RangeComponent.jsx'
 import SelectComponent from '../../Shared/SelectComponent.jsx'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
-//GraphQl
-import { Query, ApolloConsumer } from 'react-apollo'
-import gql from 'graphql-tag'
-
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 const mapStateToProps = (state, props) => {
   return {}
@@ -28,39 +27,18 @@ class EventDetailsTab extends React.Component {
 
   render() {
     const { eventId } = this.props
-    const GET_EVENT = gql`
-    {
-      Events(eventId: ${eventId}) {
-        eventId
-        typeEvent {
-          typeEventName
-        }
-        startDate
-        endDate
-        declaredEvents
-        eventImpacts{
-            typeImpact{
-              typeImpactName
-              unitOfMeasure
-            }
-            measure
-          }
-          eventRegions {
-            region {
-              regionName
-              regionType {
-                regionTypeName
-              }
-            }
-          }
-      }
-    }`
+    let eventQuery = {
+      eventId: 1,
+      eventImpacts,
+      eventregions,
+      declaredEvents
+    }
     return (
       <>
-        <Query query={GET_EVENT} variables={{ eventId }}>
-          {({ data, loading, error }) => {
-            if (error) return <p>Error Loading Data From Server</p>
-            if (loading) return <p>Loading...</p>
+        <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
+          {({ loading, error, data }) => {
+            if (loading) { return <div>Loading...</div> }
+            if (error) { return <div>Error Loading Data From Server</div> }
             const event = data.Events[0]
             const { startDate, endDate, declaredDate, eventImpacts, eventImpacts: { typeImpactName, unitOfMeasure }, typeEvent, typeEvent: { typeEventName }, eventRegions, declaredEvents } = event
             let startdate = new Date(event.startDate * 1000)
@@ -118,7 +96,7 @@ class EventDetailsTab extends React.Component {
               <br />
             </>)
           }}
-        </Query>
+        </OData>
       </>
     )
   }
