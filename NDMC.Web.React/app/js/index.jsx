@@ -18,23 +18,6 @@ import { Provider } from 'react-redux'
 import store from './store'
 import App from './App.jsx'
 
-const resolvers = {
-  Query: {
-    SingleEvent: (_, variables, { cache, getCacheKey }) => {
-      const id = getCacheKey({ __typename: 'Event', id: variables.eventId })
-      console.log(`This thing: ${getCacheKey({ __typename: 'Event', id: variables.eventId })}`)
-      const fragment = gql`
-        fragment endOfEvent on Event {
-          endDate
-        }
-      `;
-      const endOfEvent = cache.readFragment({ fragment, id })
-      console.log(endOfEvent)
-      return endOfEvent
-    },
-  }
-}
-
 const render = Component => {
   ReactDOM.render(
       <Provider store={store}>

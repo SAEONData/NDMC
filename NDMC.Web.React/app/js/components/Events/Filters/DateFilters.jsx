@@ -7,14 +7,11 @@ import ReactTooltip from 'react-tooltip'
 
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
-import { stripURLParam, GetUID } from '../../../globalFunctions.js'
 
 //MDBReact
 import { DatePicker } from 'material-ui'
-import { Button, Input, FormInline } from 'mdbreact'
+import { Button} from 'mdbreact'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
-const queryString = require('query-string')
 
 const mapStateToProps = (state, props) => {
   let { filterData: { dateFilter } } = state

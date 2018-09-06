@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import ReactTooltip from 'react-tooltip'
 
 //Local
-import * as ACTION_TYPES from '../../../constants/action-types'
 import EventDetailsTab from './EventDetailsTab.jsx'
 
 //MDBReact

@@ -9,8 +9,6 @@ import { connect } from 'react-redux'
 import TextComponent from '../../Shared/TextComponent.jsx'
 import TextAreaComponent from '../../Shared/TextAreaComponent.jsx'
 import RangeComponent from '../../Shared/RangeComponent.jsx'
-import SelectComponent from '../../Shared/SelectComponent.jsx'
-import * as ACTION_TYPES from '../../../constants/action-types'
 
 //Odata
 import OData from 'react-odata'

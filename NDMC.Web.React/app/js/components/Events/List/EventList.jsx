@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 
 //Local
 import EventCard from './EventCard.jsx'
-import * as ACTION_TYPES from '../../../constants/action-types'
 
 //Odata
 import OData from 'react-odata'
@@ -14,7 +13,7 @@ const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 //MDBReact
 import { ToastContainer, toast } from 'react-toastify'
-import { Button, Chip } from 'mdbreact'
+import { Chip } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state

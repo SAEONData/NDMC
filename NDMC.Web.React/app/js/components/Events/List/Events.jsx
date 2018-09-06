@@ -9,10 +9,7 @@ import EventFilters from '../Filters/EventFilters.jsx'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
 //MDBReact
-import { Button, Footer, Container } from 'mdbreact'
-
-
-const queryString = require('query-string')
+import { Button } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   return {}

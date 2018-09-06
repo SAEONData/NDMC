@@ -11,8 +11,6 @@ import 'mdbreact/dist/css/mdb.css'
 
 //React
 import React from 'react'
-import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
@@ -25,7 +23,6 @@ import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 import Header from './components/Base/Header.jsx'
 import Footer from './components/Base/Footer.jsx'
-import store from './store'
 
 /**
  * Tap Event

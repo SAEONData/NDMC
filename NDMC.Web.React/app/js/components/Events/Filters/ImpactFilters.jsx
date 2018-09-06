@@ -5,7 +5,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 //MDBReact
-import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
+import { Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'

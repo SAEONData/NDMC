@@ -3,7 +3,6 @@
 import React from 'react'
 import { Card, CardBody, CardText, CardTitle, Button } from 'mdbreact'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from '../../../constants/action-types'
 
 const mapStateToProps = (state, props) => {
   return {}
