@@ -18,11 +18,6 @@ import { Provider } from 'react-redux'
 import store from './store'
 import App from './App.jsx'
 
-//Graphql
-import ApolloClient from "apollo-boost"
-import { ApolloProvider } from "react-apollo"
-import gql from 'graphql-tag'
-
 const resolvers = {
   Query: {
     SingleEvent: (_, variables, { cache, getCacheKey }) => {
@@ -40,20 +35,11 @@ const resolvers = {
   }
 }
 
-const client = new ApolloClient({
-  uri: "http://app01.saeon.ac.za/ndmcapi/api/GraphQL/Request",
-  clientState: {
-    resolvers
-  }
-})
-
 const render = Component => {
   ReactDOM.render(
-    <ApolloProvider client={client}>
       <Provider store={store}>
         <Component />
-      </Provider>
-    </ApolloProvider>,
+      </Provider>,
     document.getElementById('app')
   )
 }
