@@ -8,9 +8,9 @@ import { connect } from 'react-redux'
 import EventCard from './EventCard.jsx'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
-//GraphQL
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 //MDBReact
 import { ToastContainer, toast } from 'react-toastify'
@@ -113,38 +113,15 @@ class EventList extends React.Component {
 
   render() {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
-    const GET_ALL_EVENTS = gql`
-      {
-        Events {
-          eventId
-          startDate
-          endDate
-          declaredEvents {
-            declaredDate
-          }
-          typeEvent {
-            typeEventName
-            typeEventId
-          }
-          eventImpacts{
-            typeImpact{
-              typeImpactName
-              typeImpactId
-            }
-            measure
-          }
-          eventRegions {
-            region {
-              regionName
-              regionId
-              parentRegionId
-              regionType {
-                regionTypeName
-              }
-            }
-          }
-        }
-      }`
+    let eventQuery = {
+      select: ['eventId', 'startDate', 'endDate', 'typeEvent', 'eventImpacts', 'EventRegions'],
+      top: this.eventListSize,
+      orderBy: 'eventId asc',
+    }
+    if (hazardFilter) { eventQuery.typeEvent = { filter: { typeEventId: hazardFilter } } }
+    if (impactFilter) { eventQuery.eventImpacts = { typeImpact: { filter: { typeImpactId: impactFilter } } } }
+    if (dateFilter) { eventQuery.filter = { startDate: dateFilter.startDate, endDate: dateFilter.endDate } }
+    if (regionFilter) { eventQuery.eventRegions = { region: { filter: {regionId: regionFilter} } } }
     return (
       <div>
         <div> {this.handleTags()} </div>
@@ -153,39 +130,22 @@ class EventList extends React.Component {
           newestOnTop={true}
           autoClose={2500}
         />
-        <Query query={GET_ALL_EVENTS}>
+        <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
           {({ loading, error, data }) => {
             if (loading) {
               toast.info('Fetching list of events')
               return <div>Loading...</div>
             }
             if (error) {
-              toast.error('error fetching list from server')
+              toast.error('error fetching list from server\n' + error)
               return <div>Unable to load events, please contact the site administrator</div>
             }
             toast.success('Successfully loaded Events!')
-            const filteredData = data.Events.filter(event =>
-              event.typeEvent &&
-              event.startDate &&
-              event.eventRegions[0]
-            )
+            console.log(data)
             this.state.bottomReached = false
-            /*  Builds a list of events based on the relevant filters selected by the user.
-                Region Filters need two filter methods as third level regions have no identifier for what
-                their top level region is.
-             */
-            return this.buildList(filteredData
-              .filter(event => hazardFilter.id === 0 ? true : event.typeEvent.typeEventId === hazardFilter.id)
-              .filter(event => impactFilter.id === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter.id))
-              .filter(event => regionFilter.id === 0 ? true :
-                event.eventRegions.map(x => x.region.parentRegionId).some(x => Array.isArray(regionFilter.id) ? regionFilter.id.includes(x) : x === regionFilter.id)
-                ||
-                event.eventRegions.map(x => x.region.regionId).some(x => Array.isArray(regionFilter.id) ? regionFilter.id.includes(x) : x === regionFilter.id))
-              .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
-              .slice(0, this.state.eventListSize)
-            )
+            return this.buildList(data)
           }}
-        </Query>
+        </OData>
       </div >
     )
   }

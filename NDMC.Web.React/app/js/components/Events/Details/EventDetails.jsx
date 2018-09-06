@@ -2,7 +2,6 @@
 //React
 import React from 'react'
 import { connect } from 'react-redux'
-import { BeatLoader } from 'react-spinners'
 import ReactTooltip from 'react-tooltip'
 
 //Local
@@ -10,7 +9,7 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 import EventDetailsTab from './EventDetailsTab.jsx'
 
 //MDBReact
-import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'mdbreact'
+import { Button } from 'mdbreact'
 
 //React Tabs
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
