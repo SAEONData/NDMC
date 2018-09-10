@@ -78,7 +78,7 @@ class RegionFilters extends React.Component {
     }
     return (
       <>
-        <br />
+        {/* <br />
         <OData baseUrl={'http://app01.saeon.ac.za/ndmcapi/odata/regions'} query={''}>
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
@@ -102,16 +102,7 @@ class RegionFilters extends React.Component {
               </div>
             )
           }}
-        </OData>
-        <OData baseUrl={baseUrl} query={impactsQuery}>
-          {({ loading, error, data }) => (
-            <div>
-              {loading && {/* handle loading here */ }}
-              {error && {/* handle error here */ }}
-              {data && {/* handle data here */ }}
-            </div>
-          )}
-        </OData>
+        </OData> */}
       </>
     )
   }

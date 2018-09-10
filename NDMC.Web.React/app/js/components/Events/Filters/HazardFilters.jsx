@@ -91,7 +91,7 @@ class HazardFilters extends React.Component {
     }
     return (
       <>
-        <div className="row">
+        {/* <div className="row">
           <div className="col-md-4">
             <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
@@ -109,7 +109,7 @@ class HazardFilters extends React.Component {
               </SelectOptions>
             </Select>
           </div>
-        </div>
+        </div> */}
       </>
     )
   }

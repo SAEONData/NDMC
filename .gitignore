@@ -309,3 +309,4 @@ paket-files/
 __pycache__/
 *.pyc
 /NDMC.Web.Api/APIv2/secrets.json
+NDMC.Web.Api/APIv2/Properties/PublishProfiles/FolderProfile.pubxml

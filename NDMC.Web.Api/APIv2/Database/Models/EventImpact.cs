@@ -16,14 +16,14 @@ namespace APIv2.Database.Models
         [Required]
         public int EventId { get; set; }
         [Required]
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public Event Event { get; set; }
 
         //FK - TypeImpact
         [Required]
         public int TypeImpactId { get; set; }
         [Required]
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public TypeImpact TypeImpact { get; set; }
     }
 }

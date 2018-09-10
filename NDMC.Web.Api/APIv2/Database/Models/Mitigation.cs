@@ -16,7 +16,7 @@ namespace APIv2.Database.Models
 
         //FK - Department (nullable)
         public int? DepartmentId { get; set; }
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public Department Department { get; set; }
 
         //FK - Stakeholder
@@ -30,14 +30,14 @@ namespace APIv2.Database.Models
         [Required]
         public int EventId { get; set; }
         [Required]
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public Event Event { get; set; }
 
         //FK - TypeMitigation
         [Required]
         public int TypeMitigationId { get; set; }
         [Required]
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public TypeMitigation TypeMitigation { get; set; }
     }
 }

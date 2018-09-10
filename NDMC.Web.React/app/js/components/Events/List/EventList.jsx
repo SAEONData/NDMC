@@ -9,7 +9,7 @@ import EventCard from './EventCard.jsx'
 
 //Odata
 import OData from 'react-odata'
-const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
+const baseUrl = 'https://localhost:44334/odata/' //'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 //MDBReact
 import { ToastContainer, toast } from 'react-toastify'
@@ -77,14 +77,16 @@ class EventList extends React.Component {
   Create a list of event cards to be used to populate the events page and parse in the relevant information for each event
   */
   buildList(events) {
+
     let ar = []
-    for (let i of events) {
-      let startdate = new Date(i.startDate * 1000)
-      let enddate = new Date(i.endDate * 1000)
-      if (i.typeEvent !== null && i.startDate && i.eventRegions[0] !== undefined) {
-        ar.push(<EventCard key={i.eventId} eid={i.eventId} region={i.eventRegions[0].region} startdate={startdate.toDateString()} enddate={enddate.toDateString()} hazardtype={i.typeEvent.typeEventName} />)
+    events.forEach(i => {
+      let startdate = new Date(i.StartDate * 1000)
+      let enddate = new Date(i.EndDate * 1000)
+      if (i.TypeEvent !== null && /*i.StartDate &&*/ i.EventRegions[0] !== undefined) {
+        ar.push(<EventCard key={i.EeventId} eid={i.EventId} region={i.EventRegions[0].Region} startdate={startdate.toDateString()} enddate={enddate.toDateString()} hazardtype={i.TypeEvent.TypeEventName} />)
       }
-    }
+    })
+
     return ar
   }
 
@@ -113,14 +115,16 @@ class EventList extends React.Component {
   render() {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
     let eventQuery = {
-      select: ['eventId', 'startDate', 'endDate', 'typeEvent', 'eventImpacts', 'EventRegions'],
-      top: this.eventListSize,
-      orderBy: 'eventId asc',
+      select: ['EventId', 'StartDate', 'EndDate'],
+      expand: ['TypeEvent', 'EventImpacts', 'EventRegions/Region'],
+      top: this.state.eventListSize,
+      orderBy: 'EventId asc',
     }
-    if (hazardFilter) { eventQuery.typeEvent = { filter: { typeEventId: hazardFilter } } }
-    if (impactFilter) { eventQuery.eventImpacts = { typeImpact: { filter: { typeImpactId: impactFilter } } } }
-    if (dateFilter) { eventQuery.filter = { startDate: dateFilter.startDate, endDate: dateFilter.endDate } }
-    if (regionFilter) { eventQuery.eventRegions = { region: { filter: {regionId: regionFilter} } } }
+    // if (hazardFilter) { eventQuery.typeEvent = { filter: { typeEventId: hazardFilter } } }
+    // if (impactFilter) { eventQuery.eventImpacts = { typeImpact: { filter: { typeImpactId: impactFilter } } } }
+    // if (dateFilter) { eventQuery.filter = { startDate: dateFilter.startDate, endDate: dateFilter.endDate } }
+    // if (regionFilter) { eventQuery.eventRegions = { region: { filter: { regionId: regionFilter } } } }
+
     return (
       <div>
         <div> {this.handleTags()} </div>
@@ -131,18 +135,23 @@ class EventList extends React.Component {
         />
         <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
           {({ loading, error, data }) => {
-            if (loading) {
+            if (loading === true) {
               toast.info('Fetching list of events')
               return <div>Loading...</div>
             }
             if (error) {
-              toast.error('error fetching list from server\n' + error)
+              toast.error('error fetching list from server\n' + error.error.message)
+              console.log("error", error.error)
               return <div>Unable to load events, please contact the site administrator</div>
             }
-            toast.success('Successfully loaded Events!')
-            console.log(data)
+            if(data)
+            {
+              console.log("data", data)
+              toast.success('Successfully loaded Events!')
+              return this.buildList(data.value)
+            }
+
             this.state.bottomReached = false
-            return this.buildList(data)
           }}
         </OData>
       </div >
