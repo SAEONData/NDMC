@@ -73,14 +73,15 @@ class RegionFilters extends React.Component {
   }
 
   render() {
-    const impactsQuery = {
-      select: ['typeEventId', 'typeEventName']
+    const regionQuery = {
+      select: ['RegionId', 'RegionName', 'ParentRegionId'],
+      filter: { RegionTypeId: { ne:5}}
     }
     return (
       <>
-        {/* <br />
-        <OData baseUrl={'http://app01.saeon.ac.za/ndmcapi/odata/regions'} query={''}>
-          {({ loading, error, data }) => {
+        <br />
+        <OData baseUrl={'http://app01.saeon.ac.za/ndmcapi/odata/regions'} query={regionQuery}>
+          {/* {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }
             console.log(data)
@@ -101,8 +102,8 @@ class RegionFilters extends React.Component {
                 </div>
               </div>
             )
-          }}
-        </OData> */}
+          }} */}
+        </OData>
       </>
     )
   }
