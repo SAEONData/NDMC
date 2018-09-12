@@ -87,11 +87,11 @@ class HazardFilters extends React.Component {
 
   render() {
     const hazardsQuery = {
-      select: ['typeEventId','typeEventName']
+      select: ['TypeEventId','TypeEventName']
     }
     return (
       <>
-        {/* <div className="row">
+        <div className="row">
           <div className="col-md-4">
             <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
@@ -102,14 +102,14 @@ class HazardFilters extends React.Component {
                     if (error) {return <div>Error Loading Data From Server</div>}
                     _data = data
                     return data.TypeEvents.map(item => {
-                      return <SelectOption key={item.typeEventId}>{item.typeEventName}</SelectOption>
+                      return <SelectOption key={item.TypeEventId}>{item.TypeEventName}</SelectOption>
                     })
                   }}
                 </OData>
               </SelectOptions>
             </Select>
           </div>
-        </div> */}
+        </div>
       </>
     )
   }

@@ -85,11 +85,11 @@ class impactFilters extends React.Component {
 
   render() {
     const impactsQuery = {
-      select: ['typeEventId', 'typeEventName']
+      select: ['TypeImpactId', 'TypeImpactName']
     }
     return (
       <>
-        {/* <div className='row'>
+        <div className='row'>
           <div className='col-md-4'>
             <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
@@ -99,17 +99,17 @@ class impactFilters extends React.Component {
                     if (loading) { return <div>Loading...</div> }
                     if (error) { return <div>Error Loading Data From Server</div> }
                     // Sort impacts alphabetically
-                    let sorted = data.TypeImpacts.map(x => { return { typeImpactName: x.typeImpactName, typeImpactId: x.typeImpactId } })
-                      .sort((c, n) => c.typeImpactName.localeCompare(n.typeImpactName))
+                    let sorted = data.TypeImpacts.map(x => { return { TypeImpactName: x.TypeImpactName, TypeImpactId: x.TypeImpactId } })
+                      .sort((c, n) => c.TypeImpactName.localeCompare(n.TypeImpactName))
                     return sorted.map(item => {
-                      return <SelectOption key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
+                      return <SelectOption key={item.TypeImpactId}>{item.TypeImpactName}</SelectOption>
                     })
                   }}
                 </OData>
               </SelectOptions>
             </Select>
           </div>
-        </div> */}
+        </div>
       </>
     )
   }

@@ -64,29 +64,29 @@ class RegionFilters extends React.Component {
   transformDataTree(filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
-        parentRegionId: i.parentRegionId, regionId: i.regionId, children: [], title: i.regionName, value: `${i.regionId}`, key: i.regionId
+        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${i.RegionId}`, key: i.RegionId
       }
     })
-    regions.forEach(f => { f.children = regions.filter(g => g.parentRegionId === f.regionId) })
-    var resultArray = regions.filter(f => f.parentRegionId == null)
+    regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
+    var resultArray = regions.filter(f => f.ParentRegionId == null)
     return resultArray
   }
 
   render() {
     const regionQuery = {
       select: ['RegionId', 'RegionName', 'ParentRegionId'],
-      filter: { RegionTypeId: { ne:5}}
+      filter: { RegionTypeId: { ne: 5 } }
     }
     return (
       <>
         <br />
-        <OData baseUrl={'http://app01.saeon.ac.za/ndmcapi/odata/regions'} query={regionQuery}>
-          {/* {({ loading, error, data }) => {
+        <OData baseUrl={baseUrl + 'regions'} query={regionQuery}>
+          {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }
             console.log(data)
-            let filteredRegions = data.Regions.filter(region => !region.regionName.includes("Ward"))
-            let regionTree = this.transformDataTree(filteredRegions)
+            // let filteredRegions = data.Regions.filter(region => !region.RegionName.includes("Ward"))
+            let regionTree = this.transformDataTree(data)
             return (
               <div className='row'>
                 <div className="col-md-6">
@@ -102,7 +102,7 @@ class RegionFilters extends React.Component {
                 </div>
               </div>
             )
-          }} */}
+          }}
         </OData>
       </>
     )
