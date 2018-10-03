@@ -12,7 +12,7 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 
 //Odata
 import OData from 'react-odata'
-const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
+const baseUrl = 'https://localhost:44334/odata/'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { impactFilter } } = state
@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-let _data = { TypeImpacts: [] }
+let _data
 class impactFilters extends React.Component {
   constructor(props) {
     super(props)
@@ -51,13 +51,12 @@ class impactFilters extends React.Component {
   optionClick(value) {
     let { loadImpactFilter } = this.props
     let id = 0
-    let filteredData = _data.TypeImpacts.filter(x => x.typeImpactName === value)
-    if (filteredData.length > 0) {
-      id = filteredData[0].typeImpactId
-    }
-    if (value !== this.state.value) {
-      this.setState({ value })
-      loadImpactFilter({ id: id, name: value })
+    let filteredData
+    if (_data) { filteredData = _data.filter(x => x.TypeImpactName === value[0]) }
+    if (filteredData) { id = filteredData[0].TypeImpactId }
+    if (value[0] !== this.state.value && value !== "Choose your option") {
+      this.setState({ value: value[0] })
+      loadImpactFilter({ id: id, name: value[0] })
     }
   }
 
@@ -98,12 +97,14 @@ class impactFilters extends React.Component {
                   {({ loading, error, data }) => {
                     if (loading) { return <div>Loading...</div> }
                     if (error) { return <div>Error Loading Data From Server</div> }
-                    // Sort impacts alphabetically
-                    let sorted = data.TypeImpacts.map(x => { return { TypeImpactName: x.TypeImpactName, TypeImpactId: x.TypeImpactId } })
-                      .sort((c, n) => c.TypeImpactName.localeCompare(n.TypeImpactName))
-                    return sorted.map(item => {
-                      return <SelectOption key={item.TypeImpactId}>{item.TypeImpactName}</SelectOption>
-                    })
+                    if (data) {
+                      _data=data.value
+                      let sorted = data.value.map(x => { return { TypeImpactName: x.TypeImpactName, TypeImpactId: x.TypeImpactId } })
+                        .sort((c, n) => c.TypeImpactName.localeCompare(n.TypeImpactName))
+                      return sorted.map(item => {
+                        return <SelectOption key={item.TypeImpactId}>{item.TypeImpactName}</SelectOption>
+                      })
+                    }
                   }}
                 </OData>
               </SelectOptions>
