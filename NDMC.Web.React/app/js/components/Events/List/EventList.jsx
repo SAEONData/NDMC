@@ -116,11 +116,13 @@ class EventList extends React.Component {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
     let eventQuery = {
       select: ['EventId', 'StartDate', 'EndDate'],
-      expand: ['TypeEvent', 'EventImpacts', 'EventRegions/Region'],
+      expand: ['TypeEvent','EventImpacts', 'EventRegions/Region'],
       top: this.state.eventListSize,
       orderBy: 'EventId asc',
     }
-    // if (hazardFilter) { eventQuery.typeEvent = { filter: { typeEventId: hazardFilter } } }
+     if (hazardFilter.name) { console.log(hazardFilter); eventQuery.filter = { TypeEvent: { TypeEventId: hazardFilter.id } } }
+     console.log(eventQuery)
+     if (impactFilter.name) { eventQuery.filter = { EventImpacts: { any: { typeImpact: {  typeImpactId: impactFilter.id  } } } } }
     // if (impactFilter) { eventQuery.eventImpacts = { typeImpact: { filter: { typeImpactId: impactFilter } } } }
     // if (dateFilter) { eventQuery.filter = { startDate: dateFilter.startDate, endDate: dateFilter.endDate } }
     // if (regionFilter) { eventQuery.eventRegions = { region: { filter: { regionId: regionFilter } } } }
@@ -133,6 +135,7 @@ class EventList extends React.Component {
           newestOnTop={true}
           autoClose={2500}
         />
+        <div>
         <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
           {({ loading, error, data }) => {
             if (loading === true) {
@@ -146,14 +149,13 @@ class EventList extends React.Component {
             }
             if(data)
             {
-              console.log("data", data)
               toast.success('Successfully loaded Events!')
               return this.buildList(data.value)
             }
-
             this.state.bottomReached = false
           }}
         </OData>
+        </div>
       </div >
     )
   }
