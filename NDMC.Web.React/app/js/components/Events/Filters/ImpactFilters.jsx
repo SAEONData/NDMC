@@ -53,7 +53,7 @@ class impactFilters extends React.Component {
     let id = 0
     let filteredData
     if (_data) { filteredData = _data.filter(x => x.TypeImpactName === value[0]) }
-    if (filteredData) { id = filteredData[0].TypeImpactId }
+    if (filteredData) { filteredData[0].TypeImpactId ? id = filteredData[0].TypeImpactId : '' }
     if (value[0] !== this.state.value && value !== "Choose your option") {
       this.setState({ value: value[0] })
       loadImpactFilter({ id: id, name: value[0] })
@@ -98,7 +98,7 @@ class impactFilters extends React.Component {
                     if (loading) { return <div>Loading...</div> }
                     if (error) { return <div>Error Loading Data From Server</div> }
                     if (data) {
-                      _data=data.value
+                      _data = data.value
                       let sorted = data.value.map(x => { return { TypeImpactName: x.TypeImpactName, TypeImpactId: x.TypeImpactId } })
                         .sort((c, n) => c.TypeImpactName.localeCompare(n.TypeImpactName))
                       return sorted.map(item => {

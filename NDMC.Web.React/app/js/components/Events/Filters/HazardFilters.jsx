@@ -56,7 +56,7 @@ class HazardFilters extends React.Component {
     let id = 0
     let filteredData
     if (_data) { filteredData = _data.filter(x => x.TypeEventName === value[0]) }
-    if (filteredData) { id = filteredData[0].TypeEventId }
+    if (filteredData) { filteredData[0].TypeEventId ? id = filteredData[0].TypeEventId : '' }
     if (value[0] !== this.state.value && value !== "Choose your option") {
       this.setState({ value: value[0] })
       loadHazardFilter({ id: id, name: value[0] })
