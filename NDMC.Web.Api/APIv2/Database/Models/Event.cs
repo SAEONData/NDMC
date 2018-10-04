@@ -18,12 +18,12 @@ namespace APIv2.Database.Models
 
         //FK - TypeEvent
         public int? TypeEventId { get; set; }
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public TypeEvent TypeEvent { get; set; }
 
         //FK - TypeSource
         public int? TypeSourceId { get; set; }
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public TypeSource TypeSource { get; set; }
 
         public ICollection<EventImpact> EventImpacts { get; set; }

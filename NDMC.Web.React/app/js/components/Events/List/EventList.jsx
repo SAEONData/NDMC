@@ -6,15 +6,14 @@ import { connect } from 'react-redux'
 
 //Local
 import EventCard from './EventCard.jsx'
-import * as ACTION_TYPES from '../../../constants/action-types'
 
-//GraphQL
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'https://localhost:44334/odata/' //'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 //MDBReact
 import { ToastContainer, toast } from 'react-toastify'
-import { Button, Chip } from 'mdbreact'
+import { Chip } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state
@@ -41,6 +40,8 @@ class EventList extends React.Component {
       },
       eventListSize: 10,
       bottomReached: false,
+      loadedEvents: 0,
+      eventsLoading: false
     }
     this.handleScroll = this.handleScroll.bind(this)
     this.handleTags = this.handleTags.bind(this)
@@ -57,11 +58,13 @@ class EventList extends React.Component {
     const html = document.documentElement
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
     const windowBottom = windowHeight + window.pageYOffset
-    if (Math.ceil(windowBottom) >= docHeight) {
-      this.setState({
-        bottomReached: true,
-        eventListSize: this.state.eventListSize + 10 //increase the amount of events that should be displayed by 10
-      })
+    if (Math.ceil(windowBottom) >= docHeight && !this.state.eventsLoading) {
+      if (this.state.loadedEvents > 9) {
+        this.setState({
+          bottomReached: true,
+          eventListSize: this.state.eventListSize + 10 //increase the amount of events that should be displayed by 10
+        })
+      }
     }
   }
 
@@ -78,14 +81,16 @@ class EventList extends React.Component {
   Create a list of event cards to be used to populate the events page and parse in the relevant information for each event
   */
   buildList(events) {
+
     let ar = []
-    for (let i of events) {
-      let startdate = new Date(i.startDate * 1000)
-      let enddate = new Date(i.endDate * 1000)
-      if (i.typeEvent !== null && i.startDate && i.eventRegions[0] !== undefined) {
-        ar.push(<EventCard key={i.eventId} eid={i.eventId} region={i.eventRegions[0].region} startdate={startdate.toDateString()} enddate={enddate.toDateString()} hazardtype={i.typeEvent.typeEventName} />)
+    events.forEach(i => {
+      let startdate = new Date(i.StartDate * 1000)
+      let enddate = new Date(i.EndDate * 1000)
+      if (i.TypeEvent !== null && /*i.StartDate &&*/ i.EventRegions[0] !== undefined) {
+        ar.push(<EventCard key={i.EeventId} eid={i.EventId} region={i.EventRegions[0].Region} startdate={startdate.toDateString()} enddate={enddate.toDateString()} hazardtype={i.TypeEvent.TypeEventName} />)
       }
-    }
+    })
+    this.state.loadedEvents = ar.length
     return ar
   }
 
@@ -113,38 +118,28 @@ class EventList extends React.Component {
 
   render() {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
-    const GET_ALL_EVENTS = gql`
-      {
-        Events {
-          eventId
-          startDate
-          endDate
-          declaredEvents {
-            declaredDate
-          }
-          typeEvent {
-            typeEventName
-            typeEventId
-          }
-          eventImpacts{
-            typeImpact{
-              typeImpactName
-              typeImpactId
-            }
-            measure
-          }
-          eventRegions {
-            region {
-              regionName
-              regionId
-              parentRegionId
-              regionType {
-                regionTypeName
-              }
-            }
-          }
-        }
-      }`
+    let eventQuery = {
+      select: ['EventId', 'StartDate', 'EndDate'],
+      expand: ['TypeEvent', 'EventImpacts', 'EventRegions/Region'],
+      top: this.state.eventListSize,
+      orderBy: 'EventId asc',
+      filter: {}
+    }
+    if (hazardFilter.name) {
+      eventQuery.filter.TypeEvent = { TypeEventId: hazardFilter.id }
+      this.state.eventListSize = 10
+    }
+    if (impactFilter.name) {
+      eventQuery.filter.EventImpacts = { any: { typeImpact: { typeImpactId: impactFilter.id } } }
+      this.state.eventListSize = 10
+    }
+    if (dateFilter.startDate) {
+      eventQuery.filter.StartDate = { ge: dateFilter.startDate }
+      eventQuery.filter.EndDate = { le: dateFilter.endDate }
+      this.state.eventListSize = 10
+    }
+    // if (regionFilter) { eventQuery.eventRegions = { region: { filter: { regionId: regionFilter } } } }
+
     return (
       <div>
         <div> {this.handleTags()} </div>
@@ -153,39 +148,28 @@ class EventList extends React.Component {
           newestOnTop={true}
           autoClose={2500}
         />
-        <Query query={GET_ALL_EVENTS}>
-          {({ loading, error, data }) => {
-            if (loading) {
-              toast.info('Fetching list of events')
-              return <div>Loading...</div>
-            }
-            if (error) {
-              toast.error('error fetching list from server')
-              return <div>Unable to load events, please contact the site administrator</div>
-            }
-            toast.success('Successfully loaded Events!')
-            const filteredData = data.Events.filter(event =>
-              event.typeEvent &&
-              event.startDate &&
-              event.eventRegions[0]
-            )
-            this.state.bottomReached = false
-            /*  Builds a list of events based on the relevant filters selected by the user.
-                Region Filters need two filter methods as third level regions have no identifier for what
-                their top level region is.
-             */
-            return this.buildList(filteredData
-              .filter(event => hazardFilter.id === 0 ? true : event.typeEvent.typeEventId === hazardFilter.id)
-              .filter(event => impactFilter.id === 0 ? true : event.eventImpacts.map(x => x.typeImpact.typeImpactId).includes(impactFilter.id))
-              .filter(event => regionFilter.id === 0 ? true :
-                event.eventRegions.map(x => x.region.parentRegionId).some(x => Array.isArray(regionFilter.id) ? regionFilter.id.includes(x) : x === regionFilter.id)
-                ||
-                event.eventRegions.map(x => x.region.regionId).some(x => Array.isArray(regionFilter.id) ? regionFilter.id.includes(x) : x === regionFilter.id))
-              .filter(event => dateFilter.startDate === 0 ? true : event.startDate >= dateFilter.startDate && event.endDate <= dateFilter.endDate)
-              .slice(0, this.state.eventListSize)
-            )
-          }}
-        </Query>
+        <div>
+          <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
+            {({ loading, error, data }) => {
+              if (loading === true) {
+                this.state.eventsLoading = true
+                toast.info('Fetching list of events')
+                return <div>Loading...</div>
+              }
+              if (error) {
+                toast.error('error fetching list from server\n' + error.error.message)
+                console.log("error", error.error)
+                return <div>Unable to load events, please contact the site administrator</div>
+              }
+              if (data) {
+                this.state.eventsLoading = false
+                toast.success('Successfully loaded Events!')
+                return this.buildList(data.value)
+              }
+              this.state.bottomReached = false
+            }}
+          </OData>
+        </div>
       </div >
     )
   }

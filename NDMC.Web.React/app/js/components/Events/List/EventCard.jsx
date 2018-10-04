@@ -3,7 +3,6 @@
 import React from 'react'
 import { Card, CardBody, CardText, CardTitle, Button } from 'mdbreact'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from '../../../constants/action-types'
 
 const mapStateToProps = (state, props) => {
   return {}
@@ -23,12 +22,12 @@ class EventCard extends React.Component {
   }
 
   render() {
-    const { region: { regionName }, startdate, enddate, hazardtype } = this.props
+    const { region: { RegionName }, startdate, enddate, hazardtype } = this.props
     return (
       <>
         <Card>
           <CardBody>
-            <CardTitle>Disaster at {regionName} </CardTitle>
+            <CardTitle>Disaster at {RegionName} </CardTitle>
             <CardText>
               {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br />
               {hazardtype ? `Type: ${hazardtype}` : ' '}

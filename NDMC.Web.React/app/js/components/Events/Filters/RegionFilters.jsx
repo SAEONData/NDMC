@@ -2,7 +2,6 @@
 
 //React
 import React from 'react'
-import { Button } from 'mdbreact'
 import { connect } from 'react-redux'
 
 //Local
@@ -13,9 +12,9 @@ import TreeSelect from 'antd/lib/tree-select'
 import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
 import '../../../../css/antd.select.css' //Overrides default antd.select css
 
-//GraphQL
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'https://localhost:44334/odata/'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter } } = state
@@ -65,54 +64,47 @@ class RegionFilters extends React.Component {
   transformDataTree(filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
-        parentRegionId: i.parentRegionId, regionId: i.regionId, children: [], title: i.regionName, value: `${i.regionId}`, key: i.regionId
+        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${i.RegionId}`, key: i.RegionId
       }
     })
-    regions.forEach(f => { f.children = regions.filter(g => g.parentRegionId === f.regionId) })
-    var resultArray = regions.filter(f => f.parentRegionId == null)
+    regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
+    var resultArray = regions.filter(f => f.ParentRegionId == null)
     return resultArray
   }
 
   render() {
-    const GET_REGIONS = gql`
-      {
-        Regions {
-            regionName
-            regionId
-            parentRegionId
-            regionType {
-              regionTypeName
-          }
-        }
-      }`
+    const regionQuery = {
+      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
+      filter: { RegionTypeId: { ne: 5 } }
+    }
     return (
       <>
         <br />
-        {<Query query={GET_REGIONS}>
-          {({ data, loading, error }) => {
-            if (loading) return <p>Loading Region List...</p>
-            if (error) return <p>Error Loading Region List From Server...</p>
-            let filteredRegions = data.Regions.filter(region => !region.regionName.includes("Ward"))
-            let regionTree = this.transformDataTree(filteredRegions)
-            return (
-              <div className='row'>
-                <div className="col-md-6">
-                  <TreeSelect
-                    style={{ width: "100%" }}
-                    value={this.state.treeValue}
-                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                    treeData={regionTree}
-                    placeholder="Please select a region"
-                    onSelect={this.onSelect}
-                  >
-                  </TreeSelect>
-                </div>
-              </div>
-            )
-          }
-          }
-        </Query>
-        }
+        <OData baseUrl={baseUrl + 'regions'} query={regionQuery}>
+          {({ loading, error, data }) => {
+            if (loading) { return <div>Loading...</div> }
+            if (error) { return <div>Error Loading Data From Server</div> }
+            if (data) {
+              if (data.value) {
+                let regionTree = this.transformDataTree(data.value)
+                return (
+                  <div className='row'>
+                    <div className="col-md-6">
+                      <TreeSelect
+                        style={{ width: "100%" }}
+                        value={this.state.treeValue}
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        treeData={regionTree}
+                        placeholder="Please select a region"
+                        onSelect={this.onSelect}
+                      >
+                      </TreeSelect>
+                    </div>
+                  </div>
+                )}
+            }
+          }}
+        </OData>
       </>
     )
   }

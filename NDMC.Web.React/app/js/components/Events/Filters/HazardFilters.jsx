@@ -8,11 +8,11 @@ import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
 //MDBReact
-import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
+import { Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 
-//GraphQl
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'https://localhost:44334/odata/'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter } } = state
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 }
-let _data = { TypeEvents: [] }
+let _data
 
 class HazardFilters extends React.Component {
   constructor(props) {
@@ -51,15 +51,15 @@ class HazardFilters extends React.Component {
   }
 
   optionClick(value) {
+    //console.log(_data)
     let { loadHazardFilter } = this.props
     let id = 0
-    let filteredData = _data.TypeEvents.filter(x => x.typeEventName === value)
-    if (filteredData.length > 0) {
-      id = filteredData[0].typeEventId
-    }
-    if (value !== this.state.value) {
-      this.setState({ value })
-      loadHazardFilter({id: id, name: value})
+    let filteredData
+    if (_data) { filteredData = _data.filter(x => x.TypeEventName === value[0]) }
+    if (filteredData) { filteredData[0].TypeEventId ? id = filteredData[0].TypeEventId : '' }
+    if (value[0] !== this.state.value && value !== "Choose your option") {
+      this.setState({ value: value[0] })
+      loadHazardFilter({ id: id, name: value[0] })
     }
   }
 
@@ -86,13 +86,9 @@ class HazardFilters extends React.Component {
   }
 
   render() {
-    const GET_HAZARDS = gql`
-    {
-      TypeEvents {
-        typeEventName
-        typeEventId
-      }
-    }`
+    const hazardsQuery = {
+      select: ['TypeEventId', 'TypeEventName']
+    }
     return (
       <>
         <div className="row">
@@ -100,19 +96,20 @@ class HazardFilters extends React.Component {
             <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
-                {<Query query={GET_HAZARDS}>
-                  {({ data, loading, error }) => {
-                    if (error) return <p>Error Loading Data From Server</p>
-                    if (loading) return <p>Loading...</p>
-                    //Keep data for later
-                    _data = data
-                    return data.TypeEvents.map(item => {
-                      return <SelectOption key={item.typeEventId}>{item.typeEventName}</SelectOption>
-                    })
-                  }
-                  }
-                </Query>
-                }
+                <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardsQuery}>
+                  {({ loading, error, data }) => {
+                    if (loading) { return <div>Loading...</div> }
+                    if (error) { return <div>Error Loading Data From Server</div> }
+                    if (data) {
+                      if (data.value) {
+                        _data = data.value
+                        return data.value.map(item => {
+                          return <SelectOption key={item.TypeEventId}>{item.TypeEventName}</SelectOption>
+                        })
+                      }
+                    }
+                  }}
+                </OData>
               </SelectOptions>
             </Select>
           </div>

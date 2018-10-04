@@ -5,14 +5,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 //MDBReact
-import { Button, Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
+import { Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
 
-//GraphQL
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
+//Odata
+import OData from 'react-odata'
+const baseUrl = 'https://localhost:44334/odata/'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { impactFilter } } = state
@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-let _data = { TypeImpacts: [] }
+let _data
 class impactFilters extends React.Component {
   constructor(props) {
     super(props)
@@ -51,13 +51,12 @@ class impactFilters extends React.Component {
   optionClick(value) {
     let { loadImpactFilter } = this.props
     let id = 0
-    let filteredData = _data.TypeImpacts.filter(x => x.typeImpactName === value)
-    if (filteredData.length > 0) {
-      id = filteredData[0].typeImpactId
-    }
-    if (value !== this.state.value) {
-      this.setState({ value })
-      loadImpactFilter({id: id, name: value})
+    let filteredData
+    if (_data) { filteredData = _data.filter(x => x.TypeImpactName === value[0]) }
+    if (filteredData) { filteredData[0].TypeImpactId ? id = filteredData[0].TypeImpactId : '' }
+    if (value[0] !== this.state.value && value !== "Choose your option") {
+      this.setState({ value: value[0] })
+      loadImpactFilter({ id: id, name: value[0] })
     }
   }
 
@@ -84,13 +83,9 @@ class impactFilters extends React.Component {
   }
 
   render() {
-    const GET_IMPACTS = gql`
-    {
-      TypeImpacts {
-        typeImpactId
-        typeImpactName
-      }
-    }`
+    const impactsQuery = {
+      select: ['TypeImpactId', 'TypeImpactName']
+    }
     return (
       <>
         <div className='row'>
@@ -98,20 +93,20 @@ class impactFilters extends React.Component {
             <Select getValue={this.optionClick}>
               <SelectInput value={this.state.value}></SelectInput>
               <SelectOptions>
-                {<Query query={GET_IMPACTS}>
+                <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
                   {({ loading, error, data }) => {
-                    if (loading) return <p>Loading...</p>
-                    if (error) return <p>Error Loading Data From Server...</p>
-                    // Sort impacts alphabetically
-                    let sorted = data.TypeImpacts.map(x => { return { typeImpactName: x.typeImpactName, typeImpactId: x.typeImpactId } })
-                      .sort((c, n) => c.typeImpactName.localeCompare(n.typeImpactName))
-                    _data = data
-                    return sorted.map(item => {
-                      return <SelectOption key={item.typeImpactId}>{item.typeImpactName}</SelectOption>
-                    })
+                    if (loading) { return <div>Loading...</div> }
+                    if (error) { return <div>Error Loading Data From Server</div> }
+                    if (data) {
+                      _data = data.value
+                      let sorted = data.value.map(x => { return { TypeImpactName: x.TypeImpactName, TypeImpactId: x.TypeImpactId } })
+                        .sort((c, n) => c.TypeImpactName.localeCompare(n.TypeImpactName))
+                      return sorted.map(item => {
+                        return <SelectOption key={item.TypeImpactId}>{item.TypeImpactName}</SelectOption>
+                      })
+                    }
                   }}
-                </Query>
-                }
+                </OData>
               </SelectOptions>
             </Select>
           </div>

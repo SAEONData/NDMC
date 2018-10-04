@@ -17,13 +17,13 @@ namespace APIv2.Database.Models
         //FK - ParentAdminRegion
         [ForeignKey("ParentRegion")]
         public int? ParentRegionId { get; set; }
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public Region ParentRegion { get; set; }
 
         //FK - RegionType
         [ForeignKey("RegionType")]
         public int? RegionTypeId { get; set; }
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public RegionType RegionType { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace APIv2.Database.Models
         //FK - ParentTypeImpact
         [ForeignKey("ParentTypeImpact")]
         public int? ParentTypeImpactId { get; set; }
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public TypeImpact ParentTypeImpact { get; set; }
     }
 }
