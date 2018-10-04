@@ -14,7 +14,7 @@ import '../../../../css/antd.select.css' //Overrides default antd.select css
 
 //Odata
 import OData from 'react-odata'
-const baseUrl = 'http://app01.saeon.ac.za/ndmcapi/odata/'
+const baseUrl = 'https://localhost:44334/odata/'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter } } = state
@@ -74,7 +74,7 @@ class RegionFilters extends React.Component {
 
   render() {
     const regionQuery = {
-      select: ['RegionId', 'RegionName', 'ParentRegionId'],
+      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
       filter: { RegionTypeId: { ne: 5 } }
     }
     return (
@@ -84,24 +84,25 @@ class RegionFilters extends React.Component {
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }
-            console.log(data)
-            // let filteredRegions = data.Regions.filter(region => !region.RegionName.includes("Ward"))
-            let regionTree = this.transformDataTree(data)
-            return (
-              <div className='row'>
-                <div className="col-md-6">
-                  <TreeSelect
-                    style={{ width: "100%" }}
-                    value={this.state.treeValue}
-                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                    treeData={regionTree}
-                    placeholder="Please select a region"
-                    onSelect={this.onSelect}
-                  >
-                  </TreeSelect>
-                </div>
-              </div>
-            )
+            if (data) {
+              if (data.value) {
+                let regionTree = this.transformDataTree(data.value)
+                return (
+                  <div className='row'>
+                    <div className="col-md-6">
+                      <TreeSelect
+                        style={{ width: "100%" }}
+                        value={this.state.treeValue}
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        treeData={regionTree}
+                        placeholder="Please select a region"
+                        onSelect={this.onSelect}
+                      >
+                      </TreeSelect>
+                    </div>
+                  </div>
+                )}
+            }
           }}
         </OData>
       </>
