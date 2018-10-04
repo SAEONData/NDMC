@@ -40,7 +40,8 @@ class EventList extends React.Component {
       },
       eventListSize: 10,
       bottomReached: false,
-      loadedEvents: 0
+      loadedEvents: 0,
+      eventsLoading: false
     }
     this.handleScroll = this.handleScroll.bind(this)
     this.handleTags = this.handleTags.bind(this)
@@ -57,7 +58,7 @@ class EventList extends React.Component {
     const html = document.documentElement
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
     const windowBottom = windowHeight + window.pageYOffset
-    if (Math.ceil(windowBottom) >= docHeight) {
+    if (Math.ceil(windowBottom) >= docHeight && !this.state.eventsLoading) {
       if (this.state.loadedEvents > 9) {
         this.setState({
           bottomReached: true,
@@ -125,11 +126,11 @@ class EventList extends React.Component {
       filter: {}
     }
     if (hazardFilter.name) {
-      eventQuery.filter = { TypeEvent: { TypeEventId: hazardFilter.id } }
+      eventQuery.filter.TypeEvent = { TypeEventId: hazardFilter.id }
       this.state.eventListSize = 10
     }
     if (impactFilter.name) {
-      eventQuery.filter = { EventImpacts: { any: { typeImpact: { typeImpactId: impactFilter.id } } } }
+      eventQuery.filter.EventImpacts = { any: { typeImpact: { typeImpactId: impactFilter.id } } }
       this.state.eventListSize = 10
     }
     if (dateFilter.startDate) {
@@ -151,6 +152,7 @@ class EventList extends React.Component {
           <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
             {({ loading, error, data }) => {
               if (loading === true) {
+                this.state.eventsLoading = true
                 toast.info('Fetching list of events')
                 return <div>Loading...</div>
               }
@@ -160,6 +162,7 @@ class EventList extends React.Component {
                 return <div>Unable to load events, please contact the site administrator</div>
               }
               if (data) {
+                this.state.eventsLoading = false
                 toast.success('Successfully loaded Events!')
                 return this.buildList(data.value)
               }
