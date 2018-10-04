@@ -40,6 +40,7 @@ class EventList extends React.Component {
       },
       eventListSize: 10,
       bottomReached: false,
+      loadedEvents: 0
     }
     this.handleScroll = this.handleScroll.bind(this)
     this.handleTags = this.handleTags.bind(this)
@@ -57,10 +58,12 @@ class EventList extends React.Component {
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
     const windowBottom = windowHeight + window.pageYOffset
     if (Math.ceil(windowBottom) >= docHeight) {
-      this.setState({
-        bottomReached: true,
-        eventListSize: this.state.eventListSize + 10 //increase the amount of events that should be displayed by 10
-      })
+      if (this.state.loadedEvents > 9) {
+        this.setState({
+          bottomReached: true,
+          eventListSize: this.state.eventListSize + 10 //increase the amount of events that should be displayed by 10
+        })
+      }
     }
   }
 
@@ -86,7 +89,7 @@ class EventList extends React.Component {
         ar.push(<EventCard key={i.EeventId} eid={i.EventId} region={i.EventRegions[0].Region} startdate={startdate.toDateString()} enddate={enddate.toDateString()} hazardtype={i.TypeEvent.TypeEventName} />)
       }
     })
-
+    this.state.loadedEvents = ar.length
     return ar
   }
 
@@ -116,15 +119,24 @@ class EventList extends React.Component {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
     let eventQuery = {
       select: ['EventId', 'StartDate', 'EndDate'],
-      expand: ['TypeEvent','EventImpacts', 'EventRegions/Region'],
+      expand: ['TypeEvent', 'EventImpacts', 'EventRegions/Region'],
       top: this.state.eventListSize,
       orderBy: 'EventId asc',
+      filter: {}
     }
-     if (hazardFilter.name) { console.log(hazardFilter); eventQuery.filter = { TypeEvent: { TypeEventId: hazardFilter.id } } }
-     console.log(eventQuery)
-     if (impactFilter.name) { eventQuery.filter = { EventImpacts: { any: { typeImpact: {  typeImpactId: impactFilter.id  } } } } }
-    // if (impactFilter) { eventQuery.eventImpacts = { typeImpact: { filter: { typeImpactId: impactFilter } } } }
-    // if (dateFilter) { eventQuery.filter = { startDate: dateFilter.startDate, endDate: dateFilter.endDate } }
+    if (hazardFilter.name) {
+      eventQuery.filter = { TypeEvent: { TypeEventId: hazardFilter.id } }
+      this.state.eventListSize = 10
+    }
+    if (impactFilter.name) {
+      eventQuery.filter = { EventImpacts: { any: { typeImpact: { typeImpactId: impactFilter.id } } } }
+      this.state.eventListSize = 10
+    }
+    if (dateFilter.startDate) {
+      eventQuery.filter.StartDate = { ge: dateFilter.startDate }
+      eventQuery.filter.EndDate = { le: dateFilter.endDate }
+      this.state.eventListSize = 10
+    }
     // if (regionFilter) { eventQuery.eventRegions = { region: { filter: { regionId: regionFilter } } } }
 
     return (
@@ -136,25 +148,24 @@ class EventList extends React.Component {
           autoClose={2500}
         />
         <div>
-        <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
-          {({ loading, error, data }) => {
-            if (loading === true) {
-              toast.info('Fetching list of events')
-              return <div>Loading...</div>
-            }
-            if (error) {
-              toast.error('error fetching list from server\n' + error.error.message)
-              console.log("error", error.error)
-              return <div>Unable to load events, please contact the site administrator</div>
-            }
-            if(data)
-            {
-              toast.success('Successfully loaded Events!')
-              return this.buildList(data.value)
-            }
-            this.state.bottomReached = false
-          }}
-        </OData>
+          <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
+            {({ loading, error, data }) => {
+              if (loading === true) {
+                toast.info('Fetching list of events')
+                return <div>Loading...</div>
+              }
+              if (error) {
+                toast.error('error fetching list from server\n' + error.error.message)
+                console.log("error", error.error)
+                return <div>Unable to load events, please contact the site administrator</div>
+              }
+              if (data) {
+                toast.success('Successfully loaded Events!')
+                return this.buildList(data.value)
+              }
+              this.state.bottomReached = false
+            }}
+          </OData>
         </div>
       </div >
     )
