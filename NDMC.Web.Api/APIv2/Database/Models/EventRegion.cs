@@ -16,7 +16,7 @@ namespace APIv2.Database.Models
         [Required]
         public int EventId { get; set; }
         [Required]
-        //[IgnoreDataMember]
+        //[IgnoreDataMember]Q
         public Event Event { get; set; }
 
         //FK - Region

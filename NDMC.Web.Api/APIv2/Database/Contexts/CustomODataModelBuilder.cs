@@ -1,4 +1,5 @@
 ﻿using APIv2.Database.Models;
+using APIv2.ViewModels;
 
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.OData.Edm;
@@ -111,6 +112,13 @@ namespace APIv2.Database.Contexts
                 .OrderBy()
                 .Page()
                 .Select();
+
+            builder.Namespace = "Extensions";
+            builder.EntityType<Event>()
+                .Collection
+                .Action("Filter")
+                .ReturnsCollectionViaEntitySetPath<Event>("bindingParameter")
+                .Parameter<Filters>("filters");
 
             return builder.GetEdmModel();
         }
