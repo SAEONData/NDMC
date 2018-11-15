@@ -36,7 +36,7 @@ namespace APIv2
                 options.AddPolicy("CORSPolicy",
                       builder =>
                       {
-                          builder.WithOrigins("http://localhost:8080", "http://app01.saeon.ac.za/ndmcsite")
+                          builder.WithOrigins("http://localhost:8080", "http://localhost:8091", "http://app01.saeon.ac.za/ndmcsite")
                                  .AllowAnyHeader()
                                  .AllowAnyMethod();
                       });

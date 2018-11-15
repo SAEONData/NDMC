@@ -3,23 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APIv2.Migrations
 {
-    public partial class initial_create : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Departments",
-                columns: table => new
-                {
-                    DepartmentId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DepartmentName = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
-                });
-
             migrationBuilder.CreateTable(
                 name: "RegionTypes",
                 columns: table => new
@@ -179,33 +166,6 @@ namespace APIv2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventImpacts",
-                columns: table => new
-                {
-                    EventImpactId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Measure = table.Column<double>(nullable: true),
-                    EventId = table.Column<int>(nullable: false),
-                    TypeImpactId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventImpacts", x => x.EventImpactId);
-                    table.ForeignKey(
-                        name: "FK_EventImpacts_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "EventId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventImpacts_TypeImpacts_TypeImpactId",
-                        column: x => x.TypeImpactId,
-                        principalTable: "TypeImpacts",
-                        principalColumn: "TypeImpactId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EventRegions",
                 columns: table => new
                 {
@@ -239,19 +199,12 @@ namespace APIv2.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Date = table.Column<long>(nullable: true),
                     Value = table.Column<double>(nullable: true),
-                    DepartmentId = table.Column<int>(nullable: true),
                     EventId = table.Column<int>(nullable: false),
                     TypeMitigationId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Mitigations", x => x.MitigationId);
-                    table.ForeignKey(
-                        name: "FK_Mitigations_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "DepartmentId",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Mitigations_Events_EventId",
                         column: x => x.EventId,
@@ -266,15 +219,42 @@ namespace APIv2.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "EventImpacts",
+                columns: table => new
+                {
+                    EventImpactId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Measure = table.Column<double>(nullable: true),
+                    EventRegionId = table.Column<int>(nullable: false),
+                    TypeImpactId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventImpacts", x => x.EventImpactId);
+                    table.ForeignKey(
+                        name: "FK_EventImpacts_EventRegions_EventRegionId",
+                        column: x => x.EventRegionId,
+                        principalTable: "EventRegions",
+                        principalColumn: "EventRegionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventImpacts_TypeImpacts_TypeImpactId",
+                        column: x => x.TypeImpactId,
+                        principalTable: "TypeImpacts",
+                        principalColumn: "TypeImpactId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DeclaredEvents_EventId",
                 table: "DeclaredEvents",
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventImpacts_EventId",
+                name: "IX_EventImpacts_EventRegionId",
                 table: "EventImpacts",
-                column: "EventId");
+                column: "EventRegionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventImpacts_TypeImpactId",
@@ -300,11 +280,6 @@ namespace APIv2.Migrations
                 name: "IX_Events_TypeSourceId",
                 table: "Events",
                 column: "TypeSourceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Mitigations_DepartmentId",
-                table: "Mitigations",
-                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Mitigations_EventId",
@@ -346,34 +321,31 @@ namespace APIv2.Migrations
                 name: "EventImpacts");
 
             migrationBuilder.DropTable(
-                name: "EventRegions");
+                name: "Mitigations");
 
             migrationBuilder.DropTable(
-                name: "Mitigations");
+                name: "EventRegions");
 
             migrationBuilder.DropTable(
                 name: "TypeImpacts");
 
             migrationBuilder.DropTable(
-                name: "Regions");
-
-            migrationBuilder.DropTable(
-                name: "Departments");
+                name: "TypeMitigations");
 
             migrationBuilder.DropTable(
                 name: "Events");
 
             migrationBuilder.DropTable(
-                name: "TypeMitigations");
-
-            migrationBuilder.DropTable(
-                name: "RegionTypes");
+                name: "Regions");
 
             migrationBuilder.DropTable(
                 name: "TypeEvents");
 
             migrationBuilder.DropTable(
                 name: "TypeSources");
+
+            migrationBuilder.DropTable(
+                name: "RegionTypes");
         }
     }
 }

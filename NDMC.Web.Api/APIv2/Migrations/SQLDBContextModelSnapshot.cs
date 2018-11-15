@@ -15,7 +15,7 @@ namespace APIv2.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -34,20 +34,6 @@ namespace APIv2.Migrations
                     b.HasIndex("EventId");
 
                     b.ToTable("DeclaredEvents");
-                });
-
-            modelBuilder.Entity("APIv2.Database.Models.Department", b =>
-                {
-                    b.Property<int>("DepartmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("DepartmentName")
-                        .IsRequired();
-
-                    b.HasKey("DepartmentId");
-
-                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("APIv2.Database.Models.Event", b =>
@@ -81,7 +67,7 @@ namespace APIv2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("EventId");
+                    b.Property<int>("EventRegionId");
 
                     b.Property<double?>("Measure");
 
@@ -89,7 +75,7 @@ namespace APIv2.Migrations
 
                     b.HasKey("EventImpactId");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("EventRegionId");
 
                     b.HasIndex("TypeImpactId");
 
@@ -123,8 +109,6 @@ namespace APIv2.Migrations
 
                     b.Property<long?>("Date");
 
-                    b.Property<int?>("DepartmentId");
-
                     b.Property<int>("EventId");
 
                     b.Property<int>("TypeMitigationId");
@@ -132,8 +116,6 @@ namespace APIv2.Migrations
                     b.Property<double?>("Value");
 
                     b.HasKey("MitigationId");
-
-                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("EventId");
 
@@ -268,9 +250,9 @@ namespace APIv2.Migrations
 
             modelBuilder.Entity("APIv2.Database.Models.EventImpact", b =>
                 {
-                    b.HasOne("APIv2.Database.Models.Event", "Event")
+                    b.HasOne("APIv2.Database.Models.EventRegion", "EventRegion")
                         .WithMany("EventImpacts")
-                        .HasForeignKey("EventId")
+                        .HasForeignKey("EventRegionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("APIv2.Database.Models.TypeImpact", "TypeImpact")
@@ -294,10 +276,6 @@ namespace APIv2.Migrations
 
             modelBuilder.Entity("APIv2.Database.Models.Mitigation", b =>
                 {
-                    b.HasOne("APIv2.Database.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
                     b.HasOne("APIv2.Database.Models.Event", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
