@@ -45,7 +45,9 @@ namespace APIv2
             var connectionString = Configuration.GetConnectionString("NDMC");
             services.AddDbContext<SQLDBContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(connectionString, o => {
+                    o.UseRowNumberForPaging(); //Backwards compatibility for SQL 2008 R2
+                });
             });
 
             services.AddTransient<CustomODataModelBuilder>();
