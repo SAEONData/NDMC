@@ -18,6 +18,7 @@
     "font-awesome": "^4.7.0",
     "material-ui": "0.20.1",
     "mdbreact": "git+https://oauth2:TrvzhasQo5h8aod8YSLE@git.mdbootstrap.com/mdb/react/re-pro.git",
+    "moment": "^2.22.2",
     "npm": "^5.10.0",
     "odata-query": "^5.4.4",
     "oidc-client": "^1.5.2",
