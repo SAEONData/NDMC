@@ -28,6 +28,9 @@ class Header extends React.Component {
             <Col md="6">
               <h1 style={{ textAlign: "center", marginTop: "4%", letterSpacing: "2px", color: "#2e7d32" }}>
                 <b>NDMC</b>
+                <sub style={{ fontSize: "18px", backgroundColor: "#78e26c", borderRadius: "5px", padding: "2px" }}>
+                  <i>BETA</i>
+                </sub>
               </h1>
               <h5 style={{ textAlign: "center", letterSpacing: "2px", marginTop: "-8px", color: "grey" }}>
                 <b>National Disaster Management Centre</b>
