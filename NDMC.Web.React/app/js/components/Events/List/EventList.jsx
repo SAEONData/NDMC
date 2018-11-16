@@ -38,6 +38,7 @@ class EventList extends React.Component {
         startDate: 0,
         endDate: 0
       },
+      data: {},
       eventListSize: 10,
       bottomReached: false,
       loadedEvents: 0,
@@ -116,8 +117,38 @@ class EventList extends React.Component {
     return taglist
   }
 
+  getEvents() {
+    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
+    return fetch('https://localhost:44334/odata/Events/Extensions.Filter?$expand=eventRegions($expand=Region),TypeEvent',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+          // 'Authorization': 'Bearer' + (user === null ? '': '')
+        },
+        body: JSON.stringify({
+          region: regionFilter.id,
+          hazard: hazardFilter.id,
+          impact: impactFilter.id,
+          startDate: dateFilter.startDate,
+          endDate: dateFilter.endDate
+        })
+      }).then((res) => res.json()).then((res) =>{ console.log(res.value); this.setState({ data: res.value })})
+  }
+
   render() {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
+
+    // console.log(JSON.stringify({
+    //   region: regionFilter,
+    //   hazard: hazardFilter,
+    //   impact: impactFilter,
+    //   startDate: dateFilter.startDate,
+    //   endDate: dateFilter.endDate
+    // }))
+    this.getEvents()
+
     let eventQuery = {
       select: ['EventId', 'StartDate', 'EndDate'],
       expand: ['TypeEvent', 'EventImpacts', 'EventRegions/Region'],
@@ -125,11 +156,11 @@ class EventList extends React.Component {
       orderBy: 'EventId asc',
       filter: {}
     }
-    if (hazardFilter.name) {
+    if (hazardFilter.id) {
       eventQuery.filter.TypeEvent = { TypeEventId: hazardFilter.id }
       this.state.eventListSize = 10
     }
-    if (impactFilter.name) {
+    if (impactFilter.id) {
       eventQuery.filter.EventImpacts = { any: { typeImpact: { typeImpactId: impactFilter.id } } }
       this.state.eventListSize = 10
     }
@@ -138,37 +169,23 @@ class EventList extends React.Component {
       eventQuery.filter.EndDate = { le: dateFilter.endDate }
       this.state.eventListSize = 10
     }
-    // if (regionFilter) { eventQuery.eventRegions = { region: { filter: { regionId: regionFilter } } } }
+    if (regionFilter.id) { }
+
+    let query = {
+      Filter: {
+        region: regionFilter.id,
+        impact: impactFilter.id,
+        hazard: hazardFilter.id,
+        startdate: dateFilter.startDate,
+        endDate: dateFilter.endDate
+      }
+    }
 
     return (
       <div>
         <div> {this.handleTags()} </div>
-        <ToastContainer
-          hideProgressBar={true}
-          newestOnTop={true}
-          autoClose={2500}
-        />
         <div>
-          <OData baseUrl={baseUrl + 'Events'} query={eventQuery}>
-            {({ loading, error, data }) => {
-              if (loading === true) {
-                this.state.eventsLoading = true
-                toast.info('Fetching list of events')
-                return <div>Loading...</div>
-              }
-              if (error) {
-                toast.error('error fetching list from server\n' + error.error.message)
-                console.log("error", error.error)
-                return <div>Unable to load events, please contact the site administrator</div>
-              }
-              if (data) {
-                this.state.eventsLoading = false
-                toast.success('Successfully loaded Events!')
-                return this.buildList(data.value)
-              }
-              this.state.bottomReached = false
-            }}
-          </OData>
+          { Object.keys(this.state.data).length > 1 && this.buildList(this.state.data)}
         </div>
       </div >
     )
