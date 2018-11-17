@@ -39,6 +39,7 @@ class EventList extends React.Component {
         endDate: 0
       },
       data: {},
+      done: false,
       eventListSize: 10,
       bottomReached: false,
       loadedEvents: 0,
@@ -47,7 +48,6 @@ class EventList extends React.Component {
     this.handleScroll = this.handleScroll.bind(this)
     this.handleTags = this.handleTags.bind(this)
   }
-
 
   /*
   Checks for if the user scrolls to the bottom of the page and if they do change state
@@ -63,12 +63,15 @@ class EventList extends React.Component {
       if (this.state.loadedEvents > 9) {
         this.setState({
           bottomReached: true,
-          eventListSize: this.state.eventListSize + 10 //increase the amount of events that should be displayed by 10
+          eventListSize: this.state.eventListSize < 50 ? this.state.eventListSize + 10 : this.state.eventListSize
         })
       }
     }
   }
-
+  componentWillMount() {
+    //this.getEvents()
+  }
+  
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
@@ -82,7 +85,7 @@ class EventList extends React.Component {
   Create a list of event cards to be used to populate the events page and parse in the relevant information for each event
   */
   buildList(events) {
-
+    if(events === undefined) return "No data"
     let ar = []
     events.forEach(i => {
       let startdate = new Date(i.StartDate * 1000)
@@ -92,19 +95,24 @@ class EventList extends React.Component {
       }
     })
     this.state.loadedEvents = ar.length
+    this.state.done = false
     return ar
   }
 
   handleTags() {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
     let taglist = []
+    let filter = {}
     if (hazardFilter.name) {
+    //  filter.hazardFilter.id = hazardFilter.id
       taglist.push(<Chip waves close> {hazardFilter.name} </Chip>)
     }
     if (regionFilter.name) {
+     // filter.regionFilter.id = regionFilter.id
       taglist.push(<Chip waves close> {regionFilter.name} </Chip>)
     }
     if (impactFilter.name) {
+    //  filter.impactFilter.id = impactFilter.id
       taglist.push(<Chip waves close> {impactFilter.name} </Chip>)
     }
     if (dateFilter.startDate) {
@@ -119,7 +127,7 @@ class EventList extends React.Component {
 
   getEvents() {
     let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
-    return fetch('https://localhost:44334/odata/Events/Extensions.Filter?$expand=eventRegions($expand=Region),TypeEvent',
+    return fetch(`https://localhost:44334/odata/Events/Extensions.Filter?$top=${this.state.eventListSize}&$expand=eventRegions($expand=Region),TypeEvent`,
       {
         method: 'POST',
         headers: {
@@ -134,58 +142,16 @@ class EventList extends React.Component {
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate
         })
-      }).then((res) => res.json()).then((res) =>{ console.log(res.value); this.setState({ data: res.value })})
+      }).then((res) => res.json()).then((res) =>{ /*this.setState({ data: res.value, done: true })*/ this.state.data = res.value; this.setState({done: true})})
   }
 
   render() {
-    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
-
-    // console.log(JSON.stringify({
-    //   region: regionFilter,
-    //   hazard: hazardFilter,
-    //   impact: impactFilter,
-    //   startDate: dateFilter.startDate,
-    //   endDate: dateFilter.endDate
-    // }))
-    this.getEvents()
-
-    let eventQuery = {
-      select: ['EventId', 'StartDate', 'EndDate'],
-      expand: ['TypeEvent', 'EventImpacts', 'EventRegions/Region'],
-      top: this.state.eventListSize,
-      orderBy: 'EventId asc',
-      filter: {}
-    }
-    if (hazardFilter.id) {
-      eventQuery.filter.TypeEvent = { TypeEventId: hazardFilter.id }
-      this.state.eventListSize = 10
-    }
-    if (impactFilter.id) {
-      eventQuery.filter.EventImpacts = { any: { typeImpact: { typeImpactId: impactFilter.id } } }
-      this.state.eventListSize = 10
-    }
-    if (dateFilter.startDate) {
-      eventQuery.filter.StartDate = { ge: dateFilter.startDate }
-      eventQuery.filter.EndDate = { le: dateFilter.endDate }
-      this.state.eventListSize = 10
-    }
-    if (regionFilter.id) { }
-
-    let query = {
-      Filter: {
-        region: regionFilter.id,
-        impact: impactFilter.id,
-        hazard: hazardFilter.id,
-        startdate: dateFilter.startDate,
-        endDate: dateFilter.endDate
-      }
-    }
-
+    this.state.done ? '' : this.getEvents()
     return (
       <div>
         <div> {this.handleTags()} </div>
         <div>
-          { Object.keys(this.state.data).length > 1 && this.buildList(this.state.data)}
+          { this.state.done ? this.buildList(this.state.data) : <div>{"Loading"}</div> }
         </div>
       </div >
     )
