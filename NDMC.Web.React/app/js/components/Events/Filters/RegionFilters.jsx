@@ -43,18 +43,7 @@ class RegionFilters extends React.Component {
 
   onSelect(value, node) {
     let { loadRegionFilter } = this.props
-    //this.setState({ treeValue: value.toString() })
-
-    // Check if selected node is top level, if it is, create an array of second level
-    // region id's so that we can filter events with third level region id's easily
-    if (node.props.ParentRegionId === null) {
-      let regionFilterArray = node.props.children.map(child => parseInt(child.key))
-      regionFilterArray.push(parseInt(value))
-      loadRegionFilter({ id: regionFilterArray, name: node.props.title })
-    }
-    else {
-      loadRegionFilter({ id: parseInt(value), name: node.props.title })
-    }
+    loadRegionFilter({ id: parseInt(value), name: node.props.title })
   }
 
   /* TransformDataTree

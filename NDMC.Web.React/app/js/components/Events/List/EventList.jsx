@@ -104,15 +104,12 @@ class EventList extends React.Component {
     let taglist = []
     let filter = {}
     if (hazardFilter.name) {
-    //  filter.hazardFilter.id = hazardFilter.id
       taglist.push(<Chip waves close> {hazardFilter.name} </Chip>)
     }
     if (regionFilter.name) {
-     // filter.regionFilter.id = regionFilter.id
       taglist.push(<Chip waves close> {regionFilter.name} </Chip>)
     }
     if (impactFilter.name) {
-    //  filter.impactFilter.id = impactFilter.id
       taglist.push(<Chip waves close> {impactFilter.name} </Chip>)
     }
     if (dateFilter.startDate) {
@@ -142,7 +139,7 @@ class EventList extends React.Component {
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate
         })
-      }).then((res) => res.json()).then((res) =>{ /*this.setState({ data: res.value, done: true })*/ this.state.data = res.value; this.setState({done: true})})
+      }).then((res) => res.json()).then((res) =>{ this.state.data = res.value; this.setState({done: true})})
   }
 
   render() {
