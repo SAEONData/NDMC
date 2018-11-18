@@ -30,7 +30,7 @@ namespace APIv2.Controllers
             _context = context;
         }
 
-        [EnableQuery]
+        [EnableQuery(MaxExpansionDepth = 0)]
         public IQueryable<Event> Get()
         {
             return _context.Events.AsQueryable();
