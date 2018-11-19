@@ -13,17 +13,21 @@ import Form from 'antd/es/form'
 import Col from 'antd/es/Col'
 import Row from 'antd/es/Row'
 import Input from 'antd/es/Input'
+import InputNumber from 'antd/es/input-number'
 import Select from 'antd/es/Select'
 import DatePicker from 'antd/es/date-picker'
 import Drawer from 'antd/es/Drawer'
+import List from 'antd/es/List'
 import 'antd/es/modal/style'
 import 'antd/es/Form/style'
 import 'antd/es/Col/style'
 import 'antd/es/Row/style'
 import 'antd/es/Input/style'
+import 'antd/es/input-number/style'
 import 'antd/es/Select/style'
 import 'antd/es/date-picker/style'
 import 'antd/es/Drawer/style'
+import 'antd/es/List/style'
 const { Option } = Select
 
 //AntD Tree
@@ -51,13 +55,17 @@ class Events extends React.Component {
     super(props)
     this.state = {
       visible: false,
+      impactModalVisible: false,
       regionTreeValue: undefined,
       region: '',
       impacts: [],
       hazard: '',
       startDate: '',
       endDate: '',
-      declaredDate: ''
+      declaredDate: '',
+      impactTypeTemp: '',
+      impactTypeNameTemp: '',
+      impactAmountTemp: ''
     }
     this.backToTop = this.backToTop.bind(this)
     this.showDrawer = this.showDrawer.bind(this)
@@ -68,6 +76,11 @@ class Events extends React.Component {
     this.onHazardSelect = this.onHazardSelect.bind(this)
     this.onDeclaredDateSelect = this.onDeclaredDateSelect.bind(this)
     this.onDateRangeSelect = this.onDateRangeSelect.bind(this)
+    this.onImpactOpen = this.onImpactOpen.bind(this)
+    this.onImpactAdd = this.onImpactAdd.bind(this)
+    this.onImpactClose = this.onImpactClose.bind(this)
+    this.onImpactSelect = this.onImpactSelect.bind(this)
+    this.onImpactAmount = this.onImpactAmount.bind(this)
   }
 
   showDrawer() {
@@ -81,7 +94,7 @@ class Events extends React.Component {
       visible: false
     })
   }
-  
+
   onSubmit() {
     this.setState({
       visible: false
@@ -119,7 +132,7 @@ class Events extends React.Component {
   }
 
   onHazardSelect(value) {
-      this.setState({ hazard: value })
+    this.setState({ hazard: value })
   }
 
   onDeclaredDateSelect(date, dateString) {
@@ -127,9 +140,36 @@ class Events extends React.Component {
   }
 
   onDateRangeSelect(date, dateString) {
-    console.log(dateString[0])
-    console.log(Date.parse(dateString[0]) + ' to ' + Date.parse(dateString[1]))
-    this.setState({ startDate: Date.parse(dateString[0]) / 1000, endDate: Date.parse(dateString[1])/1000 })
+    this.setState({ startDate: Date.parse(dateString[0]) / 1000, endDate: Date.parse(dateString[1]) / 1000 })
+  }
+
+  onImpactOpen() {
+    this.setState({ impactModalVisible: true })
+  }
+
+  onImpactClose() {
+    this.setState({ impactModalVisible: false })
+  }
+
+  onImpactAdd() {
+    this.setState({ impactModalVisible: false })
+    let newimpact = { 
+      impactType: this.state.impactTypeTemp, 
+      impactTypeName: this.state.impactTypeNameTemp , 
+      impactAmount: this.state.impactAmountTemp}
+    this.setState( prev => ({
+      impacts : [...prev.impacts, newimpact]
+    }))
+  }
+
+  onImpactSelect(value, next){
+    console.log(next.props.children)
+    this.setState({ impactTypeTemp: value, impactTypeNameTemp: next.props.children})
+  }
+
+  onImpactAmount(value){
+    console.log(value)
+    this.setState({ impactAmountTemp: value})
   }
 
   render() {
@@ -140,6 +180,10 @@ class Events extends React.Component {
     const hazardQuery = {
       select: ['TypeEventId', 'TypeEventName']
     }
+    const impactsQuery = {
+      select: ['TypeImpactId', 'TypeImpactName']
+    }
+
     return (
       <>
         <div style={{ position: 'fixed', right: '14%', bottom: '10px', zIndex: '99' }}>
@@ -220,7 +264,7 @@ class Events extends React.Component {
                 </Row>
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Form.Item label="DateTime">
+                    <Form.Item label="Hazard Date Range">
                       <DatePicker.RangePicker
                         style={{ width: '100%' }}
                         getPopupContainer={trigger => trigger.parentNode}
@@ -239,42 +283,79 @@ class Events extends React.Component {
                 <Row gutter={16}>
                   <Col span={24}>
                     <Form.Item label="Impacts">
-                      <Input.TextArea rows={4} placeholder="please enter url description" />
+                      <Button onClick={this.onImpactOpen} size="sm">Add Impact</Button>
+                      <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
+                        {({ loading, error, data }) => {
+                          if (loading) { return <div>Loading...</div> }
+                          if (error) { return <div>Error Loading Data From Server</div> }
+                          if (data) {
+
+                            return <Modal
+                              title="New Impact"
+                              visible={this.state.impactModalVisible}
+                              onOk={this.onImpactAdd}
+                              onCancel={this.onImpactClose}
+                            >
+                              <Select
+                                showSearch
+                                style={{ width: 400 }}
+                                placeholder="Select an impact"
+                                optionFilterProp="children"
+                                onChange={this.onImpactSelect}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                              >
+                                {data.value.map(item => {
+                                  return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
+                                })}
+                              </Select>
+                              <InputNumber onChange={this.onImpactAmount}></InputNumber>
+                              </Modal>
+                              }
+                            }}
+                      </OData>
+                      <List 
+                      header={<div>Impacts Recorded</div>} 
+                      bordered
+                      dataSource={this.state.impacts.map( (impact) => {
+                        return `${impact.impactTypeName}: ${impact.impactAmount}`
+                      })}
+                      renderItem={item => (<List.Item>{item}</List.Item>)} >
+                      </List>
                     </Form.Item>
                   </Col>
                 </Row>
               </Form>
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  width: '100%',
-                  borderTop: '1px solid #e8e8e8',
-                  padding: '10px 16px',
-                  textAlign: 'right',
-                  left: 0,
-                  background: '#fff',
-                  borderRadius: '0 0 4px 4px',
-                }}
-              >
-                <Button
-                  style={{
-                    marginRight: 8,
-                  }}
-                  onClick={this.onClose}
-                >
-                  Cancel
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      width: '100%',
+                      borderTop: '1px solid #e8e8e8',
+                      padding: '10px 16px',
+                      textAlign: 'right',
+                      left: 0,
+                      background: '#fff',
+                      borderRadius: '0 0 4px 4px',
+                    }}
+                  >
+                    <Button
+                      style={{
+                        marginRight: 8,
+                      }}
+                      onClick={this.onClose}
+                    >
+                      Cancel
             </Button>
-                <Button onClick={this.onSubmit} type="primary">Submit</Button>
-              </div>
+                    <Button onClick={this.onSubmit} type="primary">Submit</Button>
+                  </div>
             </Drawer>
           </div>
         </div>
-        <EventFilters />
-        <EventList />
+            <EventFilters />
+            <EventList />
       </>
-    )
-  }
-}
-
+          )
+        }
+      }
+      
 export default connect(mapStateToProps, mapDispatchToProps)(Events)
