@@ -77,6 +77,64 @@ namespace APIv2.Controllers
             return events;
         }
 
+        [HttpGet]
+        [EnableQuery]
+        public JsonResult GeoJson()
+        {
+            var eventImpacts = _context.EventImpacts.ToArray();
+
+            var geoJSON = _context.Events
+                .Select(e => new
+                {
+                    type = "Feature",
+                    properties = new
+                    {
+                        id = e.EventId,
+                        regions = e.EventRegions.Select(er => er.RegionId).ToArray(),
+                        hazard = e.TypeEventId,
+                        startDate = ConvertToDateString(e.StartDate),
+                        endDate = ConvertToDateString(e.EndDate),
+                        declaredDates = e.DeclaredEvents.Select(de => ConvertToDateString(de.DeclaredDate)).ToArray(),
+                        impacts = GetEventImpacts(e.EventRegions.Select(er => er.EventRegionId).ToArray(), eventImpacts)
+                    }
+                })
+                .Distinct()
+                .Where(x => x.properties.impacts.Length > 0)
+                .ToList();
+
+            return new JsonResult(geoJSON);
+        }
+
+        private int[] GetEventImpacts(int[] eventRegionIDs, EventImpact[] eventImpacts)
+        {
+            var eventImpactIDs = new List<int>();
+
+            foreach (var erID in eventRegionIDs)
+            {
+                eventImpactIDs.AddRange(
+                    eventImpacts
+                    .Where(ei => ei.EventRegionId == erID)
+                    .Select(ei => ei.EventImpactId)
+                    .ToArray()
+                );
+            }
+
+            return eventImpactIDs.Distinct().OrderBy(ei => ei).ToArray();
+        }
+
+        private string ConvertToDateString(long? unixTime)
+        {
+            if (unixTime == null)
+            {
+                var dt = DateTime.Now;
+                unixTime = ((DateTimeOffset)dt).ToUnixTimeSeconds();
+            }
+            long _unixTime = (long)unixTime;
+
+            // Unix timestamp is seconds past epoch
+            return DateTimeOffset.FromUnixTimeSeconds(_unixTime).Date.ToString("yyyy-MM-dd");
+        }
+
         private List<Region> GetChildRegions(int regionId, List<Region> regionList)
         {
             var regions = regionList.Where(x => x.ParentRegionId == regionId).ToList();

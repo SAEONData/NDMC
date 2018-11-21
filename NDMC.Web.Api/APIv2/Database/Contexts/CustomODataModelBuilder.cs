@@ -2,6 +2,7 @@
 using APIv2.ViewModels;
 
 using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OData.Edm;
 
 using System;
@@ -114,12 +115,24 @@ namespace APIv2.Database.Contexts
                 .Page()
                 .Select();
 
+
+            //#####################//
+            // FUNCTIONS & ACTIONS //
+            //#####################//
+
             builder.Namespace = "Extensions";
             builder.EntityType<Event>()
                 .Collection
                 .Action("Filter")
                 .ReturnsCollectionViaEntitySetPath<Event>("bindingParameter")
                 .Parameter<Filters>("filters");
+
+            builder.
+                EntityType<Event>().
+                Collection.
+                Function("GeoJson").
+                Returns<JsonResult>();
+
 
             return builder.GetEdmModel();
         }
