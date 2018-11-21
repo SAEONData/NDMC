@@ -53,14 +53,14 @@ class CustomNavbar extends React.Component {
               <a className="nav-link" href="#/graphs">Graphs</a>
             </NavItem>
           </NavbarNav>
-          <NavbarNav right>
+          {/* <NavbarNav right>
             <NavItem style={{ marginRight: "15px" }}>
               <a className="nav-link" href="#">Login</a>
             </NavItem>
             <NavItem style={{ marginRight: "15px" }}>
               <a className="nav-link" href="#/events">Register</a>
             </NavItem>
-          </NavbarNav>
+          </NavbarNav> */}
         </Collapse>
       </Navbar>
     )

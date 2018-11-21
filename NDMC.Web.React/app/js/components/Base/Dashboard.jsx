@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-class Home extends React.Component {
+class Dashboard extends React.Component {
 
   constructor(props) {
     super(props)
@@ -14,7 +14,7 @@ class Home extends React.Component {
       <>
         <br />
         <div className="jumbotron">
-          <h1>NDMC Data Service</h1>
+          <h1>NDMC Data Service ##</h1>
           <p className="lead">
             Home of the NDMC Web site
             <br />
@@ -30,4 +30,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home
+export default Dashboard

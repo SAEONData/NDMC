@@ -12,10 +12,22 @@ module.exports = {
   context: path.join(cwd, 'app'),
   devtool: 'inline-source-map',
   mode,
+  devServer: {
+    historyApiFallback: true,
+    port: 8080
+  },
   entry: {
-    app: ['./js/index.jsx'],
-    react: ['react', 'react-dom', 'react-router-dom', 'react-router', 'redux', 'react-redux', 'react-router-redux', 'react-tap-event-plugin', 'history'],
-    //styles: ['font-awesome/css/font-awesome.min.css', 'bootstrap/dist/css/bootstrap.min.css', 'mdbreact/docs/css/mdb.min.css']
+    app: ["babel-polyfill", './js/index.jsx'],
+    react: [
+      'react', 
+      'react-dom', 
+      'react-router-dom', 
+      'react-router', 
+      'redux', 
+      'react-redux', 
+      'react-router-redux', 
+      'history'
+    ],
   },
 
   output: {
@@ -87,7 +99,14 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.ejs',
+      chunks: ["app"],
+      filename: "index.html"
     }),
+    // new HtmlWebpackPlugin({
+    //   template: "./silent_renew/silent_renew.html",
+    //   chunks: ["silentRenew"],
+    //   filename: "silent_renew.html"
+    // }),
     new webpack.DefinePlugin({
       CONSTANTS: {
         PRODUCTION: mode === 'production'

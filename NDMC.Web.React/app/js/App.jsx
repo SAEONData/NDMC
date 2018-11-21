@@ -11,11 +11,10 @@ import 'mdbreact/dist/css/mdb.css'
 
 //React
 import React from 'react'
-import injectTapEventPlugin from 'react-tap-event-plugin'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
 //Local
-import Home from './components/Base/Home.jsx'
+import Dashboard from './components/Base/Dashboard.jsx'
 import Events from './components/Events/List/Events.jsx'
 import EventDetails from './components/Events/Details/EventDetails.jsx'
 import Graphs from './components/Events/Graphs/EventGraph.jsx'
@@ -23,12 +22,6 @@ import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 import Header from './components/Base/Header.jsx'
 import Footer from './components/Base/Footer.jsx'
-
-/**
- * Tap Event
- * @ignore
- */
-injectTapEventPlugin()
 
 /**
  * App
@@ -48,14 +41,13 @@ class App extends React.Component {
     let { navbar } = this.state
 
     return (
-      <div className='container'>
+      <div style={{ margin: "0px 25px 0px 25px", backgroundColor: "white" }}>
         <Router>
           <div>
             {navbar && <Header/>}
             {navbar && <CustomNavbar />}
             <Switch>
-              {/* <Redirect from='/' to='/events' exact /> */}
-              <Route path='/' component={Home} exact />
+              <Route path='/' component={Dashboard} exact />
               <Route path='/events' component={Events} exact />
               <Route path='/events/:id' component={EventDetails} exact />
               <Route path='/graphs' component={Graphs} exact />
