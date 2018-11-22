@@ -2,11 +2,18 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Navbar, NavbarNav, NavbarToggler, Collapse, NavItem } from 'mdbreact'
+import { Navbar, NavbarNav, NavbarToggler, Collapse, NavItem, Button } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
-  let { globalData: { } } = state
-  return {}
+  return { }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleAddForm: payload => {
+      dispatch({ type: "TOGGLE_ADD_FORM", payload })
+    }
+  }
 }
 
 class CustomNavbar extends React.Component {
@@ -39,19 +46,42 @@ class CustomNavbar extends React.Component {
   render() {
 
     return (
-      <Navbar size="sm" color="indigo" expand="md" dark expand="md" style={{ boxShadow: "none", borderTop: "1px solid gainsboro" }}>
+      <Navbar
+        size="sm"
+        color="white"
+        light
+        expand="md"
+        style={{
+          boxShadow: "0px 15px 10px -15px gainsboro",
+          borderTop: "1px solid #E8E8E8",
+        }}
+      >
+
         {!this.state.isWideEnough && <NavbarToggler style={{ backgroundColor: "#2BBBAD" }} onClick={this.onClick} />}
         <Collapse isOpen={this.state.collapse} navbar>
           <NavbarNav left>
-            <NavItem style={{ marginRight: "15px" }}>
-              <a className="nav-link" href="#">Home</a>
+
+            {
+              (!location.hash.includes("events/") /*&& (user && !user.expired)*/) &&
+              <Button
+                color="warning"
+                size="sm"
+                style={{ marginLeft: "0px" }}
+                onClick={() => { this.props.toggleAddForm(true) }} 
+              >
+                Add New Event
+              </Button>
+            }
+
+            {/* <NavItem style={{ marginRight: "15px" }}>
+              <a className="nav-link" href="#"><b>Home</b></a>
             </NavItem>
             <NavItem style={{ marginRight: "15px" }}>
-              <a className="nav-link" href="#/events">Events</a>
-            </NavItem>
-            <NavItem style={{ marginRight: "15px" }}>
+              <a className="nav-link" href="#/events"><b>Events</b></a>
+            </NavItem> */}
+            {/* <NavItem style={{ marginRight: "15px" }}>
               <a className="nav-link" href="#/graphs">Graphs</a>
-            </NavItem>
+            </NavItem> */}
           </NavbarNav>
           {/* <NavbarNav right>
             <NavItem style={{ marginRight: "15px" }}>
@@ -67,4 +97,4 @@ class CustomNavbar extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(CustomNavbar)
+export default connect(mapStateToProps, mapDispatchToProps)(CustomNavbar)

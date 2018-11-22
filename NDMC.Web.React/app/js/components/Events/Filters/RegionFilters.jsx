@@ -77,19 +77,19 @@ class RegionFilters extends React.Component {
               if (data.value) {
                 let regionTree = this.transformDataTree(data.value)
                 return (
-                  <div className='row'>
-                    <div className="col-md-6">
+                  // <div className='row'>
+                    // <div className="col-md-6">
                       <TreeSelect
                         style={{ width: "100%" }}
                         value={this.state.treeValue}
                         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                         treeData={regionTree}
-                        placeholder="Please select a region"
+                        placeholder="Select..."
                         onSelect={this.onSelect}
                       >
                       </TreeSelect>
-                    </div>
-                  </div>
+                    // </div>
+                  // </div>
                 )}
             }
           }}

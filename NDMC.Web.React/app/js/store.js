@@ -13,6 +13,7 @@ const store = createStore(
     ...applyMiddleware(middleware),
 
     globalData: {
+      addFormVisible: false
     },
     eventData: {
     },
