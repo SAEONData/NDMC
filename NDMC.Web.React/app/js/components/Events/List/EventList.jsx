@@ -38,15 +38,18 @@ import 'antd/lib/input-number/style/index.css'
 import '../../../../css/antd.tree-select.css' // Overrides default antd.tree-select css
 import '../../../../css/antd.select.css' // Overrides default antd.tree-select css
 import '../../../../css/antd.date-picker.css' // Overrides default antd.tree-select css
+import 'antd/lib/popover/style/index.css' //Overrides default antd.tree css
 import 'antd/lib/drawer/style/index.css'
 import 'antd/lib/list/style/index.css'
-import 'antd/lib/popover/style/index.css' //Overrides default antd.tree css
+
+const _gf = require('../../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter } } = state
+  let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } } = state
   let { globalData: { addFormVisible } } = state
+  let { eventData: { events, listScrollPos } } = state
   return {
-    hazardFilter, regionFilter, dateFilter, impactFilter, addFormVisible
+    hazardFilter, regionFilter, dateFilter, impactFilter, addFormVisible, events, favoritesFilter, listScrollPos
   }
 }
 
@@ -54,30 +57,39 @@ const mapDispatchToProps = (dispatch) => {
   return {
     toggleAddForm: payload => {
       dispatch({ type: "TOGGLE_ADD_FORM", payload })
+    },
+    resetEvents: () => {
+      dispatch({ type: "RESET_EVENTS", payload: [] })
+    },
+    loadEvents: payload => {
+      dispatch({ type: "LOAD_EVENTS", payload })
+    },
+    toggleFavorites: async payload => {
+      dispatch({ type: "LOAD_FAVS_FILTER", payload })
+    },
+    setScrollPos: payload => {
+      dispatch({ type: "SET_EVENTS_SCROLL", payload })
+    },
+    setForceNavRender: payload => {
+      dispatch({ type: "FORCE_NAV_RENDER", payload })
     }
   }
 }
-
-let regionData, hazardData
 
 class EventList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      hazardFilter: { id: 0, name: '' },
-      regionFilter: { id: 0, name: '' },
-      impactFilter: { id: 0, name: '' },
-      dateFilter: {
+      _hazardFilter: { id: 0, name: '' },
+      _regionFilter: { id: 0, name: '' },
+      _impactFilter: { id: 0, name: '' },
+      _dateFilter: {
         startDate: 0,
         endDate: 0
       },
-      data: {},
-      done: false,
-      eventListSize: 10,
-      bottomReached: false,
-      loadedEvents: 0,
+      eventListSize: 25,
       eventsLoading: false,
-      favoritesFilter: false,
+      _favoritesFilter: false,
       ellipsisMenu: false,
       impactModalVisible: false,
       regionTreeValue: undefined,
@@ -89,8 +101,10 @@ class EventList extends React.Component {
       declaredDate: '',
       impactTypeTemp: '',
       impactTypeNameTemp: '',
-      impactAmountTemp: ''
+      impactAmountTemp: '',
+      showBackToTop: false
     }
+
     this.handleScroll = this.handleScroll.bind(this)
     this.backToTop = this.backToTop.bind(this)
     this.onClose = this.onClose.bind(this)
@@ -106,48 +120,63 @@ class EventList extends React.Component {
     this.onImpactAmount = this.onImpactAmount.bind(this)
   }
 
-  /*
-  Checks for if the user scrolls to the bottom of the page and if they do change state
-  to reflect this and increase the amount of events that can be displayed on the page
-  */
-  handleScroll() {
-    const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
-    const body = document.body
-    const html = document.documentElement
-    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
-    const windowBottom = windowHeight + window.pageYOffset
-    if (Math.ceil(windowBottom) >= docHeight && !this.state.eventsLoading) {
-      if (this.state.loadedEvents > 9) {
-        this.setState({
-          bottomReached: true,
-          eventListSize: this.state.eventListSize < 50 ? this.state.eventListSize + 10 : this.state.eventListSize
-        })
-      }
-    }
-  }
-  componentWillMount() {
-    //this.getEvents()
-  }
-
   componentDidMount() {
+
+    this.getEvents()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
+  }
+
+  componentDidUpdate() {
+
+    let { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } = this.props
+    let { _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter } = this.state
+
+    if (hazardFilter.id !== _hazardFilter.id || regionFilter.id !== _regionFilter.id || impactFilter.id !== _impactFilter.id ||
+      dateFilter.startDate !== _dateFilter.startDate || dateFilter.endDate !== _dateFilter.endDate ||
+      favoritesFilter !== _favoritesFilter) {
+
+      this.setState({
+        _hazardFilter: hazardFilter,
+        _regionFilter: regionFilter,
+        _impactFilter: impactFilter,
+        _dateFilter: dateFilter,
+        _favoritesFilter: favoritesFilter
+      }, async () => {
+        await this.props.resetEvents()
+        this.getEvents()
+      })
+    }
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
+  handleScroll() {
+
+    let { showBackToTop } = this.state
+
+    //Toggle BackToTop button
+    if (window.pageYOffset > 1450 && showBackToTop === false) {
+      this.setState({ showBackToTop: true })
+    }
+    else if (window.pageYOffset <= 1450 && showBackToTop === true) {
+      this.setState({ showBackToTop: false })
+    }
+  }
+
   /*
   Create a list of event cards to be used to populate the events page and parse in the relevant information for each event
   */
   buildList(events) {
-    if (events === undefined) return "No data"
+
     let ar = []
-    events.forEach(i => {
+
+    events.map(i => {
       let startdate = new Date(i.StartDate * 1000)
       let enddate = new Date(i.EndDate * 1000)
-      if (i.TypeEvent !== null && /*i.StartDate &&*/ i.EventRegions[0] !== undefined) {
+      if (i.TypeEvent !== null && i.EventRegions[0] !== undefined) {
         ar.push(
           <EventCard
             key={i.EventId}
@@ -160,29 +189,57 @@ class EventList extends React.Component {
         )
       }
     })
-    this.state.loadedEvents = ar.length
-    this.state.done = false
+
     return ar
   }
 
   getEvents() {
-    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
-    return fetch(`https://localhost:44334/odata/Events/Extensions.Filter?$top=${this.state.eventListSize}&$expand=eventRegions($expand=Region),TypeEvent`,
-      {
+
+    //Set loading true
+    this.setState({ eventsLoading: true }, async () => {
+
+      //Get Events
+      let { eventListSize, _hazardFilter, _regionFilter, _impactFilter, _dateFilter, _favoritesFilter } = this.state
+      let { events } = this.props
+
+      let skip = events.length
+      skip = skip > 0 ? skip : 0
+
+      let top = eventListSize - events.length
+      top = top > 0 ? top : 0
+
+      let fetchURL = `https://localhost:44334/odata/Events/Extensions.Filter?$skip=${skip}&$top=${top}&$expand=eventRegions($expand=Region),TypeEvent`
+      let postBody = {
+        region: _regionFilter.id,
+        hazard: _hazardFilter.id,
+        impact: _impactFilter.id,
+        startDate: _dateFilter.startDate,
+        endDate: _dateFilter.endDate,
+        favorites: _favoritesFilter === true ? _gf.ReadCookie("NDMC_Event_Favorites") : ""
+      }
+
+      const res = await fetch(fetchURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
           // 'Authorization': 'Bearer' + (user === null ? '': '')
         },
-        body: JSON.stringify({
-          region: regionFilter.id,
-          hazard: hazardFilter.id,
-          impact: impactFilter.id,
-          startDate: dateFilter.startDate,
-          endDate: dateFilter.endDate
-        })
-      }).then((res) => res.json()).then((res) => { this.state.data = res.value; this.setState({ done: true }) })
+        body: JSON.stringify(postBody)
+      });
+      const res_1 = await res.json();
+
+      if (res_1 && res_1.value && res_1.value.length > 0) {
+        events.push(...res_1.value); //add additional events
+        this.props.loadEvents(events)
+      }
+
+      this.setState({
+        eventsLoading: false //set loading false
+      });
+    })
+
+
   }
 
   onClose() {
@@ -261,8 +318,7 @@ class EventList extends React.Component {
 
   render() {
 
-    let { favoritesFilter, ellipsisMenu } = this.state
-    this.state.done ? '' : this.getEvents()
+    let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
 
     const regionQuery = {
       select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
@@ -292,7 +348,7 @@ class EventList extends React.Component {
               cursor: "pointer"
             }}
             onClick={() => {
-              //this.props.setScrollPos(0)
+              this.props.setScrollPos(0)
               location.hash = (location.hash.includes("events") ? "" : "/events")
             }}
           />
@@ -311,12 +367,12 @@ class EventList extends React.Component {
                     marginTop: "1px",
                     marginRight: "-1px",
                     width: "40px",
-                    backgroundColor: favoritesFilter ? DEAGreen : "grey"
+                    backgroundColor: _favoritesFilter ? DEAGreen : "grey"
                   }}
-                // onClick={() => {
-                //   this.props.toggleFavorites(!favoritesFilter)
-                //   this.setState({ ellipsisMenu: false })
-                // }}
+                  onClick={() => {
+                    this.props.toggleFavorites(!_favoritesFilter)
+                    this.setState({ ellipsisMenu: false })
+                  }}
                 >
                   On
                 </Button>
@@ -328,12 +384,12 @@ class EventList extends React.Component {
                     marginTop: "1px",
                     marginLeft: "-1px",
                     width: "40px",
-                    backgroundColor: !favoritesFilter ? DEAGreen : "grey"
+                    backgroundColor: !_favoritesFilter ? DEAGreen : "grey"
                   }}
-                // onClick={() => {
-                //   this.props.toggleFavorites(!favoritesFilter)
-                //   this.setState({ ellipsisMenu: false })
-                // }}
+                  onClick={() => {
+                    this.props.toggleFavorites(!_favoritesFilter)
+                    this.setState({ ellipsisMenu: false })
+                  }}
                 >
                   Off
                 </Button>
@@ -360,177 +416,200 @@ class EventList extends React.Component {
 
         <hr />
 
+
         <div>
-          {this.state.done ? this.buildList(this.state.data) : <div>{"Loading"}</div>}
+          {this.buildList(this.props.events)}
+          <br />
+          <Button
+            size="sm"
+            color=""
+            style={{ marginTop: "-25px", marginLeft: "20px", backgroundColor: DEAGreen }}
+            onClick={() => {
+
+              if (!this.state.eventsLoading) {
+                this.setState({
+                  eventListSize: this.state.eventListSize + 25
+                }, () => this.getEvents())
+              }
+            }}
+          >
+            Load More Events
+            </Button>
         </div>
 
+        <div style={{ position: "fixed", right: "30px", bottom: "15px", zIndex: "99" }}>
+          {
+            showBackToTop &&
+            <Button
+              // data-tip="Back to top"
+              size="sm"
+              floating
+              color=""
+              onClick={this.backToTop}
+              style={{ backgroundColor: DEAGreen }}
+            >
+              <Fa icon="arrow-up" />
+            </Button>
+          }
+
+        </div>
 
         {/* ### ADD FORM ### */}
+        <div>
+          <Drawer
+            title="Create"
+            width={720}
+            placement="right"
+            onClose={this.onClose}
+            maskClosable={false}
+            visible={this.props.addFormVisible}
+            style={{
+              height: 'calc(100% - 55px)',
+              overflow: 'auto',
+              paddingBottom: 53,
+            }}
+          >
+            <Form layout="vertical" hideRequiredMark>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Region">
+                    <OData baseUrl={baseUrl + 'regions'} query={regionQuery}>
+                      {({ loading, error, data }) => {
+                        if (loading) { return <div>Loading...</div> }
+                        if (error) { return <div>Error Loading Data From Server</div> }
+                        if (data) {
+                          let regionTree = this.transformDataTree(data.value)
+                          //regionData = data.value
+                          return <TreeSelect
+                            style={{ width: "100%" }}
+                            value={this.state.regionTreeValue}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                            treeData={regionTree}
+                            placeholder="Please select a region"
+                            onSelect={this.onRegionSelect}
+                          >
+                          </TreeSelect>
+                        }
+                      }}
+                    </OData>
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Hazard">
+                    <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardQuery}>
+                      {({ loading, error, data }) => {
+                        if (loading) { return <div>Loading...</div> }
+                        if (error) { return <div>Error Loading Data From Server</div> }
+                        if (data) {
+                          //hazardData = data.value
+                          return <Select
+                            showSearch
+                            style={{ width: 400 }}
+                            placeholder="Select a hazard"
+                            optionFilterProp="children"
+                            onChange={this.onHazardSelect}
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          >
+                            {data.value.map(item => {
+                              return <Option key={item.TypeEventId} value={item.TypeEventId}>{item.TypeEventName}</Option>
+                            })}
+                          </Select>
+                        }
+                      }}
+                    </OData>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Hazard Date Range">
+                    <DatePicker.RangePicker
+                      style={{ width: '100%' }}
+                      getPopupContainer={trigger => trigger.parentNode}
+                      onChange={this.onDateRangeSelect}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Date Declared">
+                    <DatePicker onChange={this.onDeclaredDateSelect} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Form.Item label="Impacts">
 
-        <div style={{ position: 'fixed', right: '14%', bottom: '10px', zIndex: '99' }}>
-          <Button color='secondary' className='btn-sm' onClick={this.showDrawer} >
-            <i className='fa fa-plus' aria-hidden='true' />
-            &nbsp;&nbsp;
-            Add Event
-          </Button>
-          <Button color='secondary' className='btn-sm' onClick={this.backToTop} >
-            <i className='fa fa-arrow-circle-up' aria-hidden='true' />
-            &nbsp;&nbsp;
-            Back to top
-          </Button>
-          <div>
-            <Drawer
-              title="Create"
-              width={720}
-              placement="right"
-              onClose={this.onClose}
-              maskClosable={false}
-              visible={this.props.addFormVisible}
-              style={{
-                height: 'calc(100% - 55px)',
-                overflow: 'auto',
-                paddingBottom: 53,
-              }}
-            >
-              <Form layout="vertical" hideRequiredMark>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="Region">
-                      <OData baseUrl={baseUrl + 'regions'} query={regionQuery}>
-                        {({ loading, error, data }) => {
-                          if (loading) { return <div>Loading...</div> }
-                          if (error) { return <div>Error Loading Data From Server</div> }
-                          if (data) {
-                            let regionTree = this.transformDataTree(data.value)
-                            regionData = data.value
-                            return <TreeSelect
-                              style={{ width: "100%" }}
-                              value={this.state.regionTreeValue}
-                              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                              treeData={regionTree}
-                              placeholder="Please select a region"
-                              onSelect={this.onRegionSelect}
-                            >
-                            </TreeSelect>
-                          }
-                        }}
-                      </OData>
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item label="Hazard">
-                      <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardQuery}>
-                        {({ loading, error, data }) => {
-                          if (loading) { return <div>Loading...</div> }
-                          if (error) { return <div>Error Loading Data From Server</div> }
-                          if (data) {
-                            hazardData = data.value
-                            return <Select
+                    <Button onClick={this.onImpactOpen} size="sm" color=""
+                      style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
+                      Add Impact
+                    </Button>
+
+                    <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
+                      {({ loading, error, data }) => {
+                        if (loading) { return <div>Loading...</div> }
+                        if (error) { return <div>Error Loading Data From Server</div> }
+                        if (data) {
+
+                          return <Modal
+                            title="New Impact"
+                            visible={this.state.impactModalVisible}
+                            onOk={this.onImpactAdd}
+                            onCancel={this.onImpactClose}
+                          >
+                            <Select
                               showSearch
                               style={{ width: 400 }}
-                              placeholder="Select a hazard"
+                              placeholder="Select an impact"
                               optionFilterProp="children"
-                              onChange={this.onHazardSelect}
+                              onChange={this.onImpactSelect}
                               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
                               {data.value.map(item => {
-                                return <Option key={item.TypeEventId} value={item.TypeEventId}>{item.TypeEventName}</Option>
+                                return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
                               })}
                             </Select>
-                          }
-                        }}
-                      </OData>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="Hazard Date Range">
-                      <DatePicker.RangePicker
-                        style={{ width: '100%' }}
-                        getPopupContainer={trigger => trigger.parentNode}
-                        onChange={this.onDateRangeSelect}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item label="Date Declared">
-                      <DatePicker onChange={this.onDeclaredDateSelect} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={24}>
-                    <Form.Item label="Impacts">
-                      <Button onClick={this.onImpactOpen} size="sm">Add Impact</Button>
-                      <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
-                        {({ loading, error, data }) => {
-                          if (loading) { return <div>Loading...</div> }
-                          if (error) { return <div>Error Loading Data From Server</div> }
-                          if (data) {
+                            <InputNumber onChange={this.onImpactAmount}></InputNumber>
+                          </Modal>
+                        }
+                      }}
+                    </OData>
+                    <List
+                      header={<div>Impacts Recorded</div>}
+                      bordered
+                      dataSource={this.state.impacts.map((impact) => {
+                        return `${impact.impactTypeName}: ${impact.impactAmount}`
+                      })}
+                      renderItem={item => (<List.Item>{item}</List.Item>)} >
+                    </List>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                width: '100%',
+                borderTop: '1px solid #e8e8e8',
+                padding: '10px 16px',
+                textAlign: 'right',
+                left: 0,
+                background: '#fff',
+                borderRadius: '0 0 4px 4px',
+              }}
+            >
+              <Button size="sm" onClick={this.onSubmit} color="warning" style={{ marginRight: 8 }}>
+                Submit
+              </Button>
 
-                            return <Modal
-                              title="New Impact"
-                              visible={this.state.impactModalVisible}
-                              onOk={this.onImpactAdd}
-                              onCancel={this.onImpactClose}
-                            >
-                              <Select
-                                showSearch
-                                style={{ width: 400 }}
-                                placeholder="Select an impact"
-                                optionFilterProp="children"
-                                onChange={this.onImpactSelect}
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                              >
-                                {data.value.map(item => {
-                                  return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
-                                })}
-                              </Select>
-                              <InputNumber onChange={this.onImpactAmount}></InputNumber>
-                            </Modal>
-                          }
-                        }}
-                      </OData>
-                      <List
-                        header={<div>Impacts Recorded</div>}
-                        bordered
-                        dataSource={this.state.impacts.map((impact) => {
-                          return `${impact.impactTypeName}: ${impact.impactAmount}`
-                        })}
-                        renderItem={item => (<List.Item>{item}</List.Item>)} >
-                      </List>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  width: '100%',
-                  borderTop: '1px solid #e8e8e8',
-                  padding: '10px 16px',
-                  textAlign: 'right',
-                  left: 0,
-                  background: '#fff',
-                  borderRadius: '0 0 4px 4px',
-                }}
-              >
-                <Button
-                  style={{
-                    marginRight: 8,
-                  }}
-                  onClick={this.onClose}
-                >
-                  Cancel
-                </Button>
-                <Button onClick={this.onSubmit} type="primary">Submit</Button>
-              </div>
-            </Drawer>
-          </div>
+              <Button size="sm" onClick={this.onClose} color="grey" >
+                Cancel
+              </Button>
+            </div>
+          </Drawer>
         </div>
 
 

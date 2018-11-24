@@ -34,83 +34,95 @@ class EventDetailsTab extends React.Component {
         EventId: parseInt(eventId),
       },
       expand: ['EventRegions/EventImpacts/TypeImpact',
-      {
-        EventRegions:
         {
-          filter: { Region: { RegionTypeId: { ne: 5 } } },
-          expand: ['Region']
-        }
-      },
+          EventRegions:
+          {
+            filter: { Region: { RegionTypeId: { ne: 5 } } },
+            expand: ['Region']
+          }
+        },
         'DeclaredEvents',
         'TypeEvent']
     }
     return (
       <>
-        <OData baseUrl={baseUrl + 'Events'} query={impactQuery}>
-          {({ loading, error, data }) => {
-            if (loading) { return <div>Loading...</div> }
-            if (error) { return <div>Error Loading Data From Server</div> }
-            if (data) {
-              console.log(data.value[0])
-              const event = data.value[0]
-              let startdate = new Date(event.StartDate * 1000)
-              let enddate = new Date(event.EndDate * 1000)
-              let declareddate = new Date(event.DeclaredEvents[0].DeclaredDate * 1000)
-              let impactString = event.EventRegions[0].EventImpacts ? event.EventRegions[0].EventImpacts.reduce(
-              (prev, next) => prev += `${next.TypeImpact.TypeImpactName}: ${next.Measure}\n`, '') : 'No Impact Recorded'
-              //let impactString = 'No Impact Recorded'
-              return (<>
-                <br />
-                <div className='row'>
-                  <TextComponent
-                    col='col-md-4'
-                    label='Hazard Type:'
-                    id='txtHazardType'
-                    value={event.TypeEvent.TypeEventName || ''}
-                    allowEdit={false}
-                  />
-                  <TextComponent
-                    col='col-md-4'
-                    label='Region:'
-                    id='txtEventRegion'
-                    value={event.EventRegions[0] ? event.EventRegions[0].Region.RegionName : ''}
-                    allowEdit={false}
-                  />
-                </div>
-                <div className='row'>
-                  <RangeComponent
-                    col='col-md-8'
-                    label='Date'
-                    id='txtEventDate'
-                    inputWidth='100px'
-                    valueFrom={`${startdate.getFullYear()}\/${startdate.getMonth() + 1}\/${startdate.getDate()}`}
-                    valueTo={`${enddate.getFullYear()}\/${enddate.getMonth() + 1}\/${enddate.getDay()}`}
-                    allowEdit={false}
-                  />
-                </div>
-                <div className='row' style={{ marginTop: "8px" }}>
-                  <TextComponent
-                    col='col-md-4'
-                    label='Declared Date'
-                    id='txtDeclaredDate'
-                    value={declareddate ? 'No declared date available' : declareddate.toDateString()}
-                    allowEdit={false}
-                  />
-                </div>
-                <div className='row'>
-                  <TextAreaComponent
-                    col='col-md-6'
-                    label='Impact Types'
-                    id='txtImpactType'
-                    value={impactString}
-                    allowEdit={false}
-                  />
-                </div>
-                <br />
-              </>)
-            }
-          }}
-        </OData>
+        <div style={{
+          backgroundColor: "white",
+          borderBottom: "1px solid silver",
+          borderLeft: "1px solid silver",
+          borderRight: "1px solid silver",
+          borderBottomLeftRadius: "10px",
+          borderBottomRightRadius: "10px",
+          padding: "10px",
+          marginTop: "-10px"
+        }}>
+
+          <OData baseUrl={baseUrl + 'Events'} query={impactQuery}>
+            {({ loading, error, data }) => {
+              if (loading) { return <div>Loading...</div> }
+              if (error) { return <div>Error Loading Data From Server</div> }
+              if (data) {
+                const event = data.value[0]
+                let startdate = new Date(event.StartDate * 1000)
+                let enddate = new Date(event.EndDate * 1000)
+                let declareddate = new Date(event.DeclaredEvents[0].DeclaredDate * 1000)
+                let impactString = event.EventRegions[0].EventImpacts ? event.EventRegions[0].EventImpacts.reduce(
+                  (prev, next) => prev += `${next.TypeImpact.TypeImpactName}: ${next.Measure}\n`, '') : 'No Impact Recorded'
+                //let impactString = 'No Impact Recorded'
+                return (<>
+                  <br />
+                  <div className='row'>
+                    <TextComponent
+                      col='col-md-4'
+                      label='Hazard Type:'
+                      id='txtHazardType'
+                      value={event.TypeEvent.TypeEventName || ''}
+                      allowEdit={false}
+                    />
+                    <TextComponent
+                      col='col-md-4'
+                      label='Region:'
+                      id='txtEventRegion'
+                      value={event.EventRegions[0] ? event.EventRegions[0].Region.RegionName : ''}
+                      allowEdit={false}
+                    />
+                  </div>
+                  <div className='row'>
+                    <RangeComponent
+                      col='col-md-8'
+                      label='Date'
+                      id='txtEventDate'
+                      inputWidth='100px'
+                      valueFrom={`${startdate.getFullYear()}\/${startdate.getMonth() + 1}\/${startdate.getDate()}`}
+                      valueTo={`${enddate.getFullYear()}\/${enddate.getMonth() + 1}\/${enddate.getDay()}`}
+                      allowEdit={false}
+                    />
+                  </div>
+                  <div className='row' style={{ marginTop: "8px" }}>
+                    <TextComponent
+                      col='col-md-4'
+                      label='Declared Date'
+                      id='txtDeclaredDate'
+                      value={declareddate ? 'No declared date available' : declareddate.toDateString()}
+                      allowEdit={false}
+                    />
+                  </div>
+                  <div className='row'>
+                    <TextAreaComponent
+                      col='col-md-6'
+                      label='Impact Types'
+                      id='txtImpactType'
+                      value={impactString}
+                      allowEdit={false}
+                    />
+                  </div>
+                  <br />
+                </>)
+              }
+            }}
+          </OData>
+        </div>
+
       </>
     )
   }

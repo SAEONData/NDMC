@@ -38,12 +38,22 @@ class RegionFilters extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidUpdate(){
+
+    let { regionFilter } = this.props
+    if(regionFilter.name === "" || regionFilter === 0) regionFilter = { id: 0, name: "Select..." }
+
+    if(regionFilter.name !== this.state.treeValue){
+      this.setState({ treeValue: regionFilter.name})
+    }
   }
 
   onSelect(value, node) {
     let { loadRegionFilter } = this.props
     loadRegionFilter({ id: parseInt(value), name: node.props.title })
+
+    console.log("selected value", node)
+    this.setState({ treeValue: node.props.title })
   }
 
   /* TransformDataTree
@@ -77,20 +87,17 @@ class RegionFilters extends React.Component {
               if (data.value) {
                 let regionTree = this.transformDataTree(data.value)
                 return (
-                  // <div className='row'>
-                    // <div className="col-md-6">
-                      <TreeSelect
-                        style={{ width: "100%" }}
-                        value={this.state.treeValue}
-                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                        treeData={regionTree}
-                        placeholder="Select..."
-                        onSelect={this.onSelect}
-                      >
-                      </TreeSelect>
-                    // </div>
-                  // </div>
-                )}
+                  <TreeSelect
+                    style={{ width: "100%" }}
+                    value={this.state.treeValue}
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                    treeData={regionTree}
+                    placeholder="Select..."
+                    onSelect={this.onSelect}
+                  >
+                  </TreeSelect>
+                )
+              }
             }
           }}
         </OData>

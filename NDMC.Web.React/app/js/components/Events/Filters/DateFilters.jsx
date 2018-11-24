@@ -51,11 +51,22 @@ class DateFilters extends React.Component {
     let { loadStartDate, loadEndDate } = this.props
   }
 
+  componentDidUpdate(){
+
+    let { dateFilter } = this.props
+
+    if(dateFilter === 0) dateFilter = { startDate: 0, endDate: 0 }
+
+    if(dateFilter.startDate !== this.state.startDate || dateFilter.endDate !== this.state.endDate){
+      this.setState({ startDate: dateFilter.startDate, endDate: dateFilter.endDate})
+    }
+  }
+
   onChange(dates, dateStrings) {
 
     let { loadDateFilter } = this.props
-    let unixStartDate = new Date(dates[0]).getTime() / 1000
-    let unixEndDate = new Date(dates[1]).getTime() / 1000
+    let unixStartDate = moment(new Date(dates[0])).unix()
+    let unixEndDate = moment(new Date(dates[1])).unix()
 
     //Set local state
     this.setState({ startDate: unixStartDate, endDate: unixEndDate }, () => {

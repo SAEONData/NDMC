@@ -13,5 +13,6 @@ namespace APIv2.ViewModels
         public int startDate { get; set; }
         public int endDate { get; set; }
         public int batchSize { get; set; }
+        public string favorites { get; set; }
     }
 }

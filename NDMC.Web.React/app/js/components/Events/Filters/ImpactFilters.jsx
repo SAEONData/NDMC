@@ -33,6 +33,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 let _data
+
 class impactFilters extends React.Component {
   constructor(props) {
     super(props)
@@ -42,17 +43,15 @@ class impactFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
   }
 
-  // optionClick(value) {
-  //   let { loadImpactFilter } = this.props
-  //   let id = 0
-  //   let filteredData
-  //   if (_data) { filteredData = _data.filter(x => x.TypeImpactName === value[0]) }
-  //   if (filteredData) { filteredData[0].TypeImpactId ? id = filteredData[0].TypeImpactId : '' }
-  //   if (value[0] !== this.state.value && value !== "Select...") {
-  //     this.setState({ value: value[0] })
-  //     loadImpactFilter({ id: id, name: value[0] })
-  //   }
-  // }
+  componentDidUpdate(){
+
+    let { impactFilter } = this.props
+    if(impactFilter.name === "" || impactFilter === 0) impactFilter = { id: 0, name: "Select..." }
+
+    if(impactFilter.name !== this.state.value){
+      this.setState({ value: impactFilter.name})
+    }
+  }
 
   optionClick(value) {
 
@@ -117,6 +116,7 @@ class impactFilters extends React.Component {
             }
 
             if (data && data.value) {
+              _data = data.value
               return (
                 <Select
                   style={{ width: "100%" }}
@@ -132,29 +132,6 @@ class impactFilters extends React.Component {
           }}
 
         </OData>
-
-        {/* <Select getValue={this.optionClick}
-          style={{ marginTop: "-8px" }}
-        >
-          <SelectInput value={this.state.value}></SelectInput>
-          <SelectOptions>
-            <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
-              {({ loading, error, data }) => {
-                if (loading) { return <div>Loading...</div> }
-                if (error) { return <div>Error Loading Data From Server</div> }
-                if (data) {
-                  _data = data.value
-                  let sorted = data.value.map(x => { return { TypeImpactName: x.TypeImpactName, TypeImpactId: x.TypeImpactId } })
-                    .sort((c, n) => c.TypeImpactName.localeCompare(n.TypeImpactName))
-                  return sorted.map(item => {
-                    return <SelectOption key={item.TypeImpactId}>{item.TypeImpactName}</SelectOption>
-                  })
-                }
-              }}
-            </OData>
-          </SelectOptions>
-        </Select> */}
-
 
       </>
     )

@@ -46,6 +46,16 @@ class HazardFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
   }
 
+  componentDidUpdate(){
+
+    let { hazardFilter } = this.props
+    if(hazardFilter.name === "" || hazardFilter === 0) hazardFilter = { id: 0, name: "Select..." }
+
+    if(hazardFilter.name !== this.state.value){
+      this.setState({ value: hazardFilter.name})
+    }
+  }
+
   optionClick(value) {
 
     let { loadHazardFilter } = this.props
@@ -101,6 +111,7 @@ class HazardFilters extends React.Component {
             }
 
             if (data && data.value) {
+              _data = data.value
               return (
                 <Select
                   style={{ width: "100%" }}

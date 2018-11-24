@@ -53,6 +53,21 @@ namespace APIv2.Controllers
             int impactFilter = filters.impact;
             int hazardFilter = filters.hazard;
             int batchSize = filters.batchSize;
+            string favsFilter = filters.favorites;
+
+            //FAVORITES - OVERRIDES ALL OTHER FILTERS//
+            if (!string.IsNullOrEmpty(favsFilter))
+            {
+                try
+                {
+                    var favs = favsFilter.Split(",").Select(f => int.Parse(f)).ToList();
+                    return _context.Events.Where(e => favs.Contains(e.EventId));
+                }
+                catch
+                {
+                    return new List<Event>().AsQueryable();
+                }
+            }
 
             // Region
             var regionEventIds = new List<int>();
@@ -64,14 +79,26 @@ namespace APIv2.Controllers
                 regionEventIds = _context.EventRegions.Where(p => allRegionIds.Contains(p.RegionId)).Select(p => p.EventId).Distinct().ToList();
             }
 
-            // Hazard
+            var impactEventIds = new List<int>();
+            if (impactFilter > 0)
+            {
+                impactEventIds = _context.EventImpacts
+                    .Where(ei => ei.TypeImpactId == impactFilter)
+                    .Select(ei => ei.EventRegion.EventId)
+                    .Distinct()
+                    .ToList();
+            }
 
-            var events = _context.Events.Include(x => x.TypeEvent).Where(e =>
-            (regionFilter == 0 || regionEventIds.Contains(e.EventId)) &&
-            (hazardFilter == 0 || e.TypeEventId == hazardFilter) &&
-            (startDateFilter == 0 || e.StartDate == startDateFilter) &&
-            (endDateFIlter == 0 || e.EndDate == endDateFIlter)
-            );
+            var events = _context
+                .Events
+                .Include(x => x.TypeEvent)
+                .Where(e =>
+                    (regionFilter == 0 || regionEventIds.Contains(e.EventId)) &&
+                    (hazardFilter == 0 || e.TypeEventId == hazardFilter) &&
+                    (impactFilter == 0 || impactEventIds.Contains(e.EventId)) &&
+                    (startDateFilter == 0 || e.StartDate >= startDateFilter) &&
+                    (endDateFIlter == 0 || e.EndDate <= endDateFIlter)
+                );
 
 
             return events;

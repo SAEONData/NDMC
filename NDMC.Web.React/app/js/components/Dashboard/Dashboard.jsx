@@ -1,6 +1,7 @@
 'use strict'
 
 import React from 'react'
+import { connect } from 'react-redux'
 import { Row, Col, Button, Fa } from 'mdbreact'
 import RegionFilters from '../Events/Filters/RegionFilters.jsx'
 import HazardFilters from '../Events/Filters/HazardFilters.jsx'
@@ -10,13 +11,50 @@ import EventFilters from '../Events/Filters/EventFilters.jsx'
 import EventList from '../Events/List/EventList.jsx'
 import DashMapPreview from "./DashMapPreview.jsx"
 
+
+const mapStateToProps = (state, props) => {
+  return {}
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setEventsFullView: payload => {
+      dispatch({ type: "SET_EVENTS_FULLVIEW", payload })
+    }
+  }
+}
+
 class Dashboard extends React.Component {
 
   constructor(props) {
     super(props)
 
+    this.handleScroll = this.handleScroll.bind(this)
+
     this.state = {
       showBackToTop: false
+    }
+  }
+
+  componentDidMount() {
+    this.props.setEventsFullView(false)
+    window.addEventListener('scroll', this.handleScroll)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll)
+  }
+
+  handleScroll() {
+
+    let { showBackToTop } = this.state
+
+    //Toggle BackToTop button
+    if (window.pageYOffset > 1450 && showBackToTop === false) {
+      this.setState({ showBackToTop: true })
+    }
+    else if (window.pageYOffset <= 1450 && showBackToTop === true) {
+      this.setState({ showBackToTop: false })
     }
   }
 
@@ -43,22 +81,22 @@ class Dashboard extends React.Component {
           <Col md="10">
             <Row>
               <Col md="2">
-                <label><b>Region:</b></label>
+                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Region:</b></label>
                 <RegionFilters />
               </Col>
 
               <Col md="2">
-                <label><b>Hazard:</b></label>
+                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Hazard:</b></label>
                 <HazardFilters />
               </Col>
 
               <Col md="4">
-                <label><b>Date Range:</b></label>
+                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Date Range:</b></label>
                 <DateFilters />
               </Col>
 
               <Col md="2">
-                <label><b>Impact:</b></label>
+                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Impact:</b></label>
                 <ImpactFilters />
               </Col>
             </Row>
@@ -71,86 +109,83 @@ class Dashboard extends React.Component {
             <EventList />
           </Col>
 
-          {
-            !showBackToTop &&
-            <Col md="5">
+          <Col hidden={showBackToTop} md="5">
 
-              <Row>
-                <Col md="12">
-                  <EventFilters />
-                </Col>
-              </Row>
+            <Row>
+              <Col md="12">
+                <EventFilters />
+              </Col>
+            </Row>
 
-              <br />
+            <br />
 
-              <Row>
-                {/* map */}
-                <Col md="12">
-                  <DashMapPreview />
-                </Col>
-              </Row>
+            <Row>
+              {/* map */}
+              <Col md="12">
+                <DashMapPreview />
+              </Col>
+            </Row>
 
-              <br />
+            <br />
 
-              <Row>
-                {/* graphs */}
-                <Col md="12">
+            <Row>
+              {/* graphs */}
+              <Col md="12">
 
-                  <Row>
+                <Row>
 
-                    <Col md="6">
-                      <div style={{
-                        height: "180px",
-                        width: "100%",
-                        backgroundColor: "white",
-                        borderRadius: "10px",
-                        border: "1px solid gainsboro",
-                      }} />
-                    </Col>
+                  <Col md="6">
+                    <div style={{
+                      height: "180px",
+                      width: "100%",
+                      backgroundColor: "white",
+                      borderRadius: "10px",
+                      border: "1px solid gainsboro",
+                    }} />
+                  </Col>
 
-                    <Col md="6">
-                      <div style={{
-                        height: "180px",
-                        width: "100%",
-                        backgroundColor: "white",
-                        borderRadius: "10px",
-                        border: "1px solid gainsboro",
-                      }} />
-                    </Col>
+                  <Col md="6">
+                    <div style={{
+                      height: "180px",
+                      width: "100%",
+                      backgroundColor: "white",
+                      borderRadius: "10px",
+                      border: "1px solid gainsboro",
+                    }} />
+                  </Col>
 
-                  </Row>
+                </Row>
 
-                  <br />
+                <br />
 
-                  <Row>
+                <Row>
 
-                    <Col md="6">
-                      <div style={{
-                        height: "180px",
-                        width: "100%",
-                        backgroundColor: "white",
-                        borderRadius: "10px",
-                        border: "1px solid gainsboro",
-                      }} />
-                    </Col>
+                  <Col md="6">
+                    <div style={{
+                      height: "180px",
+                      width: "100%",
+                      backgroundColor: "white",
+                      borderRadius: "10px",
+                      border: "1px solid gainsboro",
+                    }} />
+                  </Col>
 
-                    <Col md="6">
-                      <div style={{
-                        height: "180px",
-                        width: "100%",
-                        backgroundColor: "white",
-                        borderRadius: "10px",
-                        border: "1px solid gainsboro",
-                      }} />
-                    </Col>
+                  <Col md="6">
+                    <div style={{
+                      height: "180px",
+                      width: "100%",
+                      backgroundColor: "white",
+                      borderRadius: "10px",
+                      border: "1px solid gainsboro",
+                    }} />
+                  </Col>
 
-                  </Row>
+                </Row>
 
-                </Col>
-              </Row>
+              </Col>
+            </Row>
 
-            </Col>
-          }
+          </Col>
 
         </Row>
 
@@ -159,4 +194,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)

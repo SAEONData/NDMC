@@ -5,13 +5,17 @@ import { connect } from 'react-redux'
 import { Navbar, NavbarNav, NavbarToggler, Collapse, NavItem, Button } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
-  return { }
+  let { globalData: { forceNavRender } } = state
+  return { forceNavRender }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     toggleAddForm: payload => {
       dispatch({ type: "TOGGLE_ADD_FORM", payload })
+    },
+    setForceNavRender: payload => {
+      dispatch({ type: "FORCE_NAV_RENDER", payload })
     }
   }
 }
@@ -29,6 +33,25 @@ class CustomNavbar extends React.Component {
 
     this.onClick = this.onClick.bind(this)
     this.toggle = this.toggle.bind(this)
+  }
+
+  componentDidMount(){
+    this.checkForceNavRender()    
+  }
+
+  componentDidUpdate(){
+    this.checkForceNavRender()
+  }
+
+  checkForceNavRender(){
+
+    if(this.props.forceNavRender === true){
+
+      this.props.setForceNavRender(false)
+
+      // Force a render without state change...
+      this.forceUpdate()
+    }
   }
 
   onClick() {
@@ -73,16 +96,11 @@ class CustomNavbar extends React.Component {
               </Button>
             }
 
-            {/* <NavItem style={{ marginRight: "15px" }}>
-              <a className="nav-link" href="#"><b>Home</b></a>
-            </NavItem>
-            <NavItem style={{ marginRight: "15px" }}>
-              <a className="nav-link" href="#/events"><b>Events</b></a>
-            </NavItem> */}
-            {/* <NavItem style={{ marginRight: "15px" }}>
-              <a className="nav-link" href="#/graphs">Graphs</a>
-            </NavItem> */}
+            {/* INVISIBLE HEIGHT SPACER */}
+            <div style={{ height: "32px", margin: "6px" }} /> 
+
           </NavbarNav>
+
           {/* <NavbarNav right>
             <NavItem style={{ marginRight: "15px" }}>
               <a className="nav-link" href="#">Login</a>
@@ -91,6 +109,7 @@ class CustomNavbar extends React.Component {
               <a className="nav-link" href="#/events">Register</a>
             </NavItem>
           </NavbarNav> */}
+          
         </Collapse>
       </Navbar>
     )

@@ -13,15 +13,20 @@ const store = createStore(
     ...applyMiddleware(middleware),
 
     globalData: {
-      addFormVisible: false
+      addFormVisible: false,
+      eventsFullView: false,
+      forceNavRender: true
     },
     eventData: {
+      events: [],
+      listScrollPos: 0
     },
     filterData: {
       regionFilter: {id: 0, name: ''},
       hazardFilter: {id: 0, name: ''},
       impactFilter: {id: 0, name: ''},
-      dateFilter: { startDate: 0, endDate: 0 }
+      dateFilter: { startDate: 0, endDate: 0 },
+      favoritesFilter: false
     }
 
   }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()

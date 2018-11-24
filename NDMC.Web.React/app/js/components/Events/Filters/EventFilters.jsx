@@ -8,14 +8,12 @@ import { DEAGreen, DEAGreenDark } from '../../../config/colours.cfg'
 
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
-// import RegionFilters from './RegionFilters.jsx'
-// import HazardFilters from './HazardFilters.jsx'
-// import DateFilters from './DateFilters.jsx'
-// import ImpactFilters from './ImpactFilters.jsx'
+
+const moment = require('moment');
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter, hazardFilter, dateFilter, impactFilter } } = state
-  return { regionFilter, hazardFilter, dateFilter, impactFilter }
+  let { filterData: { regionFilter, hazardFilter, dateFilter, impactFilter, favoritesFilter } } = state
+  return { regionFilter, hazardFilter, dateFilter, impactFilter, favoritesFilter }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -35,6 +33,9 @@ const mapDispatchToProps = dispatch => {
     clearDateFilter: () => {
       dispatch({ type: ACTION_TYPES.LOAD_DATE_FILTER, payload: 0 })
     },
+    clearFavsFilter: () => {
+      dispatch({ type: "LOAD_FAVS_FILTER", payload: 0 })
+    }
   }
 }
 
@@ -52,10 +53,11 @@ class EventFilters extends React.Component {
   }
 
   handleTags() {
-    let { hazardFilter, regionFilter, impactFilter, dateFilter } = this.props
+    let { hazardFilter, regionFilter, impactFilter, dateFilter, favoritesFilter } = this.props
     let taglist = []
 
-    if (hazardFilter.name || regionFilter.name || impactFilter.name || dateFilter.startDate || dateFilter.endDate) {
+    if (hazardFilter.name || regionFilter.name || impactFilter.name || dateFilter.startDate || dateFilter.endDate ||
+        favoritesFilter === true) {
 
       if (hazardFilter.name) {
         taglist.push(
@@ -101,10 +103,8 @@ class EventFilters extends React.Component {
 
       if (dateFilter.startDate) {
         
-        let start = new Date(dateFilter.startDate * 1000)
-        let end = new Date(dateFilter.endDate * 1000)
-        let startdate = `${start.getDate()}\/${start.getMonth()}\/${start.getFullYear()}`
-        let endDate = `${end.getDate()}\/${end.getMonth()}\/${end.getFullYear()}`
+        let startdate = moment.unix(dateFilter.startDate).format("YYYY/MM/DD")
+        let endDate = moment.unix(dateFilter.endDate).format("YYYY/MM/DD")
 
         taglist.push(
           <Chip
@@ -114,7 +114,21 @@ class EventFilters extends React.Component {
             handleClose={() => {
               this.props.clearDateFilter()
             }}>
-            {`${startdate}-${endDate}`}
+            {`${startdate} - ${endDate}`}
+          </Chip>
+        )
+      }
+
+      if (favoritesFilter === true){
+        taglist.push(
+          <Chip
+            key="fcFavs"
+            waves
+            close
+            handleClose={() => {
+              this.props.clearFavsFilter()
+            }}>
+            Favorites
           </Chip>
         )
       }

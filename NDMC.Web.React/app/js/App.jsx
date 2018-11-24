@@ -11,6 +11,7 @@ import 'mdbreact/dist/css/mdb.css'
 //React
 import React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 //Local
 import Dashboard from './components/Dashboard/Dashboard.jsx'
@@ -21,6 +22,12 @@ import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 import Header from './components/Base/Header.jsx'
 import Footer from './components/Base/Footer.jsx'
+
+
+const mapStateToProps = (state, props) => {
+  let { globalData: { forceNavRender } } = state
+  return { forceNavRender }
+}
 
 /**
  * App
@@ -69,4 +76,4 @@ class App extends React.Component {
   }
 }
 
-export default App
+export default connect(mapStateToProps)(App)
