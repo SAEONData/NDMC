@@ -6,6 +6,7 @@ import ReactTooltip from 'react-tooltip'
 
 //Local
 import EventDetailsTab from './EventDetailsTab.jsx'
+import EventResoponseTab from './EventResponseTab.jsx'
 
 //MDBReact
 import { Button } from 'mdbreact'
@@ -79,11 +80,14 @@ class EventDetails extends React.Component {
         <Tabs forceRenderTabPanel={true}>
           <TabList>
             <Tab><b style={{ color: '#1565c0' }}>Event Details</b></Tab>
+            <Tab><b style={{ color: '#1565c0' }}>Event Responses</b></Tab>
           </TabList>
           <TabPanel>
             <EventDetailsTab eventId={eventId} />
             <br />
-            <br />
+          </TabPanel>
+          <TabPanel>
+            <EventResoponseTab eventId={eventId} />
             <br />
           </TabPanel>
         </Tabs>
