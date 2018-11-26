@@ -718,7 +718,7 @@ class EventList extends React.Component {
                             </div>
                             <div className='row'>
                               <div classname='col' style={{ paddingTop: 10}}>
-                                <InputNumber style={{ paddingTop: 10, height: 35 }} onChange={this.onResponseValue}></InputNumber>
+                                <InputNumber style={{ height: 35 }} onChange={this.onResponseValue}></InputNumber>
                               </div>
                               <Select
                                 showSearch
