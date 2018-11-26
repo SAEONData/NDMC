@@ -689,9 +689,9 @@ class EventList extends React.Component {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
-                          const responseUnique = [...new Set(data.value.map(response => response.UnitOfMeasure ))]
+                          const responseUnique = [...new Set(data.value.map(response => response.UnitOfMeasure))]
                           const responseMeasures = responseUnique.filter(item => {
-                            if(item !== ''|| item !== null) {
+                            if (item !== '' || item !== null) {
                               return item
                             }
                           })
@@ -702,31 +702,37 @@ class EventList extends React.Component {
                             onCancel={this.onResponseClose}
                             destroyOnClose={true}
                           >
-                            <Select
-                              showSearch
-                              style={{ width: 400 }}
-                              placeholder="Select a Response"
-                              optionFilterProp="children"
-                              onChange={this.onResponseSelect}
-                              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            >
-                              {data.value.map(item => {
-                                return <Option key={item.TypeMitigationId} value={item.TypeMitigationId}>{item.TypeMitigationName}</Option>
-                              })}
-                            </Select>
-                            <InputNumber onChange={this.onResponseValue}></InputNumber>
-                            <Select
-                              showSearch
-                              style={{ width: 400 }}
-                              placeholder="Select a Measure"
-                              optionFilterProp="children"
-                              onChange={this.onMeasureSelect}
-                              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            >
-                              {responseMeasures.map(measure => {
-                                return <Option value={measure}>{measure}</Option>
-                              })}
-                            </Select>
+                            <div className='row'>
+                              <Select
+                                showSearch
+                                style={{ width: 400 }}
+                                placeholder="Select a Response"
+                                optionFilterProp="children"
+                                onChange={this.onResponseSelect}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                              >
+                                {data.value.map(item => {
+                                  return <Option key={item.TypeMitigationId} value={item.TypeMitigationId}>{item.TypeMitigationName}</Option>
+                                })}
+                              </Select>
+                            </div>
+                            <div className='row'>
+                              <div classname='col' style={{ paddingTop: 10}}>
+                                <InputNumber style={{ paddingTop: 10, height: 35 }} onChange={this.onResponseValue}></InputNumber>
+                              </div>
+                              <Select
+                                showSearch
+                                style={{ width: 150, height: 20, paddingTop: 10, paddingLeft: 10 }}
+                                placeholder="Select a Measure"
+                                optionFilterProp="children"
+                                onChange={this.onMeasureSelect}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                              >
+                                {responseMeasures.map(measure => {
+                                  return <Option value={measure}>{measure}</Option>
+                                })}
+                              </Select>
+                            </div>
                           </Modal>
                         }
                       }}
