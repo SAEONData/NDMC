@@ -35,6 +35,13 @@ class EventResponseTab extends React.Component {
       },
       expand: ['TypeMitigation']
     }
+
+    const formatter = new Intl.NumberFormat('en-Za', {
+      style: 'currency',
+      currency: 'ZAR',
+      minimumFractionDigits: 2
+    })
+
     let emergencyResponses = []
     let mitigationResponses = []
     let adaptationResponses = []
@@ -58,28 +65,43 @@ class EventResponseTab extends React.Component {
               if (data) {
                 data.value.map(curr => {
                   if (curr.TypeMitigation.ParentTypeMitigationId === 12) {
+                    let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     rehabResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
-                      amount: curr.Value ? `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` : 'No amount recorded'
+                      amount: curr.Value ? 
+                        isCurrency? `${formatter.format(curr.Value)}`
+                        : `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` 
+                          : 'No amount recorded'
                     })
                   }
                   if (curr.TypeMitigation.ParentTypeMitigationId === 45) {
-                    console.log(curr.Value)
+                    let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     emergencyResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
-                      amount: curr.Value ? `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` : 'No amount recorded'
+                      amount: curr.Value ? 
+                        isCurrency? `${formatter.format(curr.Value)}`
+                        : `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` 
+                          : 'No amount recorded'
                     })
                   }
                   if (curr.TypeMitigation.ParentTypeMitigationId === 46) {
+                    let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     mitigationResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
-                      amount: curr.Value ? `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` : 'No amount recorded'
+                      amount: curr.Value ? 
+                        isCurrency? `${formatter.format(curr.Value)}`
+                        : `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` 
+                          : 'No amount recorded'
                     })
                   }
                   if (curr.TypeMitigation.ParentTypeMitigationId === 47) {
+                    let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     adaptationResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
-                      amount: curr.Value ? `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` : 'No amount recorded'
+                      amount: curr.Value ? 
+                        isCurrency? `${formatter.format(curr.Value)}`
+                        : `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` 
+                          : 'No amount recorded'
                     })
                   }
                 })
