@@ -15,7 +15,7 @@ import OData from 'react-odata'
 const baseUrl = 'https://localhost:44334/odata/' //'http://app01.saeon.ac.za/ndmcapi/odata/'
 
 //MDBReact
-import { Button, Fa } from 'mdbreact'
+import { Button, Fa, ListGroup, ListGroupItem } from 'mdbreact'
 
 //AntD
 //Inputs
@@ -118,24 +118,21 @@ class EventList extends React.Component {
     this.onImpactClose = this.onImpactClose.bind(this)
     this.onImpactSelect = this.onImpactSelect.bind(this)
     this.onImpactAmount = this.onImpactAmount.bind(this)
+    this.onImpactUndo = this.onImpactUndo.bind(this)
   }
 
   componentDidMount() {
-
     this.getEvents()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
 
   componentDidUpdate() {
-
     let { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } = this.props
     let { _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter } = this.state
-
     if (hazardFilter.id !== _hazardFilter.id || regionFilter.id !== _regionFilter.id || impactFilter.id !== _impactFilter.id ||
       dateFilter.startDate !== _dateFilter.startDate || dateFilter.endDate !== _dateFilter.endDate ||
       favoritesFilter !== _favoritesFilter) {
-
       this.setState({
         _hazardFilter: hazardFilter,
         _regionFilter: regionFilter,
@@ -154,9 +151,7 @@ class EventList extends React.Component {
   }
 
   handleScroll() {
-
     let { showBackToTop } = this.state
-
     //Toggle BackToTop button
     if (window.pageYOffset > 1450 && showBackToTop === false) {
       this.setState({ showBackToTop: true })
@@ -170,9 +165,7 @@ class EventList extends React.Component {
   Create a list of event cards to be used to populate the events page and parse in the relevant information for each event
   */
   buildList(events) {
-
     let ar = []
-
     events.map(i => {
       let startdate = new Date(i.StartDate * 1000)
       let enddate = new Date(i.EndDate * 1000)
@@ -189,15 +182,12 @@ class EventList extends React.Component {
         )
       }
     })
-
     return ar
   }
 
   getEvents() {
-
     //Set loading true
     this.setState({ eventsLoading: true }, async () => {
-
       //Get Events
       let { eventListSize, _hazardFilter, _regionFilter, _impactFilter, _dateFilter, _favoritesFilter } = this.state
       let { events } = this.props
@@ -244,11 +234,21 @@ class EventList extends React.Component {
 
   onClose() {
     this.props.toggleAddForm(false)
+    this.setState({
+      region: '',
+      impacts: [],
+      hazard: '',
+      startDate: '',
+      endDate: '',
+      declaredDate: '',
+      impactTypeTemp: '',
+      impactTypeNameTemp: '',
+      impactAmountTemp: '',
+    })
   }
 
   onSubmit() {
     this.props.toggleAddForm(false)
-    console.log(this.state)
   }
 
   backToTop() {
@@ -291,33 +291,61 @@ class EventList extends React.Component {
   }
 
   onImpactClose() {
-    this.setState({ impactModalVisible: false })
+    if (!isNaN(this.state.impactAmountTemp && this.state.impactAmountTemp)) {
+      console.log(this.state.impactAmountTemp)
+      this.setState({ impactModalVisible: false })
+      this.setState({
+        impactTypeTemp: '',
+        impactTypeNameTemp: '',
+        impactAmountTemp: '',
+      })
+    }
   }
 
   onImpactAdd() {
-    this.setState({ impactModalVisible: false })
+    this.setState({
+      impactModalVisible: false,
+      impactTypeTemp: '',
+      impactTypeNameTemp: '',
+      impactAmountTemp: '',
+    })
     let newimpact = {
       impactType: this.state.impactTypeTemp,
       impactTypeName: this.state.impactTypeNameTemp,
       impactAmount: this.state.impactAmountTemp
     }
-    this.setState(prev => ({
-      impacts: [...prev.impacts, newimpact]
-    }))
+    if(this.state.impacts.length > 0) {
+      this.setState(prev => ({
+        impacts: [...prev.impacts, newimpact]
+      }))
+    }
+    else {
+      this.setState({
+        impacts: [newimpact]
+      })
+    }
   }
 
   onImpactSelect(value, next) {
-    console.log(next.props.children)
     this.setState({ impactTypeTemp: value, impactTypeNameTemp: next.props.children })
   }
 
   onImpactAmount(value) {
-    console.log(value)
     this.setState({ impactAmountTemp: value })
+  }
+  onImpactUndo() {
+    console.log(this.state.impacts)
+    let arr = this.state.impacts
+    arr.pop()
+    console.log(this.state.impacts)
+      this.setState({
+        impacts: arr
+      })
+
   }
 
   render() {
-
+    const { impacts } = this.state
     let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
 
     const regionQuery = {
@@ -333,13 +361,10 @@ class EventList extends React.Component {
 
     return (
       <div style={{ backgroundColor: "white", padding: "10px", borderRadius: "10px", border: "1px solid gainsboro" }}>
-
         <h4 style={{ margin: "5px 5px 5px 19px", display: "inline-block" }}>
           <b>Events</b>
         </h4>
-
         <div style={{ float: "right" }}>
-
           <img
             src={location.hash.includes("events") ? popin : popout}
             style={{
@@ -352,7 +377,6 @@ class EventList extends React.Component {
               location.hash = (location.hash.includes("events") ? "" : "/events")
             }}
           />
-
           <Popover
             content={
               <div>
@@ -411,12 +435,8 @@ class EventList extends React.Component {
               }}
             />
           </Popover>
-
         </div>
-
         <hr />
-
-
         <div>
           {this.buildList(this.props.events)}
           <br />
@@ -425,7 +445,6 @@ class EventList extends React.Component {
             color=""
             style={{ marginTop: "-25px", marginLeft: "20px", backgroundColor: DEAGreen }}
             onClick={() => {
-
               if (!this.state.eventsLoading) {
                 this.setState({
                   eventListSize: this.state.eventListSize + 25
@@ -436,7 +455,6 @@ class EventList extends React.Component {
             Load More Events
             </Button>
         </div>
-
         <div style={{ position: "fixed", right: "30px", bottom: "15px", zIndex: "99" }}>
           {
             showBackToTop &&
@@ -451,9 +469,7 @@ class EventList extends React.Component {
               <Fa icon="arrow-up" />
             </Button>
           }
-
         </div>
-
         {/* ### ADD FORM ### */}
         <div>
           <Drawer
@@ -541,23 +557,25 @@ class EventList extends React.Component {
               <Row gutter={16}>
                 <Col span={24}>
                   <Form.Item label="Impacts">
-
                     <Button onClick={this.onImpactOpen} size="sm" color=""
                       style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
                       Add Impact
                     </Button>
-
+                    <Button onClick={this.onImpactUndo} size="sm" color=""
+                      style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
+                      Undo last
+                    </Button>
                     <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
-
                           return <Modal
                             title="New Impact"
                             visible={this.state.impactModalVisible}
                             onOk={this.onImpactAdd}
                             onCancel={this.onImpactClose}
+                            destroyOnClose={true}
                           >
                             <Select
                               showSearch
@@ -576,14 +594,12 @@ class EventList extends React.Component {
                         }
                       }}
                     </OData>
-                    <List
-                      header={<div>Impacts Recorded</div>}
-                      bordered
-                      dataSource={this.state.impacts.map((impact) => {
-                        return `${impact.impactTypeName}: ${impact.impactAmount}`
-                      })}
-                      renderItem={item => (<List.Item>{item}</List.Item>)} >
-                    </List>
+                    <ListGroup>
+                      {this.state.impacts.length? impacts.map((impact) => {
+                        return <ListGroupItem>{impact.impactTypeName}: {impact.impactAmount}</ListGroupItem>
+                      }) : <ListGroupItem>No Impact selected</ListGroupItem>}
+                      <ListGroupItem></ListGroupItem>
+                    </ListGroup>
                   </Form.Item>
                 </Col>
               </Row>
@@ -604,16 +620,12 @@ class EventList extends React.Component {
               <Button size="sm" onClick={this.onSubmit} color="warning" style={{ marginRight: 8 }}>
                 Submit
               </Button>
-
               <Button size="sm" onClick={this.onClose} color="grey" >
                 Cancel
               </Button>
             </div>
           </Drawer>
         </div>
-
-
-
       </div >
     )
   }
