@@ -64,7 +64,7 @@ class EventResponseTab extends React.Component {
               if (error) { return <div>Error Loading Data From Server</div> }
               if (data) {
                 data.value.map(curr => {
-                  if (curr.TypeMitigation.ParentTypeMitigationId === 12) {
+                  if (curr.TypeMitigation.ParentTypeMitigationId === 12 || curr.TypeMitigationId === 12) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     rehabResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
@@ -74,7 +74,7 @@ class EventResponseTab extends React.Component {
                           : 'No amount recorded'
                     })
                   }
-                  if (curr.TypeMitigation.ParentTypeMitigationId === 45) {
+                  if (curr.TypeMitigation.ParentTypeMitigationId === 45 || curr.TypeMitigationId === 45) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     emergencyResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
@@ -84,7 +84,7 @@ class EventResponseTab extends React.Component {
                           : 'No amount recorded'
                     })
                   }
-                  if (curr.TypeMitigation.ParentTypeMitigationId === 46) {
+                  if (curr.TypeMitigation.ParentTypeMitigationId === 46 || curr.TypeMitigationId === 46) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     mitigationResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
@@ -94,7 +94,7 @@ class EventResponseTab extends React.Component {
                           : 'No amount recorded'
                     })
                   }
-                  if (curr.TypeMitigation.ParentTypeMitigationId === 47) {
+                  if (curr.TypeMitigation.ParentTypeMitigationId === 47 || curr.TypeMitigationId === 47) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     adaptationResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
@@ -129,27 +129,27 @@ class EventResponseTab extends React.Component {
                           <TableBody rows={emergencyResponses} />
                         </Table> : <i>None recorded</i>}
                     </div>
-                    <div>
+                    <div style={{width:'500px'}}>
                       <h4>Rehabilitation and Reconstruction Responses</h4>
                       {rehabResponses.length > 0 ?
                         <Table small striped>
-                          <TableHead columns={tableData.columns} />
+                          <TableHead color='grey' columns={tableData.columns} />
                           <TableBody rows={rehabResponses} />
                         </Table> : <i>None recorded</i>}
                     </div>
-                    <div>
+                    <div style={{width:'500px'}}>
                       <h4>Mitigation Responses</h4>
                       {mitigationResponses.length > 0 ?
                         <Table small striped>
-                          <TableHead columns={tableData.columns} />
+                          <TableHead color='grey'  columns={tableData.columns} />
                           <TableBody rows={mitigationResponses} />
                         </Table> : <i>None recorded</i>}
                     </div>
-                    <div>
+                    <div style={{width:'500px'}}>
                       <h4>Adaptation Responses</h4>
                       {adaptationResponses.length > 0 ?
                         <Table small striped>
-                          <TableHead columns={tableData.columns} />
+                          <TableHead color='grey'  columns={tableData.columns} />
                           <TableBody rows={adaptationResponses} />
                         </Table> : <i>None recorded</i>}
                     </div>
