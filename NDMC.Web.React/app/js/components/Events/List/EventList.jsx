@@ -92,9 +92,11 @@ class EventList extends React.Component {
       _favoritesFilter: false,
       ellipsisMenu: false,
       impactModalVisible: false,
+      responseModalVisible: false,
       regionTreeValue: undefined,
       region: '',
       impacts: [],
+      responses: [],
       hazard: '',
       startDate: '',
       endDate: '',
@@ -102,6 +104,10 @@ class EventList extends React.Component {
       impactTypeTemp: '',
       impactTypeNameTemp: '',
       impactAmountTemp: '',
+      responseTypeTemp: '',
+      responseTypeNameTemp: '',
+      responseValueTemp: '',
+      measureTemp: '',
       showBackToTop: false
     }
 
@@ -119,6 +125,13 @@ class EventList extends React.Component {
     this.onImpactSelect = this.onImpactSelect.bind(this)
     this.onImpactAmount = this.onImpactAmount.bind(this)
     this.onImpactUndo = this.onImpactUndo.bind(this)
+    this.onResponseAdd = this.onResponseAdd.bind(this)
+    this.onResponseClose = this.onResponseClose.bind(this)
+    this.onResponseOpen = this.onResponseOpen.bind(this)
+    this.onResponseSelect = this.onResponseSelect.bind(this)
+    this.onResponseUndo = this.onResponseUndo.bind(this)
+    this.onResponseValue = this.onResponseValue.bind(this)
+    this.onMeasureSelect = this.onMeasureSelect.bind(this)
   }
 
   componentDidMount() {
@@ -314,7 +327,7 @@ class EventList extends React.Component {
       impactTypeName: this.state.impactTypeNameTemp,
       impactAmount: this.state.impactAmountTemp
     }
-    if(this.state.impacts.length > 0) {
+    if (this.state.impacts.length > 0) {
       this.setState(prev => ({
         impacts: [...prev.impacts, newimpact]
       }))
@@ -333,19 +346,73 @@ class EventList extends React.Component {
   onImpactAmount(value) {
     this.setState({ impactAmountTemp: value })
   }
+
   onImpactUndo() {
-    console.log(this.state.impacts)
     let arr = this.state.impacts
     arr.pop()
-    console.log(this.state.impacts)
-      this.setState({
-        impacts: arr
-      })
+    this.setState({
+      impacts: arr
+    })
+  }
 
+  onResponseOpen() {
+    this.setState({ responseModalVisible: true })
+  }
+
+  onResponseClose() {
+    this.setState({ responseModalVisible: false })
+  }
+
+  onResponseAdd() {
+    this.setState({
+      responseModalVisible: false,
+      responseTypeTemp: '',
+      responseTypeNameTemp: '',
+      responseValueTemp: '',
+      measureTemp: ''
+    })
+    let newResponse = {
+      responseType: this.state.responseTypeTemp,
+      responseTypeName: this.state.responseTypeNameTemp,
+      responseValue: this.state.responseValueTemp,
+      responseMeasuretype: this.state.measureTemp
+    }
+    if (this.state.responses.length > 0) {
+      this.setState(prev => ({
+        responses: [...prev.responses, newResponse]
+      }))
+    }
+    else {
+      this.setState({
+        responses: [newResponse]
+      })
+    }
+  }
+
+  onResponseSelect(value, next) {
+    this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.children })
+  }
+
+  onResponseValue(value) {
+    this.setState({ responseValueTemp: value })
+  }
+
+  onResponseUndo() {
+    let arr = this.state.responses
+    arr.pop()
+    this.setState({
+      responses: arr
+    })
+  }
+
+  onMeasureSelect(value) {
+    this.setState({
+      measureTemp: value
+    })
   }
 
   render() {
-    const { impacts } = this.state
+    const { impacts, responses } = this.state
     let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
 
     const regionQuery = {
@@ -357,6 +424,9 @@ class EventList extends React.Component {
     }
     const impactsQuery = {
       select: ['TypeImpactId', 'TypeImpactName']
+    }
+    const responseQuery = {
+      select: ['TypeMitigationId', 'TypeMitigationName', 'UnitOfMeasure']
     }
 
     return (
@@ -595,9 +665,76 @@ class EventList extends React.Component {
                       }}
                     </OData>
                     <ListGroup>
-                      {this.state.impacts.length? impacts.map((impact) => {
+                      {impacts.length ? impacts.map((impact) => {
                         return <ListGroupItem>{impact.impactTypeName}: {impact.impactAmount}</ListGroupItem>
-                      }) : <ListGroupItem>No Impact selected</ListGroupItem>}
+                      }) : <ListGroupItem>No Impact added</ListGroupItem>}
+                      <ListGroupItem></ListGroupItem>
+                    </ListGroup>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Form.Item label="Responses">
+                    <Button onClick={this.onResponseOpen} size="sm" color=""
+                      style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
+                      Add Response
+                    </Button>
+                    <Button onClick={this.onResponseUndo} size="sm" color=""
+                      style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
+                      Undo last
+                    </Button>
+                    <OData baseUrl={baseUrl + 'TypeMitigations'} query={responseQuery}>
+                      {({ loading, error, data }) => {
+                        if (loading) { return <div>Loading...</div> }
+                        if (error) { return <div>Error Loading Data From Server</div> }
+                        if (data) {
+                          const responseUnique = [...new Set(data.value.map(response => response.UnitOfMeasure ))]
+                          const responseMeasures = responseUnique.filter(item => {
+                            if(item !== ''|| item !== null) {
+                              return item
+                            }
+                          })
+                          return <Modal
+                            title="New Response"
+                            visible={this.state.responseModalVisible}
+                            onOk={this.onResponseAdd}
+                            onCancel={this.onResponseClose}
+                            destroyOnClose={true}
+                          >
+                            <Select
+                              showSearch
+                              style={{ width: 400 }}
+                              placeholder="Select a Response"
+                              optionFilterProp="children"
+                              onChange={this.onResponseSelect}
+                              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                            >
+                              {data.value.map(item => {
+                                return <Option key={item.TypeMitigationId} value={item.TypeMitigationId}>{item.TypeMitigationName}</Option>
+                              })}
+                            </Select>
+                            <InputNumber onChange={this.onResponseValue}></InputNumber>
+                            <Select
+                              showSearch
+                              style={{ width: 400 }}
+                              placeholder="Select a Measure"
+                              optionFilterProp="children"
+                              onChange={this.onMeasureSelect}
+                              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                            >
+                              {responseMeasures.map(measure => {
+                                return <Option value={measure}>{measure}</Option>
+                              })}
+                            </Select>
+                          </Modal>
+                        }
+                      }}
+                    </OData>
+                    <ListGroup>
+                      {responses.length ? responses.map((response) => {
+                        return <ListGroupItem>{response.responseTypeName}: {response.responseValue}({response.responseMeasuretype})</ListGroupItem>
+                      }) : <ListGroupItem>No Response added</ListGroupItem>}
                       <ListGroupItem></ListGroupItem>
                     </ListGroup>
                   </Form.Item>
