@@ -22,6 +22,10 @@ import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 import Header from './components/Base/Header.jsx'
 import Footer from './components/Base/Footer.jsx'
+import DashGraph1FullView from './components/Dashboard/DashGraph1FullView.jsx'
+import DashGraph2FullView from './components/Dashboard/DashGraph2FullView.jsx'
+import DashGraph3FullView from './components/Dashboard/DashGraph3FullView.jsx'
+import DashGraph4FullView from './components/Dashboard/DashGraph4FullView.jsx'
 
 
 const mapStateToProps = (state, props) => {
@@ -62,6 +66,10 @@ class App extends React.Component {
                   <Route path='/events' component={Events} exact />
                   <Route path='/events/:id' component={EventDetails} exact />
                   <Route path='/graphs' component={Graphs} exact />
+                  <Route path="/chart1" component={DashGraph1FullView} exact />
+                  <Route path="/chart2" component={DashGraph2FullView} exact />
+                  <Route path="/chart3" component={DashGraph3FullView} exact />
+                  <Route path="/chart4" component={DashGraph4FullView} exact />
                 </Switch>
               </div>
             </div>

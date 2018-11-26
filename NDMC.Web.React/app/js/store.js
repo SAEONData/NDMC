@@ -27,7 +27,13 @@ const store = createStore(
       impactFilter: {id: 0, name: ''},
       dateFilter: { startDate: 0, endDate: 0 },
       favoritesFilter: false
-    }
+    },
+    chartData:{
+      chart1: [],
+      chart2: [],
+      chart3: [],
+      chart4: []
+  }
 
   }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )

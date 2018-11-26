@@ -52,7 +52,6 @@ class RegionFilters extends React.Component {
     let { loadRegionFilter } = this.props
     loadRegionFilter({ id: parseInt(value), name: node.props.title })
 
-    console.log("selected value", node)
     this.setState({ treeValue: node.props.title })
   }
 

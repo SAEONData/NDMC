@@ -10,10 +10,15 @@ import ImpactFilters from '../Events/Filters/ImpactFilters.jsx'
 import EventFilters from '../Events/Filters/EventFilters.jsx'
 import EventList from '../Events/List/EventList.jsx'
 import DashMapPreview from "./DashMapPreview.jsx"
+import DashGraph1Preview from "./DashGraph1Preview.jsx"
+import DashGraph2Preview from "./DashGraph2Preview.jsx"
+import DashGraph3Preview from "./DashGraph3Preview.jsx"
+import DashGraph4Preview from "./DashGraph4Preview.jsx"
 
 
 const mapStateToProps = (state, props) => {
-  return {}
+  let { eventData: { listScrollPos } } = state
+  return { listScrollPos }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -109,83 +114,63 @@ class Dashboard extends React.Component {
             <EventList />
           </Col>
 
-          <Col hidden={showBackToTop} md="5">
+          {
+            !showBackToTop &&
+            <Col md="5">
 
-            <Row>
-              <Col md="12">
-                <EventFilters />
-              </Col>
-            </Row>
+              <Row>
+                <Col md="12">
+                  <EventFilters />
+                </Col>
+              </Row>
 
-            <br />
+              <br />
 
-            <Row>
-              {/* map */}
-              <Col md="12">
-                <DashMapPreview />
-              </Col>
-            </Row>
+              <Row>
+                {/* map */}
+                <Col md="12">
+                  <DashMapPreview />
+                </Col>
+              </Row>
 
-            <br />
+              <br />
 
-            <Row>
-              {/* graphs */}
-              <Col md="12">
+              <Row>
+                {/* graphs */}
+                <Col md="12">
 
-                <Row>
+                  <Row>
 
-                  <Col md="6">
-                    <div style={{
-                      height: "180px",
-                      width: "100%",
-                      backgroundColor: "white",
-                      borderRadius: "10px",
-                      border: "1px solid gainsboro",
-                    }} />
-                  </Col>
+                    <Col md="6">
+                      <DashGraph1Preview />
+                    </Col>
 
-                  <Col md="6">
-                    <div style={{
-                      height: "180px",
-                      width: "100%",
-                      backgroundColor: "white",
-                      borderRadius: "10px",
-                      border: "1px solid gainsboro",
-                    }} />
-                  </Col>
+                    <Col md="6">
+                      <DashGraph2Preview />
+                    </Col>
 
-                </Row>
+                  </Row>
 
-                <br />
+                  <br />
 
-                <Row>
+                  <Row>
 
-                  <Col md="6">
-                    <div style={{
-                      height: "180px",
-                      width: "100%",
-                      backgroundColor: "white",
-                      borderRadius: "10px",
-                      border: "1px solid gainsboro",
-                    }} />
-                  </Col>
+                    <Col md="6">
+                      <DashGraph3Preview />
+                    </Col>
 
-                  <Col md="6">
-                    <div style={{
-                      height: "180px",
-                      width: "100%",
-                      backgroundColor: "white",
-                      borderRadius: "10px",
-                      border: "1px solid gainsboro",
-                    }} />
-                  </Col>
+                    <Col md="6">
+                      <DashGraph4Preview />
+                    </Col>
 
-                </Row>
+                  </Row>
 
-              </Col>
-            </Row>
+                </Col>
+              </Row>
 
-          </Col>
+            </Col>
+          }
+
 
         </Row>
 
