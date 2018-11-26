@@ -46,14 +46,11 @@ class EventDetails extends React.Component {
   }
 
   navBack() {
-
     setTimeout(() => { this.props.setForceNavRender(true) }, 250)
-
     let navTo = location.hash.replace(
       "#/events/" + this.state.eventId,
       this.props.eventsFullView === true ? "#/events" : "/"
     )
-
     location.hash = navTo
   }
 
