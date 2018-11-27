@@ -9,11 +9,11 @@ import DateFilters from '../Events/Filters/DateFilters.jsx'
 import ImpactFilters from '../Events/Filters/ImpactFilters.jsx'
 import EventFilters from '../Events/Filters/EventFilters.jsx'
 import EventList from '../Events/List/EventList.jsx'
-import DashMapPreview from "./DashMapPreview.jsx"
 import DashGraph1Preview from "./DashGraph1Preview.jsx"
 import DashGraph2Preview from "./DashGraph2Preview.jsx"
 import DashGraph3Preview from "./DashGraph3Preview.jsx"
 import DashGraph4Preview from "./DashGraph4Preview.jsx"
+import MapViewCore from '../Map/MapViewCore.jsx'
 
 
 const mapStateToProps = (state, props) => {
@@ -129,7 +129,7 @@ class Dashboard extends React.Component {
               <Row>
                 {/* map */}
                 <Col md="12">
-                  <DashMapPreview />
+                  <MapViewCore />
                 </Col>
               </Row>
 
