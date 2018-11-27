@@ -26,7 +26,7 @@ class Header extends React.Component {
           </Col>
           <Col md="6">
             <h1 style={{ textAlign: "center", marginTop: "4%", letterSpacing: "2px", color: "#2e7d32" }}>
-              <b>NDMC</b>
+              <b>NHE</b>
 
               {/* BETA tag */}
               <sub style={{ fontSize: "18px", backgroundColor: "#78e26c", borderRadius: "5px", padding: "2px" }}>
@@ -36,7 +36,7 @@ class Header extends React.Component {
             </h1>
             <p></p>
             <h5 style={{ textAlign: "center", letterSpacing: "2px", marginTop: "-8px", color: "grey" }}>
-              <b>National Disaster Management Centre</b>
+              <b>National Hazardous Events Database</b>
             </h5>
           </Col>
           <Col md="3" className="d-none d-md-block">
