@@ -78,19 +78,19 @@ class EventDetails extends React.Component {
         <Tabs forceRenderTabPanel={true}>
           <TabList>
             <Tab><b style={{ color: '#1565c0' }}>Event Details</b></Tab>
-            <Tab><b style={{ color: '#1565c0' }}>Event Responses</b></Tab>
             <Tab><b style={{ color: '#1565c0' }}>Event Impacts</b></Tab>
+            <Tab><b style={{ color: '#1565c0' }}>Event Responses</b></Tab>
           </TabList>
           <TabPanel>
             <EventDetailsTab eventId={eventId} />
             <br />
           </TabPanel>
           <TabPanel>
-            <EventResoponseTab eventId={eventId} />
+            <EventImpactTab eventId={eventId} />
             <br />
           </TabPanel>
           <TabPanel>
-            <EventImpactTab eventId={eventId} />
+            <EventResoponseTab eventId={eventId} />
             <br />
           </TabPanel>
         </Tabs>
