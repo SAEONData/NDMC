@@ -379,27 +379,30 @@ onImpactClose() {
 }
 
 onImpactAdd() {
+  let newimpact = {
+    impactType: this.state.impactTypeTemp,
+    impactTypeName: this.state.impactTypeNameTemp,
+    impactAmount: this.state.impactAmountTemp
+  }
+
+  if (this.state.impacts.length > 0) {
+    this.setState(prev => ({
+      impacts: [...prev.impacts, newimpact]
+    }))
+  }
+
+  else {
+    this.setState({
+      impacts: [newimpact]
+    })
+  }
+
   this.setState({
     impactModalVisible: false,
     impactTypeTemp: '',
     impactTypeNameTemp: '',
     impactAmountTemp: '',
   })
-  let newimpact = {
-    impactType: this.state.impactTypeTemp,
-    impactTypeName: this.state.impactTypeNameTemp,
-    impactAmount: this.state.impactAmountTemp
-  }
-  if (this.state.impacts.length > 0) {
-    this.setState(prev => ({
-      impacts: [...prev.impacts, newimpact]
-    }))
-  }
-  else {
-    this.setState({
-      impacts: [newimpact]
-    })
-  }
 }
 
 onImpactSelect(value, next) {
@@ -420,6 +423,7 @@ onImpactUndo() {
 
 onResponseOpen() {
   this.setState({ responseModalVisible: true })
+  console.log(this.state)
 }
 
 onResponseClose() {
@@ -427,6 +431,25 @@ onResponseClose() {
 }
 
 onResponseAdd() {
+  let newResponse = {
+    responseType: this.state.responseTypeTemp,
+    responseTypeName: this.state.responseTypeNameTemp,
+    responseValue: this.state.responseValueTemp,
+    responseMeasuretype: this.state.measureTemp
+  }
+
+  if (this.state.responses.length > 0) {
+    this.setState(prev => ({
+      responses: [...prev.responses, newResponse]
+    }))
+  }
+
+  else {
+    this.setState({
+      responses: [newResponse]
+    })
+  }
+
   this.setState({
     responseModalVisible: false,
     responseTypeTemp: '',
@@ -434,22 +457,6 @@ onResponseAdd() {
     responseValueTemp: '',
     measureTemp: ''
   })
-  let newResponse = {
-    responseType: this.state.responseTypeTemp,
-    responseTypeName: this.state.responseTypeNameTemp,
-    responseValue: this.state.responseValueTemp,
-    responseMeasuretype: this.state.measureTemp
-  }
-  if (this.state.responses.length > 0) {
-    this.setState(prev => ({
-      responses: [...prev.responses, newResponse]
-    }))
-  }
-  else {
-    this.setState({
-      responses: [newResponse]
-    })
-  }
 }
 
 onResponseSelect(value, next) {
