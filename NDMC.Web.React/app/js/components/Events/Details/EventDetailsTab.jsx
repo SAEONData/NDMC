@@ -106,15 +106,6 @@ class EventDetailsTab extends React.Component {
                       allowEdit={false}
                     />
                   </div>
-                  <div className='row'>
-                    <TextAreaComponent
-                      col='col-md-6'
-                      label='Impact Types'
-                      id='txtImpactType'
-                      value={impactString}
-                      allowEdit={false}
-                    />
-                  </div>
                   <br />
                 </>)
               }
