@@ -659,6 +659,7 @@ render() {
                       if (error) { return <div>Error Loading Data From Server</div> }
                       if (data) {
                         //hazardData = data.value
+                          data.value.sort((prev,next) => prev.TypeEventName.localeCompare(next.TypeEventName))
                         return <Select
                           showSearch
                           style={{ width: 400 }}
@@ -711,6 +712,7 @@ render() {
                       if (loading) { return <div>Loading...</div> }
                       if (error) { return <div>Error Loading Data From Server</div> }
                       if (data) {
+                        data.value.sort((prev,next) => prev.TypeImpactName.localeCompare(next.TypeImpactName))
                         return <Modal
                           title="New Impact"
                           visible={this.state.impactModalVisible}
@@ -766,6 +768,7 @@ render() {
                             return item
                           }
                         })
+                        data.value.sort((prev,next) => prev.TypeMitigationName.localeCompare(next.TypeMitigationName))
                         return <Modal
                           title="New Response"
                           visible={this.state.responseModalVisible}
