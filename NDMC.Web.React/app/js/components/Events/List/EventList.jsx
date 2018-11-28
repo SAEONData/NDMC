@@ -269,7 +269,6 @@ class EventList extends React.Component {
     const formattedImpacts = this.state.impacts.map(impact => {
       return { EventImpactId: -1, Measure: impact.impactAmount, TypeImpactId: impact.impactType }
     })
-    console.log(formattedImpacts)
     let fetchBody = {
       EventId: -1,
       StartDate: this.state.startDate,
@@ -285,7 +284,6 @@ class EventList extends React.Component {
         DeclaredDate: this.state.declaredDate
       }]
     }
-    console.log(JSON.stringify(fetchBody))
 
     try {
       const res = await fetch(baseUrl + 'Events/', {
@@ -368,7 +366,6 @@ onImpactOpen() {
 
 onImpactClose() {
   if (!isNaN(this.state.impactAmountTemp && this.state.impactAmountTemp)) {
-    console.log(this.state.impactAmountTemp)
     this.setState({ impactModalVisible: false })
     this.setState({
       impactTypeTemp: '',
@@ -423,7 +420,6 @@ onImpactUndo() {
 
 onResponseOpen() {
   this.setState({ responseModalVisible: true })
-  console.log(this.state)
 }
 
 onResponseClose() {
