@@ -634,6 +634,7 @@ render() {
                         let regionTree = this.transformDataTree(data.value)
                         //regionData = data.value
                         return <TreeSelect
+                          key={new Date().valueOf()}
                           style={{ width: "100%" }}
                           value={this.state.regionTreeValue}
                           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -735,7 +736,7 @@ render() {
                   </OData>
                   <ListGroup>
                     {impacts.length ? impacts.map((impact) => {
-                      return <ListGroupItem>{impact.impactTypeName}: {impact.impactAmount}</ListGroupItem>
+                      return <ListGroupItem key={impact.impactTypeName} >{impact.impactTypeName}: {impact.impactAmount}</ListGroupItem>
                     }) : <ListGroupItem>No Impact added</ListGroupItem>}
                     <ListGroupItem></ListGroupItem>
                   </ListGroup>
@@ -787,7 +788,7 @@ render() {
                             </Select>
                           </div>
                           <div className='row'>
-                            <div classname='col' style={{ paddingTop: 10 }}>
+                            <div style={{ paddingTop: 10 }}>
                               <InputNumber style={{ height: 35 }} onChange={this.onResponseValue}></InputNumber>
                             </div>
                             <Select
@@ -799,7 +800,7 @@ render() {
                               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
                               {responseMeasures.map(measure => {
-                                return <Option value={measure}>{measure}</Option>
+                                return <Option key={measure} value={measure}>{measure}</Option>
                               })}
                             </Select>
                           </div>
@@ -809,7 +810,7 @@ render() {
                   </OData>
                   <ListGroup>
                     {responses.length ? responses.map((response) => {
-                      return <ListGroupItem>{response.responseTypeName}: {response.responseValue}({response.responseMeasuretype})</ListGroupItem>
+                      return <ListGroupItem key={response.responseTypeName}>{response.responseTypeName}: {response.responseValue}({response.responseMeasuretype})</ListGroupItem>
                     }) : <ListGroupItem>No Response added</ListGroupItem>}
                     <ListGroupItem></ListGroupItem>
                   </ListGroup>
