@@ -62,8 +62,6 @@ class MapViewCore extends React.Component {
       }
     }
 
-    console.log("MapConfig", mapConfig)
-
     return encodeURI(JSON.stringify(mapConfig))
   }
 
@@ -113,7 +111,8 @@ class MapViewCore extends React.Component {
             backgroundRepeat: "no-repeat",
             backgroundPosition: "50% 50%"
           }}
-          src={`http://app01.saeon.ac.za/components/map?conf=${mapConfig}`}
+          // src={`http://app01.saeon.ac.za/components/map?conf=${mapConfig}`}
+          src={'http://www.example.com'}
         />
 
       </div>

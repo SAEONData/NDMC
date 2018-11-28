@@ -9,12 +9,15 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace APIv2.Controllers
@@ -25,9 +28,12 @@ namespace APIv2.Controllers
     public class EventsController : ODataController
     {
         public SQLDBContext _context { get; }
-        public EventsController(SQLDBContext context)
+        IConfiguration _config { get; }
+
+        public EventsController(SQLDBContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
 
         [EnableQuery(MaxExpansionDepth = 0)]
@@ -109,11 +115,19 @@ namespace APIv2.Controllers
         public JsonResult GeoJson()
         {
             var eventImpacts = _context.EventImpacts.ToArray();
+            var regions = _context.Regions.ToArray();
+            var vmsRegions = GetVMSData("regions/flat").Result;
 
             var geoJSON = _context.Events
+                .Include(e => e.EventRegions).ThenInclude(er => er.Region)
                 .Select(e => new
                 {
                     type = "Feature",
+                    geometry = new
+                    {
+                        type = "MultiPolygon",
+                        coordinates = GetCoordinates(e.EventRegions, regions, vmsRegions)
+                    },
                     properties = new
                     {
                         id = e.EventId,
@@ -130,6 +144,50 @@ namespace APIv2.Controllers
                 .ToList();
 
             return new JsonResult(geoJSON);
+        }
+
+        private object[] GetCoordinates(ICollection<EventRegion> evenRegions, Region[] regions, List<StandardVocabItem> vmsRegions)
+        {
+            var result = new List<object>();
+
+            foreach (var er in evenRegions)
+            {
+                var region = regions.FirstOrDefault(r => r.RegionId == er.RegionId);
+
+                if (region != null)
+                {
+                    var polygon = new List<object>();
+
+                    var vmsRegion = vmsRegions.FirstOrDefault(v => v.Value.StartsWith(region.RegionName));
+                    if (vmsRegion != null)
+                    {
+                        var simpleWKT = vmsRegion.AdditionalData.FirstOrDefault(ad => ad.Key == "SimpleWKT");
+                        if (!string.IsNullOrEmpty(simpleWKT.Value))
+                        {
+                            var parsedWKT = simpleWKT.Value.Replace("POLYGON((", "").Replace("))", "");
+
+                            foreach (var point in parsedWKT.Split(","))
+                            {
+                                var pointValues = point.Trim().Split(" ");
+                                if (pointValues.Length == 2)
+                                {
+                                    if (double.TryParse(pointValues[0].Trim(), out double pointLat) &&
+                                        double.TryParse(pointValues[1].Trim(), out double pointLon))
+                                    {
+                                        var polyPoint = new double[] { pointLat, pointLon };
+                                        polygon.Add(polyPoint);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    result.Add(polygon);
+                }
+            }
+
+            return result.ToArray();
         }
 
         private int[] GetEventImpacts(int[] eventRegionIDs, EventImpact[] eventImpacts)
@@ -174,6 +232,27 @@ namespace APIv2.Controllers
             regions.AddRange(childRegions);
 
             return regions;
+        }
+
+        private async Task<List<StandardVocabItem>> GetVMSData(string relativeURL)
+        {
+            var result = new StandardVocabOutput();
+
+            //Setup http-client
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_config.GetValue<string>("VmsApiBaseUrl"));
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            //Get data from VMS API
+            var response = await client.GetAsync(relativeURL);
+            if (response != null)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<StandardVocabOutput>(jsonString);
+            }
+
+            return result.Items;
         }
     }
 }
