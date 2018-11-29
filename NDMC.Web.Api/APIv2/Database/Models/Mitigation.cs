@@ -17,13 +17,13 @@ namespace APIv2.Database.Models
         //FK - Event
         [Required]
         public int EventId { get; set; }
-        [Required]
+        //[Required]
         public Event Event { get; set; }
 
         //FK - TypeMitigation
         [Required]
         public int TypeMitigationId { get; set; }
-        [Required]
+        //[Required]
         public TypeMitigation TypeMitigation { get; set; }
     }
 }
