@@ -70,7 +70,7 @@ class EventResponseTab extends React.Component {
                       response: curr.TypeMitigation.TypeMitigationName,
                       amount: curr.Value ? 
                         isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` 
+                        : `${curr.Value} (${curr.TypeMitigation.UnitOfMeasure})` 
                           : 'No amount recorded'
                     })
                   }
@@ -80,7 +80,7 @@ class EventResponseTab extends React.Component {
                       response: curr.TypeMitigation.TypeMitigationName,
                       amount: curr.Value ? 
                         isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` 
+                        : `${curr.Value} ((${curr.TypeMitigation.UnitOfMeasure})` 
                           : 'No amount recorded'
                     })
                   }
@@ -90,7 +90,7 @@ class EventResponseTab extends React.Component {
                       response: curr.TypeMitigation.TypeMitigationName,
                       amount: curr.Value ? 
                         isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` 
+                        : `${curr.Value} (${curr.TypeMitigation.UnitOfMeasure})` 
                           : 'No amount recorded'
                     })
                   }
