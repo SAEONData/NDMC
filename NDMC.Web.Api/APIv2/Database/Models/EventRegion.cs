@@ -15,13 +15,13 @@ namespace APIv2.Database.Models
         //FK - Event
         [Required]
         public int EventId { get; set; }
-        [Required]
+        //[Required]
         public Event Event { get; set; }
 
         //FK - Region
         [Required]
         public int RegionId { get; set; }
-        [Required]
+        //[Required]
         public Region Region { get; set; }
 
         public ICollection<EventImpact> EventImpacts { get; set; }

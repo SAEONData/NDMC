@@ -19,7 +19,8 @@ namespace APIv2.Database.Models
         //FK - ParentTypeImpact
         [ForeignKey("ParentTypeMitigation")]
         public int? ParentTypeMitigationId { get; set; }
-        //[IgnoreDataMember]
         public TypeMitigation ParentTypeMitigation { get; set; }
+
+        public ICollection<Mitigation> Mitigations { get; set; }
     }
 }

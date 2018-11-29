@@ -2,6 +2,7 @@
 using APIv2.ViewModels;
 
 using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OData.Edm;
 
 using System;
@@ -13,12 +14,13 @@ namespace APIv2.Database.Contexts
         public IEdmModel GetEdmModel(IServiceProvider serviceProvider)
         {
             var builder = new ODataConventionModelBuilder(serviceProvider);
+            int maxExpandDepth = 0;
 
             builder.EntitySet<Event>("Events")
                 .EntityType
                 .Filter() // Allow for the $filter Command
                 .Count() // Allow for the $count Command
-                .Expand() // Allow for the $expand Command
+                .Expand(maxExpandDepth) // Allow for the $expand Command
                 .OrderBy() // Allow for the $orderby Command
                 .Page() // Allow for the $top and $skip Commands
                 .Select();// Allow for the $select Command; 
@@ -27,7 +29,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -36,7 +38,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -45,7 +47,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -54,7 +56,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -63,7 +65,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -72,7 +74,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -81,7 +83,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -90,7 +92,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -99,7 +101,7 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
@@ -108,10 +110,15 @@ namespace APIv2.Database.Contexts
                 .EntityType
                 .Filter()
                 .Count()
-                .Expand()
+                .Expand(maxExpandDepth)
                 .OrderBy()
                 .Page()
                 .Select();
+
+
+            //#####################//
+            // FUNCTIONS & ACTIONS //
+            //#####################//
 
             builder.Namespace = "Extensions";
             builder.EntityType<Event>()
@@ -119,6 +126,13 @@ namespace APIv2.Database.Contexts
                 .Action("Filter")
                 .ReturnsCollectionViaEntitySetPath<Event>("bindingParameter")
                 .Parameter<Filters>("filters");
+
+            builder.
+                EntityType<Event>().
+                Collection.
+                Function("GeoJson").
+                Returns<JsonResult>();
+
 
             return builder.GetEdmModel();
         }

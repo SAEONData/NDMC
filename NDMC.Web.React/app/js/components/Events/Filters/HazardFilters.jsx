@@ -8,11 +8,16 @@ import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
 //MDBReact
-import { Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
+// import { Select, SelectInput, SelectOptions, SelectOption } from 'mdbreact'
 
 //Odata
 import OData from 'react-odata'
 const baseUrl = 'https://localhost:44334/odata/'
+
+//AntD Tree-Select
+import Select from 'antd/lib/select'
+import '../../../../css/antd.select.css' //Overrides default antd.select css
+const Option = Select.Option;
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter } } = state
@@ -26,63 +31,67 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 }
+
 let _data
 
 class HazardFilters extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
-      value: "Choose your option",
+      value: "Select...",
       data: []
     }
-    this.optionClick = this.optionClick.bind(this)
-    this.onClick = this.onClick.bind(this)
-    this.otherDropdownsClose = this.otherDropdownsClose.bind(this)
 
+    this.optionClick = this.optionClick.bind(this)
   }
 
-  otherDropdownsClose() {
-    let dropdowns = document.querySelectorAll('.dropdown-content')
-    for (let i = 0; i < dropdowns.length; i++) {
-      if (dropdowns[i].classList.contains('fadeIn')) {
-        dropdowns[i].classList.remove('fadeIn')
-      }
+  componentDidUpdate(){
+
+    let { hazardFilter } = this.props
+    if(hazardFilter.name === "" || hazardFilter === 0) hazardFilter = { id: 0, name: "Select..." }
+
+    if(hazardFilter.name !== this.state.value){
+      this.setState({ value: hazardFilter.name})
     }
   }
 
   optionClick(value) {
-    //console.log(_data)
+
     let { loadHazardFilter } = this.props
     let id = 0
+
     let filteredData
-    if (_data) { filteredData = _data.filter(x => x.TypeEventName === value[0]) }
-    if (filteredData) { filteredData[0].TypeEventId ? id = filteredData[0].TypeEventId : '' }
-    if (value[0] !== this.state.value && value !== "Choose your option") {
-      this.setState({ value: value[0] })
-      loadHazardFilter({ id: id, name: value[0] })
+
+    if (_data) { 
+      filteredData = _data.filter(x => x.TypeEventName === value) 
+    }
+
+    if (filteredData) { 
+      filteredData[0].TypeEventId ? id = filteredData[0].TypeEventId : '' 
+    }
+
+    if (value[0] !== this.state.value && value !== "Select...") {
+      this.setState({ value: value })
+      loadHazardFilter({ id: id, name: value })
     }
   }
 
-  onClick(e) {
-    if (e.target.dataset.multiple === 'true') {
-      return
-    }
-    if (e.target.classList.contains('select-dropdown')) {
-      this.otherDropdownsClose()
-      if (e.target.nextElementSibling) {
-        e.target.nextElementSibling.classList.add('fadeIn')
-      }
-    } else {
-      this.otherDropdownsClose()
-    }
-  }
+  renderOptions(data){
+    let options = []
 
-  componentDidMount() {
-    document.addEventListener('click', this.onClick)
-  }
+    //Sort
+    data.value.sort((a,b) => (a.TypeEventName > b.TypeEventName) ? 1 : ((b.TypeEventName > a.TypeEventName) ? -1 : 0))
 
-  componentWillUnmount() {
-    document.removeEventListener('click', this.onClick)
+    data.value.map(item => {
+      options.push(
+        <Option key={item.TypeEventId} value={item.TypeEventName}>
+          {item.TypeEventName}
+        </Option>
+      )
+    })
+
+    return options
   }
 
   render() {
@@ -91,29 +100,32 @@ class HazardFilters extends React.Component {
     }
     return (
       <>
-        <div className="row">
-          <div className="col-md-4">
-            <Select getValue={this.optionClick}>
-              <SelectInput value={this.state.value}></SelectInput>
-              <SelectOptions>
-                <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardsQuery}>
-                  {({ loading, error, data }) => {
-                    if (loading) { return <div>Loading...</div> }
-                    if (error) { return <div>Error Loading Data From Server</div> }
-                    if (data) {
-                      if (data.value) {
-                        _data = data.value
-                        return data.value.map(item => {
-                          return <SelectOption key={item.TypeEventId}>{item.TypeEventName}</SelectOption>
-                        })
-                      }
-                    }
-                  }}
-                </OData>
-              </SelectOptions>
-            </Select>
-          </div>
-        </div>
+        <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardsQuery}>
+          {({ loading, error, data }) => {
+            if (loading) {
+              return <div>Loading...</div>
+            }
+
+            if (error) {
+              return <div>Error Loading Data From Server</div>
+            }
+
+            if (data && data.value) {
+              _data = data.value
+              return (
+                <Select
+                  style={{ width: "100%" }}
+                  onChange={this.optionClick}
+                  value={this.state.value} 
+                  dropdownMatchSelectWidth={false} 
+                >
+                  {this.renderOptions(data)}
+                </Select>
+              )
+            }
+          }}
+
+        </OData>
       </>
     )
   }

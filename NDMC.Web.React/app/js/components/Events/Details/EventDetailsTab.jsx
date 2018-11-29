@@ -33,34 +33,40 @@ class EventDetailsTab extends React.Component {
       filter: {
         EventId: parseInt(eventId),
       },
-      expand: 
-      ['EventImpacts/TypeImpact',
-        { EventRegions: 
-          { filter: { Region: { RegionTypeId: { ne: 5 } } },
+      expand: ['EventRegions/EventImpacts/TypeImpact',
+        {
+          EventRegions:
+          {
+            filter: { Region: { RegionTypeId: { ne: 5 } } },
             expand: ['Region']
-          } 
+          }
         },
         'DeclaredEvents',
         'TypeEvent']
     }
-    let eventQuery = {
-      eventId: 1
-    }
     return (
       <>
-        <OData baseUrl={baseUrl + 'Events'} query={impactQuery}>
-          {({ loading, error, data }) => {
-            if (loading) { return <div>Loading...</div> }
-            if (error) { return <div>Error Loading Data From Server</div> }
-            if (data) {
-              console.log(data.value[0])
-              const event = data.value[0]
-              let startdate = new Date(event.StartDate * 1000)
-              let enddate = new Date(event.EndDate * 1000)
-              let declareddate = new Date(event.DeclaredEvents[0].DeclaredDate * 1000)
-              let impactString = event.EventImpacts ? event.EventImpacts.reduce(
-                (prev, next) => prev += `${next.TypeImpact.TypeImpactName}: ${next.Measure}\n`, '') : 'No Impact Recorded'
-              return (<>
+        <div style={{
+          backgroundColor: "white",
+          borderBottom: "1px solid silver",
+          borderLeft: "1px solid silver",
+          borderRight: "1px solid silver",
+          borderBottomLeftRadius: "10px",
+          borderBottomRightRadius: "10px",
+          padding: "10px",
+          marginTop: "-10px"
+        }}>
+
+          <OData baseUrl={baseUrl + 'Events'} query={impactQuery}>
+            {({ loading, error, data }) => {
+              if (loading) { return <div>Loading...</div> }
+              if (error) { return <div>Error Loading Data From Server</div> }
+              if (data) {
+                const event = data.value[0]
+                let startdate = new Date(event.StartDate * 1000)
+                let enddate = new Date(event.EndDate * 1000)
+                let declareddate = new Date(event.DeclaredEvents[0].DeclaredDate * 1000)
+                return (<>
                   <br />
                   <div className='row'>
                     <TextComponent
@@ -94,24 +100,16 @@ class EventDetailsTab extends React.Component {
                       col='col-md-4'
                       label='Declared Date'
                       id='txtDeclaredDate'
-                      value={declareddate ? 'No declared date available' : declareddate.toDateString()}
-                      allowEdit={false}
-                    />
-                  </div>
-                  <div className='row'>
-                    <TextAreaComponent
-                      col='col-md-6'
-                      label='Impact Types'
-                      id='txtImpactType'
-                      value={impactString}
+                      value={declareddate ? declareddate.toDateString() : 'No declared date available' }
                       allowEdit={false}
                     />
                   </div>
                   <br />
                 </>)
-            }
-          }}
-        </OData>
+              }
+            }}
+          </OData>
+        </div>
       </>
     )
   }

@@ -9,9 +9,18 @@ import ReactTooltip from 'react-tooltip'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
 //MDBReact
-import { DatePicker } from 'material-ui'
-import { Button} from 'mdbreact'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import { Button } from 'mdbreact'
+
+//MUI
+// import { DatePicker } from 'material-ui'
+// import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+
+import DatePicker from 'antd/lib/date-picker'
+const { MonthPicker, RangePicker, WeekPicker } = DatePicker
+import moment from 'moment';
+import '../../../../css/antd.date-picker.css'
+import '../../../../css/antd.time-picker.css'
+import '../../../../css/antd.input.css'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { dateFilter } } = state
@@ -29,9 +38,9 @@ const mapDispatchToProps = (dispatch) => {
 class DateFilters extends React.Component {
   constructor(props) {
     super(props)
-    this.handleStartChange = this.handleStartChange.bind(this)
-    this.handleEndChange = this.handleEndChange.bind(this)
-    this.applyClick = this.applyClick.bind(this)
+
+    this.onChange = this.onChange.bind(this)
+
     this.state = {
       startDate: 0,
       endDate: 0
@@ -42,61 +51,67 @@ class DateFilters extends React.Component {
     let { loadStartDate, loadEndDate } = this.props
   }
 
-  handleStartChange(event, date) {
-    let unixDate = new Date(date).getTime() / 1000
-    this.setState({ startDate: unixDate })
+  componentDidUpdate(){
+
+    let { dateFilter } = this.props
+
+    if(dateFilter === 0) dateFilter = { startDate: 0, endDate: 0 }
+
+    if(dateFilter.startDate !== this.state.startDate || dateFilter.endDate !== this.state.endDate){
+      this.setState({ startDate: dateFilter.startDate, endDate: dateFilter.endDate})
+    }
   }
 
-  handleEndChange(event, date) {
-    let unixDate = new Date(date).getTime() / 1000
-    this.setState({ endDate: unixDate })
-  }
+  onChange(dates, dateStrings) {
 
-  applyClick() {
     let { loadDateFilter } = this.props
-    if (this.state.startDate !== 0 && this.state.endDate !== 0 && this.state.startDate < this.state.endDate) {
-      loadDateFilter({ startDate: this.state.startDate, endDate: this.state.endDate })
-    }
-    else {
-      console.log('incorrect date selection: start date' + this.state.startDate + 'end date' + this.state.endDate)
-    }
+    let unixStartDate = moment(new Date(dates[0])).unix()
+    let unixEndDate = moment(new Date(dates[1])).unix()
+
+    //Set local state
+    this.setState({ startDate: unixStartDate, endDate: unixEndDate }, () => {
+
+      //Dispatch to store
+      if (this.state.startDate !== null && this.state.endDate !== null && this.state.startDate < this.state.endDate) {
+        loadDateFilter({ startDate: unixStartDate, endDate: unixEndDate })
+      }
+      else {
+        console.log('incorrect date selection: start date' + this.state.startDate + 'end date' + this.state.endDate)
+      }
+    })
+
   }
 
   render() {
+
     let { dateFilter } = this.props
+    let { startDate, endDate } = this.state
+
+    //Parse StartDate
+    if (startDate === 0) {
+      startDate = null
+    }
+    else {
+      startDate = moment.unix(startDate)
+    }
+
+    //Parse EndDate
+    if (endDate === 0) {
+      endDate = null
+    }
+    else {
+      endDate = moment.unix(endDate)
+    }
 
     return (
-      <div className="row">
-        <div className='col-md-3'>
-          <MuiThemeProvider>
-            <DatePicker
-              hintText="Select Start Date"
-              container="inline"
-              mode="landscape"
-              onChange={this.handleStartChange}
-            />
-          </MuiThemeProvider>
-        </div>
-        <div className='col-md-3'>
-          <MuiThemeProvider>
-            <DatePicker
-              hintText="Select End Date"
-              container="inline"
-              mode="landscape"
-              onChange={this.handleEndChange}
-            />
-          </MuiThemeProvider>
-        </div>
-        <div className="col-md-2" style={{ alignItems: "left" }}>
-          <Button
-            color="primary"
-            size="md"
-            style={{ height: "35px", float: "left" }}
-            onClick={this.applyClick} >
-            Apply
-             </Button>
-        </div>
-      </div>
+      <>
+        <RangePicker
+          value={[startDate, endDate]}
+          style={{ width: "100%" }}
+          onChange={this.onChange}
+          allowClear={false}
+        />
+      </>
     )
   }
 }

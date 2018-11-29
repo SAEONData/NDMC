@@ -6,6 +6,8 @@ import ReactTooltip from 'react-tooltip'
 
 //Local
 import EventDetailsTab from './EventDetailsTab.jsx'
+import EventResoponseTab from './EventResponseTab.jsx'
+import EventImpactTab from './EventImpactTab.jsx'
 
 //MDBReact
 import { Button } from 'mdbreact'
@@ -15,13 +17,17 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 
 const mapStateToProps = (state, props) => {
+  let { globalData: { eventsFullView } } = state
   return {
-
+    eventsFullView
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    setForceNavRender: payload => {
+      dispatch({ type: "FORCE_NAV_RENDER", payload })
+    }
   }
 }
 
@@ -33,8 +39,20 @@ class EventDetails extends React.Component {
     this.state = { ...this.state, eventId, navBack: false }
   }
 
+  componentDidMount() {
+    window.scrollTo(0, 0)
+  }
+
+  componentDidUpdate() {
+  }
+
   navBack() {
-    location.hash = '/events'
+    setTimeout(() => { this.props.setForceNavRender(true) }, 250)
+    let navTo = location.hash.replace(
+      "#/events/" + this.state.eventId,
+      this.props.eventsFullView === true ? "#/events" : "/"
+    )
+    location.hash = navTo
   }
 
   backToList() {
@@ -48,27 +66,31 @@ class EventDetails extends React.Component {
     }
   }
 
-  componentDidMount() {
-    window.scrollTo(0, 0)
-  }
-
   render() {
     const { eventDetails } = this.props
     const { eventId } = this.state
     return (
       <>
-        <Button style={{ width: '100px', margin: '8px 0px 8px 0px' }} color='secondary' size='sm' id='btnBackToList' onClick={this.backToList}>
-          <i className='fa fa-chevron-circle-left' aria-hidden='true'></i>&nbsp;&nbsp;Back
+        <Button style={{ margin: '8px 0px 15px -1px' }} color='grey' size='sm' id='btnBackToList' onClick={this.backToList}>
+          <i className='fa fa-chevron-circle-left' aria-hidden='true'></i>&nbsp;&nbsp;Back To List
         </Button>
         <br />
         <Tabs forceRenderTabPanel={true}>
           <TabList>
             <Tab><b style={{ color: '#1565c0' }}>Event Details</b></Tab>
+            <Tab><b style={{ color: '#1565c0' }}>Event Impacts</b></Tab>
+            <Tab><b style={{ color: '#1565c0' }}>Event Responses</b></Tab>
           </TabList>
           <TabPanel>
             <EventDetailsTab eventId={eventId} />
             <br />
+          </TabPanel>
+          <TabPanel>
+            <EventImpactTab eventId={eventId} />
             <br />
+          </TabPanel>
+          <TabPanel>
+            <EventResoponseTab eventId={eventId} />
             <br />
           </TabPanel>
         </Tabs>

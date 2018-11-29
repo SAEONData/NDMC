@@ -1,18 +1,13 @@
 'use strict'
 
-/**
- * Depecdencies
- * @ignore
- */
-import 'antd/lib/style/index.css'
-import 'font-awesome/css/font-awesome.min.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'mdbreact/dist/css/mdb.css'
-
 //React
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
+
+//Favicon
+import Favicon from 'react-favicon'
+import favicon_image from '../images/favicon.png'
 
 //Local
 import store from './store'
@@ -21,7 +16,10 @@ import App from './App.jsx'
 const render = Component => {
   ReactDOM.render(
       <Provider store={store}>
-        <Component />
+        <div>
+          <Favicon url={favicon_image}/>
+          <Component />
+        </div>
       </Provider>,
     document.getElementById('app')
   )

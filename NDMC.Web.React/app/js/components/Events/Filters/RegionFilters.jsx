@@ -38,23 +38,21 @@ class RegionFilters extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidUpdate(){
+
+    let { regionFilter } = this.props
+    if(regionFilter.name === "" || regionFilter === 0) regionFilter = { id: 0, name: "Select..." }
+
+    if(regionFilter.name !== this.state.treeValue){
+      this.setState({ treeValue: regionFilter.name})
+    }
   }
 
   onSelect(value, node) {
     let { loadRegionFilter } = this.props
-    //this.setState({ treeValue: value.toString() })
+    loadRegionFilter({ id: parseInt(value), name: node.props.title })
 
-    // Check if selected node is top level, if it is, create an array of second level
-    // region id's so that we can filter events with third level region id's easily
-    if (node.props.ParentRegionId === null) {
-      let regionFilterArray = node.props.children.map(child => parseInt(child.key))
-      regionFilterArray.push(parseInt(value))
-      loadRegionFilter({ id: regionFilterArray, name: node.props.title })
-    }
-    else {
-      loadRegionFilter({ id: parseInt(value), name: node.props.title })
-    }
+    this.setState({ treeValue: node.props.title })
   }
 
   /* TransformDataTree
@@ -88,20 +86,17 @@ class RegionFilters extends React.Component {
               if (data.value) {
                 let regionTree = this.transformDataTree(data.value)
                 return (
-                  <div className='row'>
-                    <div className="col-md-6">
-                      <TreeSelect
-                        style={{ width: "100%" }}
-                        value={this.state.treeValue}
-                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                        treeData={regionTree}
-                        placeholder="Please select a region"
-                        onSelect={this.onSelect}
-                      >
-                      </TreeSelect>
-                    </div>
-                  </div>
-                )}
+                  <TreeSelect
+                    style={{ width: "100%" }}
+                    value={this.state.treeValue}
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                    treeData={regionTree}
+                    placeholder="Select..."
+                    onSelect={this.onSelect}
+                  >
+                  </TreeSelect>
+                )
+              }
             }
           }}
         </OData>

@@ -2,19 +2,18 @@
 
 //React
 import React from 'react'
-import { Button, Collapse } from 'mdbreact'
+import { Button, Collapse, Chip, Fa } from 'mdbreact'
 import { connect } from 'react-redux'
+import { DEAGreen, DEAGreenDark } from '../../../config/colours.cfg'
 
 //Local
 import * as ACTION_TYPES from '../../../constants/action-types'
-import RegionFilters from './RegionFilters.jsx'
-import HazardFilters from './HazardFilters.jsx'
-import DateFilters from './DateFilters.jsx'
-import ImpactFilters from './ImpactFilters.jsx'
+
+const moment = require('moment');
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter, hazardFilter, dateFilter, impactFilter } } = state
-  return { regionFilter, hazardFilter, dateFilter, impactFilter}
+  let { filterData: { regionFilter, hazardFilter, dateFilter, impactFilter, favoritesFilter } } = state
+  return { regionFilter, hazardFilter, dateFilter, impactFilter, favoritesFilter }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -22,115 +21,158 @@ const mapDispatchToProps = dispatch => {
     clearFilters: payload => {
       dispatch({ type: ACTION_TYPES.CLEAR_FILTERS, payload })
     },
-    clearRegionFilter: payload => {
+    clearImpactFilter: () => {
+      dispatch({ type: ACTION_TYPES.LOAD_IMPACT_FILTER, payload: 0 })
+    },
+    clearRegionFilter: () => {
       dispatch({ type: ACTION_TYPES.LOAD_REGION_FILTER, payload: 0 })
     },
-    clearHazardFilter: payload => {
+    clearHazardFilter: () => {
       dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload: 0 })
     },
-    clearDateFilter: payload => {
+    clearDateFilter: () => {
       dispatch({ type: ACTION_TYPES.LOAD_DATE_FILTER, payload: 0 })
     },
+    clearFavsFilter: () => {
+      dispatch({ type: "LOAD_FAVS_FILTER", payload: 0 })
+    }
   }
 }
 
 class EventFilters extends React.Component {
   constructor(props) {
     super(props)
-    this.toggleRegion = this.toggleRegion.bind(this)
-    this.toggleHazard = this.toggleHazard.bind(this)
-    this.toggleDate = this.toggleDate.bind(this)
-    this.toggleImpact = this.toggleImpact.bind(this)
+
     this.clearFilters = this.clearFilters.bind(this)
-
-    this.state = {
-      collapseRegion: false,
-      collapseHazzard: false,
-      collapseDate: false,
-      collapseImpact: false
-    }
-  }
-
-  toggleRegion() {
-    this.setState({ collapseRegion: !this.state.collapseRegion })
-  }
-
-  toggleHazard() {
-    this.setState({ collapseHazard: !this.state.collapseHazard })
-  }
-
-  toggleDate() {
-    this.setState({ collapseDate: !this.state.collapseDate })
-  }
-
-  toggleImpact() {
-    this.setState({ collapseImpact: !this.state.collapseImpact })
-  }
-
-  getBottonColor(state) {
-    if (state === true) {
-      return 'warning'
-    } else {
-      return 'primary'
-    }
+    this.handleTags = this.handleTags.bind(this)
   }
 
   clearFilters() {
     let { clearFilters } = this.props
     clearFilters('')
-    location.hash = '/events'
+  }
+
+  handleTags() {
+    let { hazardFilter, regionFilter, impactFilter, dateFilter, favoritesFilter } = this.props
+    let taglist = []
+
+    if (hazardFilter.name || regionFilter.name || impactFilter.name || dateFilter.startDate || dateFilter.endDate ||
+        favoritesFilter === true) {
+
+      if (hazardFilter.name) {
+        taglist.push(
+          <Chip
+            key="fcHazard"
+            waves
+            close
+            handleClose={() => {
+              this.props.clearHazardFilter()
+            }}>
+            {hazardFilter.name}
+          </Chip>
+        )
+      }
+
+      if (regionFilter.name) {
+        taglist.push(
+          <Chip
+            key="fcRegion"
+            waves
+            close
+            handleClose={() => {
+              this.props.clearRegionFilter()
+            }}>
+            {regionFilter.name}
+          </Chip>
+        )
+      }
+
+      if (impactFilter.name) {
+        taglist.push(
+          <Chip
+            key="fcImpact"
+            waves
+            close
+            handleClose={() => {
+              this.props.clearImpactFilter()
+            }}>
+            {impactFilter.name}
+          </Chip>
+        )
+      }
+
+      if (dateFilter.startDate) {
+        
+        let startdate = moment.unix(dateFilter.startDate).format("YYYY/MM/DD")
+        let endDate = moment.unix(dateFilter.endDate).format("YYYY/MM/DD")
+
+        taglist.push(
+          <Chip
+            key="fcDates"
+            waves
+            close
+            handleClose={() => {
+              this.props.clearDateFilter()
+            }}>
+            {`${startdate} - ${endDate}`}
+          </Chip>
+        )
+      }
+
+      if (favoritesFilter === true){
+        taglist.push(
+          <Chip
+            key="fcFavs"
+            waves
+            close
+            handleClose={() => {
+              this.props.clearFavsFilter()
+            }}>
+            Favorites
+          </Chip>
+        )
+      }
+    }
+    else {
+      taglist.push(<p key="naf">No Filters Appied.</p>)
+    }
+
+    return taglist
   }
 
   render() {
     return (
       <>
-        <hr />
-        <div className='row'>
-          <div className='col-md-2'>
-            <Button block color={this.getBottonColor(this.state.collapseRegion)} className='btn-sm' onClick={this.toggleRegion}>
-              Region filters
-            </Button>
-          </div>
-          <div className='col-md-2'>
-            <Button block color={this.getBottonColor(this.state.collapseHazard)} className='btn-sm' onClick={this.toggleHazard}>
-              Hazard filters
-            </Button>
-          </div>
-          <div className='col-md-2'>
-            <Button block color={this.getBottonColor(this.state.collapseDate)} className='btn-sm' onClick={this.toggleDate}>
-              Date filters
-            </Button>
-          </div>
-          <div className='col-md-2'>
-            <Button block color={this.getBottonColor(this.state.collapseImpact)} className='btn-sm' onClick={this.toggleImpact}>
-              Impact filters
-            </Button>
-          </div>
-          <div className='col-md-1'>
-          </div>
-          <div className='col-md-3'>
-            <Button block color='secondary' className='btn-sm' onClick={this.clearFilters}>
-              <i className='fa fa-eraser' aria-hidden='true' />&nbsp;&nbsp;Clear filters
-            </Button>
-          </div>
-        </div>
-        <hr />
-        <Collapse isOpen={this.state.collapseRegion}>
-          <RegionFilters />
+
+        <div style={{ backgroundColor: "white", padding: "10px", borderRadius: "10px", border: "1px solid gainsboro" }}>
+
+          <h4 style={{ margin: "5px 5px 0px 19px", display: "inline-block" }}>
+            <b>Current Filters</b>
+          </h4>
+          <Button
+            size="sm"
+            color="white"
+            style={{
+              border: "0px solid gainsboro",
+              boxShadow: "none",
+              borderRadius: "7px",
+              float: "right",
+              marginTop: "8px",
+              marginRight: "15px",
+              padding: "2px",
+            }}
+            onClick={this.clearFilters}
+          >
+            <Fa icon="trash-o" size="2x" style={{ color: DEAGreen }} />
+          </Button>
+
           <hr />
-        </Collapse>
-        <Collapse isOpen={this.state.collapseHazard}>
-          <HazardFilters />
-          <hr />
-        </Collapse>
-        <Collapse isOpen={this.state.collapseDate}>
-          <DateFilters />
-          <hr />
-        </Collapse>
-        <Collapse isOpen={this.state.collapseImpact}>
-          <ImpactFilters />
-          <hr />
-        </Collapse>
+
+          <div style={{ padding: "10px 20px 10px 20px" }}>
+            {this.handleTags()}
+          </div>
+
+        </div >
       </>
     )
   }

@@ -15,7 +15,7 @@ namespace APIv2.Database.Models
         //FK - Event
         [Required]
         public int EventId { get; set; }
-        [Required]
+        //[Required]
         //[IgnoreDataMember]
         public Event Event { get; set; }
     }

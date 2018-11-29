@@ -1,15 +1,15 @@
 //React
 import React from 'react'
 import { connect } from 'react-redux'
-import { BeatLoader } from 'react-spinners'
+import { Row, Col } from 'mdbreact'
 
 //Local
 import EventList from './EventList.jsx'
 import EventFilters from '../Filters/EventFilters.jsx'
-import * as ACTION_TYPES from '../../../constants/action-types'
-
-//MDBReact
-import { Button } from 'mdbreact'
+import RegionFilters from '../../Events/Filters/RegionFilters.jsx'
+import HazardFilters from '../../Events/Filters/HazardFilters.jsx'
+import DateFilters from '../../Events/Filters/DateFilters.jsx'
+import ImpactFilters from '../../Events/Filters/ImpactFilters.jsx'
 
 const mapStateToProps = (state, props) => {
   return {}
@@ -17,38 +17,59 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    setEventsFullView: payload => {
+      dispatch({ type: "SET_EVENTS_FULLVIEW", payload })
+    }
   }
 }
 
 class Events extends React.Component {
-
   constructor(props) {
     super(props)
-    this.backToTop = this.backToTop.bind(this)
   }
 
-  backToTop() {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    })
-  }
-
-  componentWillMount() {
+  componentDidMount(){
+    this.props.setEventsFullView(true)
   }
 
   render() {
+
     return (
       <>
-        <div style={{ position: 'fixed', right: '14%', bottom: '10px', zIndex: '99' }}>
-          <Button color='secondary' className='btn-sm' onClick={this.backToTop} >
-            <i className='fa fa-arrow-circle-up' aria-hidden='true' />
-            &nbsp;&nbsp;
-            Back to top
-          </Button>
-        </div>
+
+        <Row>
+          {/* FILTERS */}
+          <Col md="12">
+            <Row>
+              <Col md="3">
+                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Region:</b></label>
+                <RegionFilters />
+              </Col>
+
+              <Col md="2">
+                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Hazard:</b></label>
+                <HazardFilters />
+              </Col>
+
+              <Col md="4">
+                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Date Range:</b></label>
+                <DateFilters />
+              </Col>
+
+              <Col md="2">
+                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Impact:</b></label>
+                <ImpactFilters />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+
+        <br />
+
         <EventFilters />
+
+        <br />
+
         <EventList />
       </>
     )
