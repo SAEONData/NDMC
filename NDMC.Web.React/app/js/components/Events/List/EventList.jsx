@@ -806,10 +806,10 @@ class EventList extends React.Component {
                             </div>
                             <div className='row'>
                               <div style={{ paddingTop: 10 }}>
-                                <InputNumber style={{ height: 35 }} onChange={this.onResponseValue}></InputNumber>
+                                <InputNumber style={{ height: 35, width: 120 }} onChange={this.onResponseValue}></InputNumber>
                               </div>
                               <DatePicker
-                                style={{ width: 150, height: 20, paddingTop: 10, paddingLeft: 10 }}
+                                style={{ width: 150, paddingTop: 10, paddingLeft: 10 }}
                                 onChange={this.onResponseDateSelect} />
                               {/* <Select
                               showSearch
