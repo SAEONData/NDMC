@@ -280,7 +280,6 @@ class EventList extends React.Component {
         TypeMitigationId: response.responseType
       }
     })
-    console.log(formattedResponses)
     let fetchBody = {
       EventId: 0,
       StartDate: this.state.startDate,
@@ -310,7 +309,6 @@ class EventList extends React.Component {
       })
 
       if (!res.ok) {
-        //Get response body
         res = await res.json()
         throw new Error(res.error.message)
       }
@@ -653,7 +651,6 @@ class EventList extends React.Component {
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
                           let regionTree = this.transformDataTree(data.value)
-                          //regionData = data.value
                           return <TreeSelect
                             key={new Date().valueOf()}
                             style={{ width: "100%" }}
@@ -676,7 +673,6 @@ class EventList extends React.Component {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
-                          //hazardData = data.value
                           data.value.sort((prev, next) => prev.TypeEventName.localeCompare(next.TypeEventName))
                           return <Select
                             showSearch
