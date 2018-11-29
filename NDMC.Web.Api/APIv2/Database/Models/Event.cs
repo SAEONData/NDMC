@@ -23,6 +23,8 @@ namespace APIv2.Database.Models
         //FK - TypeSource
         public int? TypeSourceId { get; set; }
         public TypeSource TypeSource { get; set; }
+
+        public ICollection<Mitigation> Mitigations { get; set; }
         
         public ICollection<EventRegion> EventRegions { get; set; }
         public ICollection<DeclaredEvent> DeclaredEvents { get; set; }
