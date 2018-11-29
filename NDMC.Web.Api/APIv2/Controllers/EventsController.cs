@@ -50,6 +50,27 @@ namespace APIv2.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "Contributor,Custodian,Configurator,SysAdmin")]
+        [EnableQuery]
+        public async Task<IActionResult> Post([FromBody]Event newEvent)
+        {
+            Console.WriteLine(newEvent);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var exiting = _context.Events.FirstOrDefault(x => x.EventId == newEvent.EventId);
+            if (exiting == null)
+            {
+                _context.Events.Add(newEvent);
+                await _context.SaveChangesAsync();
+                return Created(newEvent);
+            }
+            return null;
+        }
+
+        [HttpPost]
         [EnableQuery]
         public IQueryable<Event> Filter([FromBody] Filters filters)
         {
