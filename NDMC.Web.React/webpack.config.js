@@ -20,8 +20,17 @@ module.exports = {
   context: path.join(cwd, 'app'),
   mode,
   entry: {
-    app: ['./js/index.jsx'],
-    react: ['react', 'react-dom', 'react-router-dom', 'react-router', 'redux', 'react-redux', 'react-router-redux', 'react-tap-event-plugin', 'history'],
+    app: ["babel-polyfill", './js/index.jsx'],
+    react: [
+      'react', 
+      'react-dom', 
+      'react-router-dom', 
+      'react-router', 
+      'redux', 
+      'react-redux', 
+      'react-router-redux', 
+      'history'
+    ],
   },
 
   output: {
