@@ -746,7 +746,9 @@ class EventList extends React.Component {
                                 return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
                               })}
                             </Select>
-                            <InputNumber onChange={this.onImpactAmount}></InputNumber>
+                            <div style={{ paddingTop: 10 }}>
+                                <InputNumber style={{ height: 35, width: 120 }} onChange={this.onImpactAmount}></InputNumber>
+                              </div>
                           </Modal>
                         }
                       }}
