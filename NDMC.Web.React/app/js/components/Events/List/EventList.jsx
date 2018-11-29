@@ -107,6 +107,7 @@ class EventList extends React.Component {
       responseTypeTemp: '',
       responseTypeNameTemp: '',
       responseValueTemp: '',
+      responseDateTemp: '',
       measureTemp: '',
       showBackToTop: false
     }
@@ -132,6 +133,7 @@ class EventList extends React.Component {
     this.onResponseUndo = this.onResponseUndo.bind(this)
     this.onResponseValue = this.onResponseValue.bind(this)
     this.onMeasureSelect = this.onMeasureSelect.bind(this)
+    this.onResponseDateSelect = this.onResponseDateSelect.bind(this)
   }
 
   componentDidMount() {
@@ -260,6 +262,7 @@ class EventList extends React.Component {
       responseTypeTemp: '',
       responseTypeNameTemp: '',
       responseValueTemp: '',
+      responseDateTemp: '',
       measureTemp: '',
     })
   }
@@ -267,10 +270,19 @@ class EventList extends React.Component {
   async onSubmit() {
     this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
-      return { EventImpactId: -1, Measure: impact.impactAmount, TypeImpactId: impact.impactType }
+      return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType }
     })
+    const formattedResponses = this.state.responses.map(response => {
+      return {
+        MitigationId: 0,
+        Date: response.responseDate,
+        Value: response.responseValue,
+        TypeMitigationId: response.responseType
+      }
+    })
+    console.log(formattedResponses)
     let fetchBody = {
-      EventId: -1,
+      EventId: 0,
       StartDate: this.state.startDate,
       EndDate: this.state.endDate,
       TypeEventId: this.state.hazard,
@@ -280,9 +292,10 @@ class EventList extends React.Component {
         EventImpacts: formattedImpacts
       }],
       DeclaredEvents: [{
-        DeclaredEventId: -1,
+        DeclaredEventId: 0,
         DeclaredDate: this.state.declaredDate
-      }]
+      }],
+      Mitigations: formattedResponses
     }
 
     try {
@@ -321,477 +334,488 @@ class EventList extends React.Component {
       responseTypeTemp: '',
       responseTypeNameTemp: '',
       responseValueTemp: '',
+      responseDateTemp: '',
       measureTemp: '',
     })
-}
+  }
 
-backToTop() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth'
-  })
-}
+  backToTop() {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
+  }
 
-transformDataTree(filteredRegions) {
-  let regions = filteredRegions.map(i => {
-    return {
-      ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${i.RegionId}`, key: i.RegionId
+  transformDataTree(filteredRegions) {
+    let regions = filteredRegions.map(i => {
+      return {
+        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${i.RegionId}`, key: i.RegionId
+      }
+    })
+    regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
+    var resultArray = regions.filter(f => f.ParentRegionId == null)
+    return resultArray
+  }
+
+  onRegionSelect(value, node) {
+    this.setState({ region: value, regionTreeValue: node.props.title })
+  }
+
+  onHazardSelect(value) {
+    this.setState({ hazard: value })
+  }
+
+  onDeclaredDateSelect(date, dateString) {
+    this.setState({ declaredDate: Date.parse(dateString) / 1000 })
+  }
+
+  onDateRangeSelect(date, dateString) {
+    this.setState({ startDate: Date.parse(dateString[0]) / 1000, endDate: Date.parse(dateString[1]) / 1000 })
+  }
+
+  onImpactOpen() {
+    this.setState({ impactModalVisible: true })
+  }
+
+  onImpactClose() {
+    if (!isNaN(this.state.impactAmountTemp && this.state.impactAmountTemp)) {
+      this.setState({ impactModalVisible: false })
+      this.setState({
+        impactTypeTemp: '',
+        impactTypeNameTemp: '',
+        impactAmountTemp: '',
+      })
     }
-  })
-  regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
-  var resultArray = regions.filter(f => f.ParentRegionId == null)
-  return resultArray
-}
+  }
 
-onRegionSelect(value, node) {
-  this.setState({ region: value, regionTreeValue: node.props.title })
-}
+  onImpactAdd() {
+    let newimpact = {
+      impactType: this.state.impactTypeTemp,
+      impactTypeName: this.state.impactTypeNameTemp,
+      impactAmount: this.state.impactAmountTemp
+    }
 
-onHazardSelect(value) {
-  this.setState({ hazard: value })
-}
+    if (this.state.impacts.length > 0) {
+      this.setState(prev => ({
+        impacts: [...prev.impacts, newimpact]
+      }))
+    }
 
-onDeclaredDateSelect(date, dateString) {
-  this.setState({ declaredDate: Date.parse(dateString) / 1000 })
-}
+    else {
+      this.setState({
+        impacts: [newimpact]
+      })
+    }
 
-onDateRangeSelect(date, dateString) {
-  this.setState({ startDate: Date.parse(dateString[0]) / 1000, endDate: Date.parse(dateString[1]) / 1000 })
-}
-
-onImpactOpen() {
-  this.setState({ impactModalVisible: true })
-}
-
-onImpactClose() {
-  if (!isNaN(this.state.impactAmountTemp && this.state.impactAmountTemp)) {
-    this.setState({ impactModalVisible: false })
     this.setState({
+      impactModalVisible: false,
       impactTypeTemp: '',
       impactTypeNameTemp: '',
       impactAmountTemp: '',
     })
   }
-}
 
-onImpactAdd() {
-  let newimpact = {
-    impactType: this.state.impactTypeTemp,
-    impactTypeName: this.state.impactTypeNameTemp,
-    impactAmount: this.state.impactAmountTemp
+  onImpactSelect(value, next) {
+    this.setState({ impactTypeTemp: value, impactTypeNameTemp: next.props.children })
   }
 
-  if (this.state.impacts.length > 0) {
-    this.setState(prev => ({
-      impacts: [...prev.impacts, newimpact]
-    }))
+  onImpactAmount(value) {
+    this.setState({ impactAmountTemp: value })
   }
 
-  else {
+  onImpactUndo() {
+    let arr = this.state.impacts
+    arr.pop()
     this.setState({
-      impacts: [newimpact]
+      impacts: arr
     })
   }
 
-  this.setState({
-    impactModalVisible: false,
-    impactTypeTemp: '',
-    impactTypeNameTemp: '',
-    impactAmountTemp: '',
-  })
-}
-
-onImpactSelect(value, next) {
-  this.setState({ impactTypeTemp: value, impactTypeNameTemp: next.props.children })
-}
-
-onImpactAmount(value) {
-  this.setState({ impactAmountTemp: value })
-}
-
-onImpactUndo() {
-  let arr = this.state.impacts
-  arr.pop()
-  this.setState({
-    impacts: arr
-  })
-}
-
-onResponseOpen() {
-  this.setState({ responseModalVisible: true })
-}
-
-onResponseClose() {
-  this.setState({ responseModalVisible: false })
-}
-
-onResponseAdd() {
-  let newResponse = {
-    responseType: this.state.responseTypeTemp,
-    responseTypeName: this.state.responseTypeNameTemp,
-    responseValue: this.state.responseValueTemp,
-    responseMeasuretype: this.state.measureTemp
+  onResponseOpen() {
+    this.setState({ responseModalVisible: true })
   }
 
-  if (this.state.responses.length > 0) {
-    this.setState(prev => ({
-      responses: [...prev.responses, newResponse]
-    }))
+  onResponseClose() {
+    this.setState({ responseModalVisible: false })
   }
 
-  else {
+  onResponseAdd() {
+    let newResponse = {
+      responseType: this.state.responseTypeTemp,
+      responseTypeName: this.state.responseTypeNameTemp,
+      responseValue: this.state.responseValueTemp,
+      responseMeasuretype: this.state.measureTemp,
+      responseDate: this.state.responseDateTemp
+    }
+
+    if (this.state.responses.length > 0) {
+      this.setState(prev => ({
+        responses: [...prev.responses, newResponse]
+      }))
+    }
+
+    else {
+      this.setState({
+        responses: [newResponse]
+      })
+    }
+
     this.setState({
-      responses: [newResponse]
+      responseModalVisible: false,
+      responseTypeTemp: '',
+      responseTypeNameTemp: '',
+      responseValueTemp: '',
+      measureTemp: ''
     })
   }
 
-  this.setState({
-    responseModalVisible: false,
-    responseTypeTemp: '',
-    responseTypeNameTemp: '',
-    responseValueTemp: '',
-    measureTemp: ''
-  })
-}
-
-onResponseSelect(value, next) {
-  this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.children })
-}
-
-onResponseValue(value) {
-  this.setState({ responseValueTemp: value })
-}
-
-onResponseUndo() {
-  let arr = this.state.responses
-  arr.pop()
-  this.setState({
-    responses: arr
-  })
-}
-
-onMeasureSelect(value) {
-  this.setState({
-    measureTemp: value
-  })
-}
-
-render() {
-  const { impacts, responses } = this.state
-  let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
-
-  const regionQuery = {
-    select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
-    filter: { RegionTypeId: { ne: 5 } }
-  }
-  const hazardQuery = {
-    select: ['TypeEventId', 'TypeEventName']
-  }
-  const impactsQuery = {
-    select: ['TypeImpactId', 'TypeImpactName']
-  }
-  const responseQuery = {
-    select: ['TypeMitigationId', 'TypeMitigationName', 'UnitOfMeasure']
+  onResponseSelect(value, next) {
+    this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.children })
   }
 
-  return (
-    <div style={{ backgroundColor: "white", padding: "10px", borderRadius: "10px", border: "1px solid gainsboro" }}>
-      <h4 style={{ margin: "5px 5px 5px 19px", display: "inline-block" }}>
-        <b>Events</b>
-      </h4>
-      <div style={{ float: "right" }}>
-        <img
-          src={location.hash.includes("events") ? popin : popout}
-          style={{
-            width: "25px",
-            margin: "-4px 5px 0px 0px",
-            cursor: "pointer"
-          }}
-          onClick={() => {
-            this.props.setScrollPos(0)
-            location.hash = (location.hash.includes("events") ? "" : "/events")
-          }}
-        />
-        <Popover
-          content={
-            <div>
-              <p style={{ display: "inline-block", margin: "10px 5px 10px 5px" }}>
-                Favorites:
-                </p>
-              <Button
-                size="sm"
-                color=""
-                style={{
-                  padding: "4px 10px 5px 10px",
-                  marginTop: "1px",
-                  marginRight: "-1px",
-                  width: "40px",
-                  backgroundColor: _favoritesFilter ? DEAGreen : "grey"
-                }}
-                onClick={() => {
-                  this.props.toggleFavorites(!_favoritesFilter)
-                  this.setState({ ellipsisMenu: false })
-                }}
-              >
-                On
-                </Button>
-              <Button
-                size="sm"
-                color=""
-                style={{
-                  padding: "4px 10px 5px 10px",
-                  marginTop: "1px",
-                  marginLeft: "-1px",
-                  width: "40px",
-                  backgroundColor: !_favoritesFilter ? DEAGreen : "grey"
-                }}
-                onClick={() => {
-                  this.props.toggleFavorites(!_favoritesFilter)
-                  this.setState({ ellipsisMenu: false })
-                }}
-              >
-                Off
-                </Button>
-            </div>
-          }
-          placement="leftTop"
-          trigger="click"
-          visible={ellipsisMenu}
-          onVisibleChange={(visible) => { this.setState({ ellipsisMenu: visible }) }}
-        >
-          <Fa
-            icon="ellipsis-v"
-            size="lg"
+  onResponseValue(value) {
+    this.setState({ responseValueTemp: value })
+  }
+
+  onResponseUndo() {
+    let arr = this.state.responses
+    arr.pop()
+    this.setState({
+      responses: arr
+    })
+  }
+
+  onMeasureSelect(value) {
+    this.setState({
+      measureTemp: value
+    })
+  }
+
+  onResponseDateSelect(value, dateString) {
+    this.setState({
+      responseDateTemp: Date.parse(dateString) / 1000
+    })
+  }
+
+  render() {
+    const { impacts, responses } = this.state
+    let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
+
+    const regionQuery = {
+      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
+      filter: { RegionTypeId: { ne: 5 } }
+    }
+    const hazardQuery = {
+      select: ['TypeEventId', 'TypeEventName']
+    }
+    const impactsQuery = {
+      select: ['TypeImpactId', 'TypeImpactName']
+    }
+    const responseQuery = {
+      select: ['TypeMitigationId', 'TypeMitigationName', 'UnitOfMeasure']
+    }
+
+    return (
+      <div style={{ backgroundColor: "white", padding: "10px", borderRadius: "10px", border: "1px solid gainsboro" }}>
+        <h4 style={{ margin: "5px 5px 5px 19px", display: "inline-block" }}>
+          <b>Events</b>
+        </h4>
+        <div style={{ float: "right" }}>
+          <img
+            src={location.hash.includes("events") ? popin : popout}
             style={{
-              color: "black",
-              margin: "11px 15px 5px 15px",
-              padding: "5px 10px 5px 10px",
+              width: "25px",
+              margin: "-4px 5px 0px 0px",
               cursor: "pointer"
             }}
+            onClick={() => {
+              this.props.setScrollPos(0)
+              location.hash = (location.hash.includes("events") ? "" : "/events")
+            }}
           />
-        </Popover>
-      </div>
-      <hr />
-      <div>
-        {this.buildList(this.props.events)}
-        <br />
-        <Button
-          size="sm"
-          color=""
-          style={{ marginTop: "-25px", marginLeft: "20px", backgroundColor: DEAGreen }}
-          onClick={() => {
-            if (!this.state.eventsLoading) {
-              this.setState({
-                eventListSize: this.state.eventListSize + 25
-              }, () => this.getEvents())
+          <Popover
+            content={
+              <div>
+                <p style={{ display: "inline-block", margin: "10px 5px 10px 5px" }}>
+                  Favorites:
+                </p>
+                <Button
+                  size="sm"
+                  color=""
+                  style={{
+                    padding: "4px 10px 5px 10px",
+                    marginTop: "1px",
+                    marginRight: "-1px",
+                    width: "40px",
+                    backgroundColor: _favoritesFilter ? DEAGreen : "grey"
+                  }}
+                  onClick={() => {
+                    this.props.toggleFavorites(!_favoritesFilter)
+                    this.setState({ ellipsisMenu: false })
+                  }}
+                >
+                  On
+                </Button>
+                <Button
+                  size="sm"
+                  color=""
+                  style={{
+                    padding: "4px 10px 5px 10px",
+                    marginTop: "1px",
+                    marginLeft: "-1px",
+                    width: "40px",
+                    backgroundColor: !_favoritesFilter ? DEAGreen : "grey"
+                  }}
+                  onClick={() => {
+                    this.props.toggleFavorites(!_favoritesFilter)
+                    this.setState({ ellipsisMenu: false })
+                  }}
+                >
+                  Off
+                </Button>
+              </div>
             }
-          }}
-        >
-          Load More Events
-            </Button>
-      </div>
-      <div style={{ position: "fixed", right: "30px", bottom: "15px", zIndex: "99" }}>
-        {
-          showBackToTop &&
-          <Button
-            // data-tip="Back to top"
-            size="sm"
-            floating
-            color=""
-            onClick={this.backToTop}
-            style={{ backgroundColor: DEAGreen }}
+            placement="leftTop"
+            trigger="click"
+            visible={ellipsisMenu}
+            onVisibleChange={(visible) => { this.setState({ ellipsisMenu: visible }) }}
           >
-            <Fa icon="arrow-up" />
-          </Button>
-        }
-      </div>
-      {/* ### ADD FORM ### */}
-      <div>
-        <Drawer
-          title="Create"
-          width={720}
-          placement="right"
-          onClose={this.onClose}
-          maskClosable={false}
-          visible={this.props.addFormVisible}
-          destroyOnClose={true}
-          style={{
-            height: 'calc(100% - 55px)',
-            overflow: 'auto',
-            paddingBottom: 53,
-          }}
-        >
-          <Form layout="vertical" hideRequiredMark>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item label="Region">
-                  <OData baseUrl={baseUrl + 'regions'} query={regionQuery}>
-                    {({ loading, error, data }) => {
-                      if (loading) { return <div>Loading...</div> }
-                      if (error) { return <div>Error Loading Data From Server</div> }
-                      if (data) {
-                        let regionTree = this.transformDataTree(data.value)
-                        //regionData = data.value
-                        return <TreeSelect
-                          key={new Date().valueOf()}
-                          style={{ width: "100%" }}
-                          value={this.state.regionTreeValue}
-                          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                          treeData={regionTree}
-                          placeholder="Please select a region"
-                          onSelect={this.onRegionSelect}
-                        >
-                        </TreeSelect>
-                      }
-                    }}
-                  </OData>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item label="Hazard">
-                  <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardQuery}>
-                    {({ loading, error, data }) => {
-                      if (loading) { return <div>Loading...</div> }
-                      if (error) { return <div>Error Loading Data From Server</div> }
-                      if (data) {
-                        //hazardData = data.value
-                          data.value.sort((prev,next) => prev.TypeEventName.localeCompare(next.TypeEventName))
-                        return <Select
-                          showSearch
-                          style={{ width: 400 }}
-                          placeholder="Select a hazard"
-                          optionFilterProp="children"
-                          onChange={this.onHazardSelect}
-                          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                        >
-                          {data.value.map(item => {
-                            return <Option key={item.TypeEventId} value={item.TypeEventId}>{item.TypeEventName}</Option>
-                          })}
-                        </Select>
-                      }
-                    }}
-                  </OData>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item label="Hazard Date Range">
-                  <DatePicker.RangePicker
-                    style={{ width: '100%' }}
-                    getPopupContainer={trigger => trigger.parentNode}
-                    onChange={this.onDateRangeSelect}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item label="Date Declared">
-                  <DatePicker onChange={this.onDeclaredDateSelect} />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item label="Impacts">
-                  <Button onClick={this.onImpactOpen} size="sm" color=""
-                    style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
-                    Add Impact
-                    </Button>
-                  <Button onClick={this.onImpactUndo} size="sm" color=""
-                    style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
-                    Undo last
-                    </Button>
-                  <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
-                    {({ loading, error, data }) => {
-                      if (loading) { return <div>Loading...</div> }
-                      if (error) { return <div>Error Loading Data From Server</div> }
-                      if (data) {
-                        data.value.sort((prev,next) => prev.TypeImpactName.localeCompare(next.TypeImpactName))
-                        return <Modal
-                          title="New Impact"
-                          visible={this.state.impactModalVisible}
-                          onOk={this.onImpactAdd}
-                          onCancel={this.onImpactClose}
-                          destroyOnClose={true}
-                        >
-                          <Select
+            <Fa
+              icon="ellipsis-v"
+              size="lg"
+              style={{
+                color: "black",
+                margin: "11px 15px 5px 15px",
+                padding: "5px 10px 5px 10px",
+                cursor: "pointer"
+              }}
+            />
+          </Popover>
+        </div>
+        <hr />
+        <div>
+          {this.buildList(this.props.events)}
+          <br />
+          <Button
+            size="sm"
+            color=""
+            style={{ marginTop: "-25px", marginLeft: "20px", backgroundColor: DEAGreen }}
+            onClick={() => {
+              if (!this.state.eventsLoading) {
+                this.setState({
+                  eventListSize: this.state.eventListSize + 25
+                }, () => this.getEvents())
+              }
+            }}
+          >
+            Load More Events
+            </Button>
+        </div>
+        <div style={{ position: "fixed", right: "30px", bottom: "15px", zIndex: "99" }}>
+          {
+            showBackToTop &&
+            <Button
+              // data-tip="Back to top"
+              size="sm"
+              floating
+              color=""
+              onClick={this.backToTop}
+              style={{ backgroundColor: DEAGreen }}
+            >
+              <Fa icon="arrow-up" />
+            </Button>
+          }
+        </div>
+        {/* ### ADD FORM ### */}
+        <div>
+          <Drawer
+            title="Create"
+            width={720}
+            placement="right"
+            onClose={this.onClose}
+            maskClosable={false}
+            visible={this.props.addFormVisible}
+            destroyOnClose={true}
+            style={{
+              height: 'calc(100% - 55px)',
+              overflow: 'auto',
+              paddingBottom: 53,
+            }}
+          >
+            <Form layout="vertical" hideRequiredMark>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Region">
+                    <OData baseUrl={baseUrl + 'regions'} query={regionQuery}>
+                      {({ loading, error, data }) => {
+                        if (loading) { return <div>Loading...</div> }
+                        if (error) { return <div>Error Loading Data From Server</div> }
+                        if (data) {
+                          let regionTree = this.transformDataTree(data.value)
+                          //regionData = data.value
+                          return <TreeSelect
+                            key={new Date().valueOf()}
+                            style={{ width: "100%" }}
+                            value={this.state.regionTreeValue}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                            treeData={regionTree}
+                            placeholder="Please select a region"
+                            onSelect={this.onRegionSelect}
+                          >
+                          </TreeSelect>
+                        }
+                      }}
+                    </OData>
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Hazard">
+                    <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardQuery}>
+                      {({ loading, error, data }) => {
+                        if (loading) { return <div>Loading...</div> }
+                        if (error) { return <div>Error Loading Data From Server</div> }
+                        if (data) {
+                          //hazardData = data.value
+                          data.value.sort((prev, next) => prev.TypeEventName.localeCompare(next.TypeEventName))
+                          return <Select
                             showSearch
                             style={{ width: 400 }}
-                            placeholder="Select an impact"
+                            placeholder="Select a hazard"
                             optionFilterProp="children"
-                            onChange={this.onImpactSelect}
+                            onChange={this.onHazardSelect}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                           >
                             {data.value.map(item => {
-                              return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
+                              return <Option key={item.TypeEventId} value={item.TypeEventId}>{item.TypeEventName}</Option>
                             })}
                           </Select>
-                          <InputNumber onChange={this.onImpactAmount}></InputNumber>
-                        </Modal>
-                      }
-                    }}
-                  </OData>
-                  <ListGroup>
-                    {impacts.length ? impacts.map((impact) => {
-                      return <ListGroupItem key={impact.impactTypeName} >{impact.impactTypeName}: {impact.impactAmount}</ListGroupItem>
-                    }) : <ListGroupItem>No Impact added</ListGroupItem>}
-                    <ListGroupItem></ListGroupItem>
-                  </ListGroup>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item label="Responses">
-                  <Button onClick={this.onResponseOpen} size="sm" color=""
-                    style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
-                    Add Response
+                        }
+                      }}
+                    </OData>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Hazard Date Range">
+                    <DatePicker.RangePicker
+                      style={{ width: '100%' }}
+                      getPopupContainer={trigger => trigger.parentNode}
+                      onChange={this.onDateRangeSelect}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Date Declared">
+                    <DatePicker onChange={this.onDeclaredDateSelect} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Form.Item label="Impacts">
+                    <Button onClick={this.onImpactOpen} size="sm" color=""
+                      style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
+                      Add Impact
                     </Button>
-                  <Button onClick={this.onResponseUndo} size="sm" color=""
-                    style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
-                    Undo last
+                    <Button onClick={this.onImpactUndo} size="sm" color=""
+                      style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
+                      Undo last
                     </Button>
-                  <OData baseUrl={baseUrl + 'TypeMitigations'} query={responseQuery}>
-                    {({ loading, error, data }) => {
-                      if (loading) { return <div>Loading...</div> }
-                      if (error) { return <div>Error Loading Data From Server</div> }
-                      if (data) {
-                        const responseUnique = [...new Set(data.value.map(response => response.UnitOfMeasure))]
-                        const responseMeasures = responseUnique.filter(item => {
-                          if (item !== '' || item !== null) {
-                            return item
-                          }
-                        })
-                        data.value.sort((prev,next) => prev.TypeMitigationName.localeCompare(next.TypeMitigationName))
-                        return <Modal
-                          title="New Response"
-                          visible={this.state.responseModalVisible}
-                          onOk={this.onResponseAdd}
-                          onCancel={this.onResponseClose}
-                          destroyOnClose={true}
-                        >
-                          <div className='row'>
+                    <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
+                      {({ loading, error, data }) => {
+                        if (loading) { return <div>Loading...</div> }
+                        if (error) { return <div>Error Loading Data From Server</div> }
+                        if (data) {
+                          data.value.sort((prev, next) => prev.TypeImpactName.localeCompare(next.TypeImpactName))
+                          return <Modal
+                            title="New Impact"
+                            visible={this.state.impactModalVisible}
+                            onOk={this.onImpactAdd}
+                            onCancel={this.onImpactClose}
+                            destroyOnClose={true}
+                          >
                             <Select
                               showSearch
                               style={{ width: 400 }}
-                              placeholder="Select a Response"
+                              placeholder="Select an impact"
                               optionFilterProp="children"
-                              onChange={this.onResponseSelect}
+                              onChange={this.onImpactSelect}
                               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
                               {data.value.map(item => {
-                                return <Option key={item.TypeMitigationId} value={item.TypeMitigationId}>{item.TypeMitigationName}</Option>
+                                return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
                               })}
                             </Select>
-                          </div>
-                          <div className='row'>
-                            <div style={{ paddingTop: 10 }}>
-                              <InputNumber style={{ height: 35 }} onChange={this.onResponseValue}></InputNumber>
+                            <InputNumber onChange={this.onImpactAmount}></InputNumber>
+                          </Modal>
+                        }
+                      }}
+                    </OData>
+                    <ListGroup>
+                      {impacts.length ? impacts.map((impact) => {
+                        return <ListGroupItem key={impact.impactTypeName} >{impact.impactTypeName}: {impact.impactAmount}</ListGroupItem>
+                      }) : <ListGroupItem>No Impact added</ListGroupItem>}
+                      <ListGroupItem></ListGroupItem>
+                    </ListGroup>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Form.Item label="Responses">
+                    <Button onClick={this.onResponseOpen} size="sm" color=""
+                      style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
+                      Add Response
+                    </Button>
+                    <Button onClick={this.onResponseUndo} size="sm" color=""
+                      style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
+                      Undo last
+                    </Button>
+                    <OData baseUrl={baseUrl + 'TypeMitigations'} query={responseQuery}>
+                      {({ loading, error, data }) => {
+                        if (loading) { return <div>Loading...</div> }
+                        if (error) { return <div>Error Loading Data From Server</div> }
+                        if (data) {
+                          const responseUnique = [...new Set(data.value.map(response => response.UnitOfMeasure))]
+                          const responseMeasures = responseUnique.filter(item => {
+                            if (item !== '' || item !== null) {
+                              return item
+                            }
+                          })
+                          data.value.sort((prev, next) => prev.TypeMitigationName.localeCompare(next.TypeMitigationName))
+                          return <Modal
+                            title="New Response"
+                            visible={this.state.responseModalVisible}
+                            onOk={this.onResponseAdd}
+                            onCancel={this.onResponseClose}
+                            destroyOnClose={true}
+                          >
+                            <div className='row'>
+                              <Select
+                                showSearch
+                                style={{ width: 400 }}
+                                placeholder="Select a Response"
+                                optionFilterProp="children"
+                                onChange={this.onResponseSelect}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                              >
+                                {data.value.map(item => {
+                                  return <Option key={item.TypeMitigationId} value={item.TypeMitigationId}>{item.TypeMitigationName}</Option>
+                                })}
+                              </Select>
                             </div>
-                            <Select
+                            <div className='row'>
+                              <div style={{ paddingTop: 10 }}>
+                                <InputNumber style={{ height: 35 }} onChange={this.onResponseValue}></InputNumber>
+                              </div>
+                              <DatePicker
+                                style={{ width: 150, height: 20, paddingTop: 10, paddingLeft: 10 }}
+                                onChange={this.onResponseDateSelect} />
+                              {/* <Select
                               showSearch
                               style={{ width: 150, height: 20, paddingTop: 10, paddingLeft: 10 }}
                               placeholder="Select a Measure"
@@ -802,47 +826,47 @@ render() {
                               {responseMeasures.map(measure => {
                                 return <Option key={measure} value={measure}>{measure}</Option>
                               })}
-                            </Select>
-                          </div>
-                        </Modal>
-                      }
-                    }}
-                  </OData>
-                  <ListGroup>
-                    {responses.length ? responses.map((response) => {
-                      return <ListGroupItem key={response.responseTypeName}>{response.responseTypeName}: {response.responseValue}({response.responseMeasuretype})</ListGroupItem>
-                    }) : <ListGroupItem>No Response added</ListGroupItem>}
-                    <ListGroupItem></ListGroupItem>
-                  </ListGroup>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              width: '100%',
-              borderTop: '1px solid #e8e8e8',
-              padding: '10px 16px',
-              textAlign: 'right',
-              left: 0,
-              background: '#fff',
-              borderRadius: '0 0 4px 4px',
-            }}
-          >
-            <Button size="sm" onClick={this.onSubmit} color="warning" style={{ marginRight: 8 }}>
-              Submit
+                            </Select> */}
+                            </div>
+                          </Modal>
+                        }
+                      }}
+                    </OData>
+                    <ListGroup>
+                      {responses.length ? responses.map((response) => {
+                        return <ListGroupItem key={response.responseTypeName}>{response.responseTypeName}: {response.responseValue}({response.responseMeasuretype})</ListGroupItem>
+                      }) : <ListGroupItem>No Response added</ListGroupItem>}
+                      <ListGroupItem></ListGroupItem>
+                    </ListGroup>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                width: '100%',
+                borderTop: '1px solid #e8e8e8',
+                padding: '10px 16px',
+                textAlign: 'right',
+                left: 0,
+                background: '#fff',
+                borderRadius: '0 0 4px 4px',
+              }}
+            >
+              <Button size="sm" onClick={this.onSubmit} color="warning" style={{ marginRight: 8 }}>
+                Submit
               </Button>
-            <Button size="sm" onClick={this.onClose} color="grey" >
-              Cancel
+              <Button size="sm" onClick={this.onClose} color="grey" >
+                Cancel
               </Button>
-          </div>
-        </Drawer>
-      </div>
-    </div >
-  )
-}
+            </div>
+          </Drawer>
+        </div>
+      </div >
+    )
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventList)
