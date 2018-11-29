@@ -12,7 +12,7 @@ import { DEAGreen } from '../../../config/colours.cfg'
 
 //Odata
 import OData from 'react-odata'
-const baseUrl = 'https://localhost:44334/odata/' //'http://app01.saeon.ac.za/ndmcapi/odata/'
+import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
 //MDBReact
 import { Button, Fa, ListGroup, ListGroupItem } from 'mdbreact'
@@ -298,7 +298,7 @@ class EventList extends React.Component {
     }
 
     try {
-      const res = await fetch(baseUrl + 'Events/', {
+      const res = await fetch(apiBaseURL + 'Events/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -645,7 +645,7 @@ class EventList extends React.Component {
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="Region">
-                    <OData baseUrl={baseUrl + 'regions'} query={regionQuery}>
+                    <OData baseUrl={apiBaseURL + 'regions'} query={regionQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
@@ -668,7 +668,7 @@ class EventList extends React.Component {
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Hazard">
-                    <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardQuery}>
+                    <OData baseUrl={apiBaseURL + 'TypeEvents'} query={hazardQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
@@ -721,7 +721,7 @@ class EventList extends React.Component {
                       style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
                       Undo last
                     </Button>
-                    <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
+                    <OData baseUrl={apiBaseURL + 'TypeImpacts'} query={impactsQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
@@ -773,7 +773,7 @@ class EventList extends React.Component {
                       style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
                       Undo last
                     </Button>
-                    <OData baseUrl={baseUrl + 'TypeMitigations'} query={responseQuery}>
+                    <OData baseUrl={apiBaseURL + 'TypeMitigations'} query={responseQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }

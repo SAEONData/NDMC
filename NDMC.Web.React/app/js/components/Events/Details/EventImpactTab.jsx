@@ -13,7 +13,7 @@ import RangeComponent from '../../Shared/RangeComponent.jsx'
 
 //Odata
 import OData from 'react-odata'
-const baseUrl = 'https://localhost:44334/odata/'
+import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
 const mapStateToProps = (state, props) => {
   return {}
@@ -63,7 +63,7 @@ class EventResponseTab extends React.Component {
           padding: "10px",
           marginTop: "-10px"
         }}>
-          <OData baseUrl={baseUrl + 'Events'} query={impactQuery}>
+          <OData baseUrl={apiBaseURL + 'Events'} query={impactQuery}>
             {({ loading, error, data }) => {
               if (loading) { return <div>Loading...</div> }
               if (error) { return <div>Error Loading Data From Server</div> }

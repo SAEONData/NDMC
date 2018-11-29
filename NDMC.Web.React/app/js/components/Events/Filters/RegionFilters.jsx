@@ -14,7 +14,7 @@ import '../../../../css/antd.select.css' //Overrides default antd.select css
 
 //Odata
 import OData from 'react-odata'
-const baseUrl = 'https://localhost:44334/odata/'
+import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter } } = state
@@ -78,7 +78,7 @@ class RegionFilters extends React.Component {
     return (
       <>
         <br />
-        <OData baseUrl={baseUrl + 'regions'} query={regionQuery}>
+        <OData baseUrl={apiBaseURL + 'regions'} query={regionQuery}>
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }

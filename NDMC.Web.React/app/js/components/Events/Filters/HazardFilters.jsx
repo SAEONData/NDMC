@@ -12,7 +12,7 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 
 //Odata
 import OData from 'react-odata'
-const baseUrl = 'https://localhost:44334/odata/'
+import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
 //AntD Tree-Select
 import Select from 'antd/lib/select'
@@ -100,7 +100,7 @@ class HazardFilters extends React.Component {
     }
     return (
       <>
-        <OData baseUrl={baseUrl + 'TypeEvents'} query={hazardsQuery}>
+        <OData baseUrl={apiBaseURL + 'TypeEvents'} query={hazardsQuery}>
           {({ loading, error, data }) => {
             if (loading) {
               return <div>Loading...</div>

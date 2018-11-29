@@ -12,7 +12,7 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 
 //Odata
 import OData from 'react-odata'
-const baseUrl = 'https://localhost:44334/odata/'
+import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
 //AntD Tree-Select
 import Select from 'antd/lib/select'
@@ -104,7 +104,7 @@ class impactFilters extends React.Component {
     return (
       <>
 
-        <OData baseUrl={baseUrl + 'TypeImpacts'} query={impactsQuery}>
+        <OData baseUrl={apiBaseURL + 'TypeImpacts'} query={impactsQuery}>
           {({ loading, error, data }) => {
 
             if (loading) { 
