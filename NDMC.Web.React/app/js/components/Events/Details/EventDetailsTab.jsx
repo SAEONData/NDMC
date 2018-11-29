@@ -66,8 +66,6 @@ class EventDetailsTab extends React.Component {
                 let startdate = new Date(event.StartDate * 1000)
                 let enddate = new Date(event.EndDate * 1000)
                 let declareddate = new Date(event.DeclaredEvents[0].DeclaredDate * 1000)
-                let impactString = event.EventRegions[0].EventImpacts ? event.EventRegions[0].EventImpacts.reduce(
-                  (prev, next) => prev += `${next.TypeImpact.TypeImpactName}: ${next.Measure}\n`, '') : 'No Impact Recorded'
                 return (<>
                   <br />
                   <div className='row'>
@@ -102,7 +100,7 @@ class EventDetailsTab extends React.Component {
                       col='col-md-4'
                       label='Declared Date'
                       id='txtDeclaredDate'
-                      value={declareddate ? 'No declared date available' : declareddate.toDateString()}
+                      value={declareddate ? declareddate.toDateString() : 'No declared date available' }
                       allowEdit={false}
                     />
                   </div>
