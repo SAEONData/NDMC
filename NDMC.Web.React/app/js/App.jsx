@@ -22,15 +22,17 @@ import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 import Header from './components/Base/Header.jsx'
 import Footer from './components/Base/Footer.jsx'
+import SideNav from './components/Base/SideNav.jsx'
 import DashGraph1FullView from './components/Dashboard/DashGraph1FullView.jsx'
 import DashGraph2FullView from './components/Dashboard/DashGraph2FullView.jsx'
 import DashGraph3FullView from './components/Dashboard/DashGraph3FullView.jsx'
 import DashGraph4FullView from './components/Dashboard/DashGraph4FullView.jsx'
 
+import { data as NavData } from '../data/sideNavConfig'
 
 const mapStateToProps = (state, props) => {
-  let { globalData: { forceNavRender } } = state
-  return { forceNavRender }
+  let { globalData: { forceNavRender, showSideNav } } = state
+  return { forceNavRender, showSideNav }
 }
 
 /**
@@ -48,7 +50,9 @@ class App extends React.Component {
   }
 
   render() {
+
     let { navbar } = this.state
+    let { showSideNav } = this.props
 
     return (
       <div style={{ margin: "0px 25px 0px 25px", backgroundColor: "white" }}>
@@ -56,6 +60,8 @@ class App extends React.Component {
           <div>
             {navbar && <Header />}
             {navbar && <CustomNavbar />}
+
+            <SideNav data={NavData} isOpen={showSideNav} />
 
             <div style={{ height: "15px", backgroundColor: "whitesmoke" }} />
 

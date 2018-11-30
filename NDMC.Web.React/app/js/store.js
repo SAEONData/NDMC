@@ -15,7 +15,8 @@ const store = createStore(
     globalData: {
       addFormVisible: false,
       eventsFullView: false,
-      forceNavRender: true
+      forceNavRender: true,
+      showSideNav: false,
     },
     eventData: {
       events: [],

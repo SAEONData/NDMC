@@ -18,7 +18,12 @@ export default function GlobalReducer(state = {}, action) {
 
     case "FORCE_NAV_RENDER": {
       return { ...state, forceNavRender: payload }
-    }    
+    }
+
+    case "TOGGLE_SIDENAV": {
+      return { ...state, showSideNav: payload }
+    }
+
 
     default: {
       return state
