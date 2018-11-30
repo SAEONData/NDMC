@@ -19,9 +19,11 @@ import Select from 'antd/lib/select'
 import '../../../../css/antd.select.css' //Overrides default antd.select css
 const Option = Select.Option;
 
+const _ = require('lodash')
+
 const mapStateToProps = (state, props) => {
-  let { filterData: { impactFilter } } = state
-  return { impactFilter }
+  let { filterData: { impactFilter, impacts } } = state
+  return { impactFilter, impacts }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -29,10 +31,11 @@ const mapDispatchToProps = (dispatch) => {
     loadImpactFilter: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_IMPACT_FILTER, payload })
     },
+    loadImpacts: payload => {
+      dispatch({ type: "LOAD_IMPACTS", payload })
+    }
   }
 }
-
-let _data
 
 class impactFilters extends React.Component {
   constructor(props) {
@@ -43,42 +46,47 @@ class impactFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
 
-    let { impactFilter } = this.props
-    if(impactFilter.name === "" || impactFilter === 0) impactFilter = { id: 0, name: "Select..." }
+    let { impactFilter, impacts } = this.props
 
-    if(impactFilter.name !== this.state.value){
-      this.setState({ value: impactFilter.name})
+    let searchImpacts = impacts.filter(r => r.TypeImpactId == impactFilter)
+    let impactName = "Select..."
+    if (searchImpacts.length > 0) {
+      impactName = searchImpacts[0].TypeImpactName
+    }
+
+    if (impactName !== this.state.value) {
+      this.setState({ value: impactName })
     }
   }
 
   optionClick(value) {
 
-    let { loadImpactFilter } = this.props
+    let { loadImpactFilter, impacts } = this.props
     let id = 0
 
     let filteredData
 
-    if (_data) { 
-      filteredData = _data.filter(x => x.TypeImpactName === value) 
+    if (impacts) {
+      filteredData = impacts.filter(x => x.TypeImpactName === value)
     }
 
-    if (filteredData) { 
-      filteredData[0].TypeImpactId ? id = filteredData[0].TypeImpactId : '' 
+    if (filteredData) {
+      filteredData[0].TypeImpactId ? id = filteredData[0].TypeImpactId : ''
     }
 
     if (value[0] !== this.state.value && value !== "Select...") {
       this.setState({ value: value })
-      loadImpactFilter({ id: id, name: value })
+      loadImpactFilter(id)
     }
   }
 
-  renderOptions(data){
+  renderOptions(data) {
     let options = []
 
     //Sort
-    data.value.sort((a,b) => (a.TypeImpactName > b.TypeImpactName) ? 1 : ((b.TypeImpactName > a.TypeImpactName) ? -1 : 0))
+    data.value.sort((a, b) => (a.TypeImpactName > b.TypeImpactName) ? 1 : ((b.TypeImpactName > a.TypeImpactName) ? -1 : 0))
 
     //Remove duplicates
     var uniq = {}
@@ -107,21 +115,28 @@ class impactFilters extends React.Component {
         <OData baseUrl={apiBaseURL + 'TypeImpacts'} query={impactsQuery}>
           {({ loading, error, data }) => {
 
-            if (loading) { 
-              return <div>Loading...</div> 
+            if (loading) {
+              return <div>Loading...</div>
             }
 
-            if (error) { 
-              return <div>Error Loading Data From Server</div> 
+            if (error) {
+              return <div>Error Loading Data From Server</div>
             }
 
             if (data && data.value) {
-              _data = data.value
+
+              //Dispatch data to store
+              setTimeout(() => {
+                if(!_.isEqual(data.value, this.props.impacts)){
+                  this.props.loadImpacts(data.value)
+                }
+              }, 100)
+
               return (
                 <Select
                   style={{ width: "100%" }}
                   onChange={this.optionClick}
-                  value={this.state.value}   
+                  value={this.state.value}
                   dropdownMatchSelectWidth={false}
                 >
                   {this.renderOptions(data)}

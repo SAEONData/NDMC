@@ -12,14 +12,19 @@ import * as ACTION_TYPES from '../../../constants/action-types'
 const moment = require('moment');
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter, hazardFilter, dateFilter, impactFilter, favoritesFilter } } = state
-  return { regionFilter, hazardFilter, dateFilter, impactFilter, favoritesFilter }
+  let { filterData: {
+    regionFilter, hazardFilter, dateFilter, impactFilter, favoritesFilter, regions, hazards, impacts
+  } } = state
+  return {
+    regionFilter, hazardFilter, dateFilter, impactFilter, favoritesFilter,
+    regions, hazards, impacts
+  }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    clearFilters: payload => {
-      dispatch({ type: ACTION_TYPES.CLEAR_FILTERS, payload })
+    clearFilters: () => {
+      dispatch({ type: ACTION_TYPES.CLEAR_FILTERS })
     },
     clearImpactFilter: () => {
       dispatch({ type: ACTION_TYPES.LOAD_IMPACT_FILTER, payload: 0 })
@@ -31,10 +36,10 @@ const mapDispatchToProps = dispatch => {
       dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload: 0 })
     },
     clearDateFilter: () => {
-      dispatch({ type: ACTION_TYPES.LOAD_DATE_FILTER, payload: 0 })
+      dispatch({ type: ACTION_TYPES.LOAD_DATE_FILTER, payload: { startDate: 0, endDate: 0 } })
     },
     clearFavsFilter: () => {
-      dispatch({ type: "LOAD_FAVS_FILTER", payload: 0 })
+      dispatch({ type: "LOAD_FAVS_FILTER", payload: false })
     }
   }
 }
@@ -53,56 +58,74 @@ class EventFilters extends React.Component {
   }
 
   handleTags() {
-    let { hazardFilter, regionFilter, impactFilter, dateFilter, favoritesFilter } = this.props
+    let {
+      hazardFilter, regionFilter, impactFilter, dateFilter, favoritesFilter, regions, hazards, impacts
+    } = this.props
+
     let taglist = []
 
-    if (hazardFilter.name || regionFilter.name || impactFilter.name || dateFilter.startDate || dateFilter.endDate ||
-        favoritesFilter === true) {
+    if (hazardFilter > 0 || regionFilter > 0 || impactFilter > 0 || dateFilter.startDate > 0 || dateFilter.endDate > 0 ||
+      favoritesFilter === true) {
 
-      if (hazardFilter.name) {
-        taglist.push(
-          <Chip
-            key="fcHazard"
-            waves
-            close
-            handleClose={() => {
-              this.props.clearHazardFilter()
-            }}>
-            {hazardFilter.name}
-          </Chip>
-        )
+      if (hazardFilter > 0) {
+        let searchHazards = hazards.filter(h => h.TypeEventId == hazardFilter)
+        if (searchHazards.length > 0) {
+          let hazardName = searchHazards[0].TypeEventName
+
+          taglist.push(
+            <Chip
+              key="fcHazard"
+              waves
+              close
+              handleClose={() => {
+                this.props.clearHazardFilter()
+              }}>
+              {hazardName}
+            </Chip>
+          )
+        }
       }
 
-      if (regionFilter.name) {
-        taglist.push(
-          <Chip
-            key="fcRegion"
-            waves
-            close
-            handleClose={() => {
-              this.props.clearRegionFilter()
-            }}>
-            {regionFilter.name}
-          </Chip>
-        )
+      if (regionFilter > 0) {
+        let searchRegions = regions.filter(r => r.RegionId == regionFilter)
+        if (searchRegions.length > 0) {
+          let regionName = searchRegions[0].RegionName
+
+          taglist.push(
+            <Chip
+              key="fcRegion"
+              waves
+              close
+              handleClose={() => {
+                this.props.clearRegionFilter()
+              }}>
+              {regionName}
+            </Chip>
+          )
+        }
       }
 
-      if (impactFilter.name) {
-        taglist.push(
-          <Chip
-            key="fcImpact"
-            waves
-            close
-            handleClose={() => {
-              this.props.clearImpactFilter()
-            }}>
-            {impactFilter.name}
-          </Chip>
-        )
+      if (impactFilter > 0) {
+        let searchImpacts = impacts.filter(r => r.TypeImpactId == impactFilter)
+        if (searchImpacts.length > 0) {
+          let impactName = searchImpacts[0].TypeImpactName
+
+          taglist.push(
+            <Chip
+              key="fcImpact"
+              waves
+              close
+              handleClose={() => {
+                this.props.clearImpactFilter()
+              }}>
+              {impactName}
+            </Chip>
+          )
+        }
       }
 
       if (dateFilter.startDate) {
-        
+
         let startdate = moment.unix(dateFilter.startDate).format("YYYY/MM/DD")
         let endDate = moment.unix(dateFilter.endDate).format("YYYY/MM/DD")
 
@@ -119,7 +142,7 @@ class EventFilters extends React.Component {
         )
       }
 
-      if (favoritesFilter === true){
+      if (favoritesFilter === true) {
         taglist.push(
           <Chip
             key="fcFavs"

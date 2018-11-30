@@ -62,7 +62,7 @@ class EventResponseTab extends React.Component {
             {({ loading, error, data }) => {
               if (loading) { return <div>Loading...</div> }
               if (error) { return <div>Error Loading Data From Server</div> }
-              if (data) {
+              if (data && data.value) {
                 data.value.map(curr => {
                   if (curr.TypeMitigation.ParentTypeMitigationId === 12 || curr.TypeMitigationId === 12) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'

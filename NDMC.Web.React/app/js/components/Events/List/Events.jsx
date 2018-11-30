@@ -12,7 +12,8 @@ import DateFilters from '../../Events/Filters/DateFilters.jsx'
 import ImpactFilters from '../../Events/Filters/ImpactFilters.jsx'
 
 const mapStateToProps = (state, props) => {
-  return {}
+  let { globalData: { showListFilterOptions } } = state
+  return { showListFilterOptions }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -28,7 +29,7 @@ class Events extends React.Component {
     super(props)
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.setEventsFullView(true)
   }
 
@@ -37,38 +38,43 @@ class Events extends React.Component {
     return (
       <>
 
-        <Row>
-          {/* FILTERS */}
-          <Col md="12">
+        {
+          this.props.showListFilterOptions === true &&
+          <div>
             <Row>
-              <Col md="3">
-                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Region:</b></label>
-                <RegionFilters />
-              </Col>
+              {/* FILTERS */}
+              <Col md="12">
+                <Row>
+                  <Col md="3">
+                    <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Region:</b></label>
+                    <RegionFilters />
+                  </Col>
 
-              <Col md="2">
-                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Hazard:</b></label>
-                <HazardFilters />
-              </Col>
+                  <Col md="2">
+                    <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Hazard:</b></label>
+                    <HazardFilters />
+                  </Col>
 
-              <Col md="4">
-                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Date Range:</b></label>
-                <DateFilters />
-              </Col>
+                  <Col md="4">
+                    <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Date Range:</b></label>
+                    <DateFilters />
+                  </Col>
 
-              <Col md="2">
-                <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Impact:</b></label>
-                <ImpactFilters />
+                  <Col md="2">
+                    <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Impact:</b></label>
+                    <ImpactFilters />
+                  </Col>
+                </Row>
               </Col>
             </Row>
-          </Col>
-        </Row>
 
-        <br />
+            <br />
 
-        <EventFilters />
+            <EventFilters />
 
-        <br />
+            <br />
+          </div>
+        }
 
         <EventList />
       </>

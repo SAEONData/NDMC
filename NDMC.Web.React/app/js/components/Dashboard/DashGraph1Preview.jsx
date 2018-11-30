@@ -52,17 +52,17 @@ class DashGraph1Preview extends React.Component {
     //ADD FILTERS//
     //Region//
     if (regionFilter !== 0) {
-      filters.region = regionFilter.id
+      filters.region = regionFilter
     }
 
     //Hazard//
     if (hazardFilter !== 0) {
-      filters.hazard = hazardFilter.id
+      filters.hazard = hazardFilter
     }
 
     //Impact//
     if (impactFilter != 0) {
-      filters.impact = impactFilter.id
+      filters.impact = impactFilter
     }
 
     //GET EVENTS FILTERED//
@@ -266,7 +266,7 @@ class DashGraph1Preview extends React.Component {
         <img src={popout} style={{ width: "25px", position: "absolute", top: "10px", right: "25px" }}
           onClick={() => {
             this.props.setScrollPos(window.pageYOffset)
-            location.hash = "/chart1"
+            location.hash = location.hash.replace("#/", "#/chart1")
           }} />
 
         <div

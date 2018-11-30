@@ -17,14 +17,17 @@ import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter } } = state
-  return { regionFilter }
+  let { filterData: { regionFilter, regions } } = state
+  return { regionFilter, regions }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     loadRegionFilter: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_REGION_FILTER, payload })
+    },
+    loadRegions: payload => {
+      dispatch({ type: "LOAD_REGIONS", payload })
     }
   }
 }
@@ -38,19 +41,24 @@ class RegionFilters extends React.Component {
     }
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
 
-    let { regionFilter } = this.props
-    if(regionFilter.name === "" || regionFilter === 0) regionFilter = { id: 0, name: "Select..." }
+    let { regionFilter, regions } = this.props
 
-    if(regionFilter.name !== this.state.treeValue){
-      this.setState({ treeValue: regionFilter.name})
+    let searchRegions = regions.filter(r => r.RegionId == regionFilter)
+    let regionName = "Select..."
+    if (searchRegions.length > 0) {
+      regionName = searchRegions[0].RegionName
+    }
+
+    if (regionName !== this.state.treeValue) {
+      this.setState({ treeValue: regionName })
     }
   }
 
   onSelect(value, node) {
     let { loadRegionFilter } = this.props
-    loadRegionFilter({ id: parseInt(value), name: node.props.title })
+    loadRegionFilter(parseInt(value))
 
     this.setState({ treeValue: node.props.title })
   }
@@ -84,6 +92,14 @@ class RegionFilters extends React.Component {
             if (error) { return <div>Error Loading Data From Server</div> }
             if (data) {
               if (data.value) {
+
+                //Dispatch data to store
+                setTimeout(() => {
+                  if (!_.isEqual(data.value, this.props.regions)) {
+                    this.props.loadRegions(data.value)
+                  }
+                }, 100)
+
                 let regionTree = this.transformDataTree(data.value)
                 return (
                   <TreeSelect

@@ -67,7 +67,7 @@ class EventResponseTab extends React.Component {
             {({ loading, error, data }) => {
               if (loading) { return <div>Loading...</div> }
               if (error) { return <div>Error Loading Data From Server</div> }
-              if (data) {
+              if (data && data.value) {
                 data.value[0].EventRegions[0].EventImpacts.map(impact => {
                   let amountMeasure = ''
                   switch (impact.TypeImpact.UnitOfMeasure) {

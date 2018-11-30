@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import { Navbar, NavbarNav, NavbarToggler, Collapse, NavItem, Button, Fa } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
-  let { globalData: { forceNavRender, toggleSideNav, showSideNav } } = state
-  return { forceNavRender, toggleSideNav, showSideNav }
+  let { globalData: { forceNavRender, toggleSideNav, showSideNav, showSideNavButton } } = state
+  return { forceNavRender, toggleSideNav, showSideNav, showSideNavButton }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -89,10 +89,13 @@ class CustomNavbar extends React.Component {
         <Collapse isOpen={this.state.collapse} navbar>
           <NavbarNav left>
 
-            <Button size="sm" color="grey" onClick={() => { toggleSideNav(!showSideNav) }}
-              style={{ width: "45px", marginLeft: "0px", marginRight: "15px", paddingLeft: "18px" }}>
-              <Fa icon="bars" />
-            </Button>
+            {
+              (this.props.showSideNavButton === true && this.props.showNavbar !== "addOnly") &&
+              <Button size="sm" color="grey" onClick={() => { toggleSideNav(!showSideNav) }}
+                style={{ width: "45px", marginLeft: "0px", marginRight: "15px", paddingLeft: "18px" }}>
+                <Fa icon="bars" />
+              </Button>
+            }
 
             {
               (!location.hash.includes("events/") /*&& (user && !user.expired)*/) &&

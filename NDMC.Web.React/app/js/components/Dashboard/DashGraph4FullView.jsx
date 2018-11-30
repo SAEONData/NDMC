@@ -59,17 +59,17 @@ class DashGraph4FullView extends React.Component {
     //ADD FILTERS//
     //Region//
     if (regionFilter !== 0) {
-      filters.region = regionFilter.id
+      filters.region = regionFilter
     }
 
     //Hazard//
     if (hazardFilter !== 0) {
-      filters.hazard = hazardFilter.id
+      filters.hazard = hazardFilter
     }
 
     //Impact//
     if (impactFilter != 0) {
-      filters.impact = impactFilter.id
+      filters.impact = impactFilter
     }
 
     //GET EVENTS FILTERED//
@@ -228,7 +228,9 @@ class DashGraph4FullView extends React.Component {
             float: "right",
             display: "inline"
           }}
-          onClick={() => { location.hash = "" }}
+          onClick={() => { 
+            location.hash = location.hash.replace("#/chart4", "")
+          }}
         />
 
         <br />

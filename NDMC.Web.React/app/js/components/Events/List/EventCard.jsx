@@ -8,7 +8,8 @@ import { DEAGreen, DEAGreenDark } from '../../../config/colours.cfg'
 const _gf = require('../../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
-  return {}
+  let { globalData: { showListViewOption, showFavoritesOption, showDetailsInParent } } = state
+  return { showListViewOption, showFavoritesOption, showDetailsInParent }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -98,18 +99,26 @@ class EventCard extends React.Component {
 
   onTouchTap() {
 
-    this.props.setScrollPos(window.pageYOffset)
-    this.props.setForceNavRender(true)
-
-    let navTo = ""
-    if(location.hash.includes("events")){
-      navTo = location.hash.replace("#/events", "#/events/" + this.props.eid)
+    if (this.props.showDetailsInParent) {
+      let payload = {}
+      payload.action = "showDetails"
+      payload.value = this.props.eid
+      window.parent.postMessage(payload, "*")
     }
-    else{
-      navTo = location.hash.replace("#/", "#/events/" + this.props.eid)
-    }
+    else {
+      this.props.setScrollPos(window.pageYOffset)
+      this.props.setForceNavRender(true)
 
-    location.hash = navTo
+      let navTo = ""
+      if(location.hash.includes("events")){
+        navTo = location.hash.replace("#/events", "#/events/" + this.props.eid)
+      }
+      else{
+        navTo = location.hash.replace("#/", "#/events/" + this.props.eid)
+      }
+
+      location.hash = navTo      
+    }
   }
 
   render() {
@@ -128,63 +137,69 @@ class EventCard extends React.Component {
             {hazardtype ? `Type: ${hazardtype}` : ' '}
           </CardText>
 
-          <Button
-            size="sm"
-            color="white"
-            onClick={this.onTouchTap.bind(this)}
-            style={{
-              backgroundColor: "white",
-              marginLeft: "0px",
-              boxShadow: "none",
-              border: "1px solid silver",
-              borderRadius: "5px",
-              padding: "3px 15px 3px 15px"
-            }}
-          >
-            <table>
-              <tbody>
-                <tr>
-                  <td valign="middle">
-                    <Fa icon="eye" size="lg" style={{ color: DEAGreen, marginRight: "5px" }} />
-                  </td>
-                  <td valign="middle">
-                    <div style={{ fontSize: "14px", marginTop: "2px" }} >
-                      View
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Button>
+          {
+            this.props.showListViewOption === true &&
+            <Button
+              size="sm"
+              color="white"
+              onClick={this.onTouchTap.bind(this)}
+              style={{
+                backgroundColor: "white",
+                marginLeft: "0px",
+                boxShadow: "none",
+                border: "1px solid silver",
+                borderRadius: "5px",
+                padding: "3px 15px 3px 15px"
+              }}
+            >
+              <table>
+                <tbody>
+                  <tr>
+                    <td valign="middle">
+                      <Fa icon="eye" size="lg" style={{ color: DEAGreen, marginRight: "5px" }} />
+                    </td>
+                    <td valign="middle">
+                      <div style={{ fontSize: "14px", marginTop: "2px" }} >
+                        View
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Button>            
+          }
 
-          <Button
-            size="sm"
-            color="white"
-            onClick={this.togleFavorite}
-            style={{
-              backgroundColor: "white",
-              marginLeft: "0px",
-              boxShadow: "none",
-              border: "1px solid silver",
-              borderRadius: "5px",
-              padding: "3px 15px 3px 15px"
-            }}
-          >
-            <table>
-              <tbody>
-                <tr>
-                  <td valign="middle">
-                    <Fa icon="star" size="lg" style={{ color: favorite ? "#fdd835" : "#D8D8D8", marginRight: "5px" }} />
-                  </td>
-                  <td valign="middle">
-                    <div style={{ fontSize: "14px", marginTop: "2px" }} >
-                      Favorite
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Button>
+          {
+            this.props.showFavoritesOption === true &&
+            <Button
+              size="sm"
+              color="white"
+              onClick={this.togleFavorite}
+              style={{
+                backgroundColor: "white",
+                marginLeft: "0px",
+                boxShadow: "none",
+                border: "1px solid silver",
+                borderRadius: "5px",
+                padding: "3px 15px 3px 15px"
+              }}
+            >
+              <table>
+                <tbody>
+                  <tr>
+                    <td valign="middle">
+                      <Fa icon="star" size="lg" style={{ color: favorite ? "#fdd835" : "#D8D8D8", marginRight: "5px" }} />
+                    </td>
+                    <td valign="middle">
+                      <div style={{ fontSize: "14px", marginTop: "2px" }} >
+                        Favorite
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Button>            
+          }
 
         </CardBody>
         

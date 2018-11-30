@@ -61,7 +61,7 @@ class EventDetailsTab extends React.Component {
             {({ loading, error, data }) => {
               if (loading) { return <div>Loading...</div> }
               if (error) { return <div>Error Loading Data From Server</div> }
-              if (data) {
+              if (data && data.value) {
                 const event = data.value[0]
                 let startdate = new Date(event.StartDate * 1000)
                 let enddate = new Date(event.EndDate * 1000)
