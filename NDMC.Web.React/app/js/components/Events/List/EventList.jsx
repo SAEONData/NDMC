@@ -852,7 +852,7 @@ class EventList extends React.Component {
                     </OData>
                     <ListGroup>
                       {responses.length ? responses.map((response) => {
-                        return <ListGroupItem key={response.responseTypeName}>{response.responseTypeName}: {response.responseValue}({response.responseMeasuretype})</ListGroupItem>
+                        return <ListGroupItem key={response.responseTypeName}>{response.responseTypeName}: {response.responseValue}</ListGroupItem>
                       }) : <ListGroupItem>No Response added</ListGroupItem>}
                       <ListGroupItem></ListGroupItem>
                     </ListGroup>
