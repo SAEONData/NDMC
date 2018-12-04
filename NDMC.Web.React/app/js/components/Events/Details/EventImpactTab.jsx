@@ -51,6 +51,10 @@ class EventResponseTab extends React.Component {
     })
 
     let impacts = []
+    let agricultureImpacts = []
+    let infrastrucutureImpacts = []
+    let gameImpacts = []
+    let peopleImpacts = []
     return (
       <>
         <div style={{
@@ -85,13 +89,44 @@ class EventResponseTab extends React.Component {
                       break
                     default:
                       amountMeasure = '(Count)'
-                  }
-                  impacts.push({
-                    impact: impact.TypeImpact.TypeImpactName,
-                    amount: impact.Measure && impact.Measure !== 0 ? 
+                  } 
+                  console.log(impact)
+                  // Agriculture
+                  if(impact.TypeImpact.ParentTypeImpactId === 36 || impact.TypeImpactId === 36 ){
+                    agricultureImpacts.push({
+                      impact: impact.TypeImpact.TypeImpactName,
+                      amount: impact.Measure && impact.Measure !== 0 ?
                       `${impact.Measure} ${amountMeasure}`
                       : 'No amount recorded'
-                  })
+                    })
+                  }
+                  // Infrastrucutre
+                  if(impact.TypeImpact.ParentTypeImpactId === 54 || impact.TypeImpactId === 54){
+                    infrastrucutureImpacts.push({
+                      impact: impact.TypeImpact.TypeImpactName,
+                      amount: impact.Measure && impact.Measure !== 0 ?
+                      `${impact.Measure} ${amountMeasure}`
+                      : 'No amount recorded'
+                    })
+                  }
+                  // People
+                  if(impact.TypeImpact.ParentTypeImpactId === 60 || impact.TypeImpactId === 60){
+                    peopleImpacts.push({
+                      impact: impact.TypeImpact.TypeImpactName,
+                      amount: impact.Measure && impact.Measure !== 0 ?
+                      `${impact.Measure} ${amountMeasure}`
+                      : 'No amount recorded'
+                    })
+                  }
+                  // Game
+                  if(impact.TypeImpact.ParentTypeImpactId === 14 || impact.TypeImpactId === 14){
+                    gameImpacts.push({
+                      impact: impact.TypeImpact.TypeImpactName,
+                      amount: impact.Measure && impact.Measure !== 0 ?
+                      `${impact.Measure} ${amountMeasure}`
+                      : 'No amount recorded'
+                    })
+                  }
                 })
                 const tableData = {
                   columns: [
@@ -109,11 +144,35 @@ class EventResponseTab extends React.Component {
                   <br />
                   <div>
                     <div style={{ width: '500px' }}>
-                      <h4>Event Impacts Recorded</h4>
-                      {impacts.length > 0 ?
+                      <h4>People Impacted</h4>
+                      {peopleImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={impacts} />
+                          <TableBody rows={peopleImpacts} />
+                        </Table> : <i>None recorded</i>}
+                    </div>
+                    <div style={{ width: '500px' }}>
+                      <h4>Agriculture Impacted</h4>
+                      {agricultureImpacts.length > 0 ?
+                        <Table small striped>
+                          <TableHead color='grey' columns={tableData.columns} />
+                          <TableBody rows={agricultureImpacts} />
+                        </Table> : <i>None recorded</i>}
+                    </div>
+                    <div style={{ width: '500px' }}>
+                      <h4>Infrastrucuture Impacted</h4>
+                      {infrastrucutureImpacts.length > 0 ?
+                        <Table small striped>
+                          <TableHead color='grey' columns={tableData.columns} />
+                          <TableBody rows={infrastrucutureImpacts} />
+                        </Table> : <i>None recorded</i>}
+                    </div>
+                    <div style={{ width: '500px' }}>
+                      <h4>Game Impacted</h4>
+                      {gameImpacts.length > 0 ?
+                        <Table small striped>
+                          <TableHead color='grey' columns={tableData.columns} />
+                          <TableBody rows={gameImpacts} />
                         </Table> : <i>None recorded</i>}
                     </div>
                   </div>
