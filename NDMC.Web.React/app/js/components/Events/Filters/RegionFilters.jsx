@@ -101,6 +101,7 @@ class RegionFilters extends React.Component {
                 }, 100)
 
                 let regionTree = this.transformDataTree(data.value)
+                regionTree.sort((a,b) => a.title.localeCompare(b.title))
                 return (
                   <TreeSelect
                     style={{ width: "100%" }}
