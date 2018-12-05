@@ -22,8 +22,8 @@ export const MapConfig = {
       "title": "Unknown",
       "default": true,
       "strokeWidth": 1,
-      "strokeColor": "rgba(255,255,255,0.5)", //white
-      "fillColor": "rgba(255,255,255,0.3)"
+      "strokeColor": "rgba(211,211,211,0.5)", //light-grey
+      "fillColor": "rgba(211,211,211,0.3)"
     },
     {
       "value": 1,
@@ -78,8 +78,8 @@ export const MapConfig = {
       "value": 8,
       "title": "Strong winds",
       "strokeWidth": 1,
-      "strokeColor": "rgba(211,211,211,0.5)", //light-grey
-      "fillColor": "rgba(211,211,211,0.3)"
+      "strokeColor": "rgba(128,128,128,0.5)", //grey
+      "fillColor": "rgba(128,128,128,0.3)"
     },
     {
       "value": 9,

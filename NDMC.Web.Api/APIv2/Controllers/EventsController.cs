@@ -221,7 +221,7 @@ namespace APIv2.Controllers
                 eventImpactIDs.AddRange(
                     eventImpacts
                     .Where(ei => ei.EventRegionId == erID)
-                    .Select(ei => ei.EventImpactId)
+                    .Select(ei => ei.TypeImpactId)
                     .ToArray()
                 );
             }
@@ -231,12 +231,7 @@ namespace APIv2.Controllers
 
         private string ConvertToDateString(long? unixTime)
         {
-            if (unixTime == null)
-            {
-                var dt = DateTime.Now;
-                unixTime = ((DateTimeOffset)dt).ToUnixTimeSeconds();
-            }
-            long _unixTime = (long)unixTime;
+            long _unixTime = unixTime != null ? (long)unixTime : 0;
 
             // Unix timestamp is seconds past epoch
             return DateTimeOffset.FromUnixTimeSeconds(_unixTime).Date.ToString("yyyy-MM-dd");

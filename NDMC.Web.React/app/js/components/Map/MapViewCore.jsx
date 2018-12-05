@@ -132,7 +132,8 @@ class MapViewCore extends React.Component {
         filters.push(
           {
             field: "properties.startDate",
-            value: moment.unix(dateFilter.startDate).format('YYYY-MM-DD')
+            value: moment.unix(dateFilter.startDate).format('YYYY-MM-DD'),
+            operator: ">="
           }
         )
       }
@@ -141,7 +142,8 @@ class MapViewCore extends React.Component {
         filters.push(
           {
             field: "properties.endDate",
-            value: moment.unix(dateFilter.endDate).format('YYYY-MM-DD')
+            value: moment.unix(dateFilter.endDate).format('YYYY-MM-DD'),
+            operator: "<="
           }
         )
       }
@@ -173,10 +175,10 @@ class MapViewCore extends React.Component {
     //   delete mapConfig.viewport
     // }
 
-    // console.log("mapConfig", mapConfig)
-    // console.log("strMapConfig", JSON.stringify(mapConfig))
+    console.log("mapConfig", mapConfig)
+    console.log("strMapConfig", JSON.stringify(mapConfig))
 
-    return encodeURI(JSON.stringify(mapConfig))
+    return encodeURIComponent(JSON.stringify(mapConfig))
   }
 
   render() {
@@ -184,6 +186,8 @@ class MapViewCore extends React.Component {
     let { height, width, fullView } = this.props
     let mapConfig = this.buildMapConfig()
     let mapSrc = `http://app01.saeon.ac.za/components/map?conf=${mapConfig}`
+
+    console.log("URL", mapSrc)
 
     if (!height) {
       height = "300px"
@@ -230,9 +234,9 @@ class MapViewCore extends React.Component {
             height,
             margin: "0px",
             border: "none",
-            backgroundImage: `url(${loader})`,
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "50% 50%"
+            // backgroundImage: `url(${loader})`,
+            // backgroundRepeat: "no-repeat",
+            // backgroundPosition: "50% 50%"
           }}
           src={mapSrc}
         />
