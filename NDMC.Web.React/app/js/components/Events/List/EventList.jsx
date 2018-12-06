@@ -535,13 +535,13 @@ class EventList extends React.Component {
                 this.props.setScrollPos(0)
                 //location.hash = (location.hash.includes("events") ? "" : "/events")
                 let navTo = ""
-                  if (location.hash.includes("events")) {
-                    navTo = location.hash.replace("#/events", "")
-                  }
-                  else {
-                    navTo = location.hash.replace("#/", "#/events")
-                  }            
-                  location.hash = navTo
+                if (location.hash.includes("events")) {
+                  navTo = location.hash.replace("#/events", "")
+                }
+                else {
+                  navTo = location.hash.replace("#/", "#/events")
+                }
+                location.hash = navTo
               }}
             />
           }
@@ -645,6 +645,7 @@ class EventList extends React.Component {
             </Button>
           }
         </div>
+
         {/* ### ADD FORM ### */}
         <div>
           <Drawer
@@ -862,7 +863,7 @@ class EventList extends React.Component {
             </Form>
             <div
               style={{
-                position: 'absolute',
+                position: 'relative',
                 bottom: 0,
                 width: '100%',
                 borderTop: '1px solid #e8e8e8',
@@ -882,6 +883,7 @@ class EventList extends React.Component {
             </div>
           </Drawer>
         </div>
+
       </div >
     )
   }
