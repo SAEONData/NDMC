@@ -70,15 +70,19 @@ class EventDetailsTab extends React.Component {
                   <br />
                   <div className='row'>
                     <TextComponent
-                      col='col-md-4'
-                      label='Hazard Type:'
+                      labelStyle={{ fontSize: "24px", fontWeight: '300', }}
+                      col='col-md-6'
+                      label='Hazard Type'
                       id='txtHazardType'
                       value={event.TypeEvent.TypeEventName || ''}
                       allowEdit={false}
                     />
+                  </div>
+                  <div className='row'>
                     <TextComponent
-                      col='col-md-4'
-                      label='Region:'
+                      labelStyle={{ fontSize: "24px", fontWeight: '300', }}
+                      col='col-md-6'
+                      label='Region'
                       id='txtEventRegion'
                       value={event.EventRegions[0] ? event.EventRegions[0].Region.RegionName : ''}
                       allowEdit={false}
@@ -86,6 +90,7 @@ class EventDetailsTab extends React.Component {
                   </div>
                   <div className='row'>
                     <RangeComponent
+                      labelStyle={{ fontSize: "24px", fontWeight: '300', }}
                       col='col-md-8'
                       label='Date'
                       id='txtEventDate'
@@ -97,10 +102,11 @@ class EventDetailsTab extends React.Component {
                   </div>
                   <div className='row' style={{ marginTop: "8px" }}>
                     <TextComponent
+                      labelStyle={{ fontSize: "24px", fontWeight: '300', }}
                       col='col-md-4'
                       label='Declared Date'
                       id='txtDeclaredDate'
-                      value={declareddate ? declareddate.toDateString() : 'No declared date available' }
+                      value={declareddate ? declareddate.toDateString() : 'No declared date available'}
                       allowEdit={false}
                     />
                   </div>

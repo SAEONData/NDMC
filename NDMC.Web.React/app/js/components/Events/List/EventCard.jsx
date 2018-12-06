@@ -102,6 +102,7 @@ class EventCard extends React.Component {
     if (this.props.showDetailsInParent) {
       let payload = {}
       payload.action = "showDetails"
+      payload.context = "NDMC"
       payload.value = this.props.eid
       window.parent.postMessage(payload, "*")
     }

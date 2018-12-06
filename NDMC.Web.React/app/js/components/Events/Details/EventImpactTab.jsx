@@ -69,8 +69,11 @@ class EventResponseTab extends React.Component {
         }}>
           <OData baseUrl={apiBaseURL + 'Events'} query={impactQuery}>
             {({ loading, error, data }) => {
+
               if (loading) { return <div>Loading...</div> }
+
               if (error) { return <div>Error Loading Data From Server</div> }
+
               if (data && data.value) {
                 data.value[0].EventRegions[0].EventImpacts.map(impact => {
                   let amountMeasure = ''
@@ -90,7 +93,7 @@ class EventResponseTab extends React.Component {
                     default:
                       amountMeasure = '(Count)'
                   } 
-                  console.log(impact)
+                  //console.log(impact)
                   // Agriculture
                   if(impact.TypeImpact.ParentTypeImpactId === 36 || impact.TypeImpactId === 36 ){
                     agricultureImpacts.push({
@@ -140,6 +143,7 @@ class EventResponseTab extends React.Component {
                     }
                   ]
                 }
+
                 return (<>
                   <br />
                   <div>
@@ -148,34 +152,38 @@ class EventResponseTab extends React.Component {
                       {peopleImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={peopleImpacts} />
+                          <TableBody rows={peopleImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
+                    <hr />
                     <div style={{ width: '500px' }}>
                       <h4>Agriculture Impacted</h4>
                       {agricultureImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={agricultureImpacts} />
+                          <TableBody rows={agricultureImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
+                    <hr />
                     <div style={{ width: '500px' }}>
                       <h4>Infrastrucuture Impacted</h4>
                       {infrastrucutureImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={infrastrucutureImpacts} />
+                          <TableBody rows={infrastrucutureImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
+                    <hr />
                     <div style={{ width: '500px' }}>
                       <h4>Game Impacted</h4>
                       {gameImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={gameImpacts} />
+                          <TableBody rows={gameImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                   </div>
+                  <br />
                 </>
                 )
               }

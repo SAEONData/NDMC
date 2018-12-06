@@ -52,13 +52,14 @@ class RangeComponent extends React.Component {
 
   getLabel() {
 
-    let { label, id, size } = this.props
+    let { label, id, size, labelStyle } = this.props
 
     let uiconf = UILookup(id, label)
+    if(!labelStyle) labelStyle = {}
 
     return (
       <div>
-        <label data-tip={uiconf.tooltip} style={{ fontSize: size, fontWeight: 'bold', color: this.getLabelFontColour(uiconf) }}>{uiconf.label}&nbsp;</label>
+        <label data-tip={uiconf.tooltip} style={{ fontSize: size, fontWeight: 'bold', color: this.getLabelFontColour(uiconf), ...labelStyle }}>{uiconf.label}&nbsp;</label>
       </div>
     )
   }
@@ -112,8 +113,8 @@ class RangeComponent extends React.Component {
 
     let { label, inputWidth, col, valueFrom, valueTo, editMode } = this.props
     valueFrom = this.fixNullOrUndefinedValue(valueFrom)
-    valueTo = this.fixNullOrUndefinedValue(valueTo)
-
+    valueTo = this.fixNullOrUndefinedValue(valueTo)    
+    
     return (
       <div className={col}>
 

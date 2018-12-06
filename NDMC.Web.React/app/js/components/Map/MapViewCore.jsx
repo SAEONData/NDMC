@@ -175,8 +175,6 @@ class MapViewCore extends React.Component {
     //   delete mapConfig.viewport
     // }
 
-    console.log("mapConfig", mapConfig)
-    console.log("strMapConfig", JSON.stringify(mapConfig))
 
     return encodeURIComponent(JSON.stringify(mapConfig))
   }
@@ -187,7 +185,6 @@ class MapViewCore extends React.Component {
     let mapConfig = this.buildMapConfig()
     let mapSrc = `http://app01.saeon.ac.za/components/map?conf=${mapConfig}`
 
-    console.log("URL", mapSrc)
 
     if (!height) {
       height = "300px"
