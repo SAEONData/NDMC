@@ -17,9 +17,9 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 
 const mapStateToProps = (state, props) => {
-  let { globalData: { eventsFullView } } = state
+  let { globalData: { eventsFullView, showBackToList } } = state
   return {
-    eventsFullView
+    eventsFullView, showBackToList
   }
 }
 
@@ -71,9 +71,13 @@ class EventDetails extends React.Component {
     const { eventId } = this.state
     return (
       <>
-        <Button style={{ margin: '8px 0px 15px -1px' }} color='grey' size='sm' id='btnBackToList' onClick={this.backToList}>
-          <i className='fa fa-chevron-circle-left' aria-hidden='true'></i>&nbsp;&nbsp;Back To List
-        </Button>
+        {
+          this.props.showBackToList === true &&
+          <Button style={{ margin: '8px 0px 15px -1px' }} color='grey' size='sm' id='btnBackToList' onClick={this.backToList}>
+            <i className='fa fa-chevron-circle-left' aria-hidden='true'></i>&nbsp;&nbsp;Back To List
+          </Button>          
+        }
+
         <br />
         <Tabs forceRenderTabPanel={true}>
           <TabList>

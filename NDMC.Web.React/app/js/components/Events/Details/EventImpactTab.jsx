@@ -51,6 +51,10 @@ class EventResponseTab extends React.Component {
     })
 
     let impacts = []
+    let agricultureImpacts = []
+    let infrastrucutureImpacts = []
+    let gameImpacts = []
+    let peopleImpacts = []
     return (
       <>
         <div style={{
@@ -65,9 +69,12 @@ class EventResponseTab extends React.Component {
         }}>
           <OData baseUrl={apiBaseURL + 'Events'} query={impactQuery}>
             {({ loading, error, data }) => {
+
               if (loading) { return <div>Loading...</div> }
+
               if (error) { return <div>Error Loading Data From Server</div> }
-              if (data) {
+
+              if (data && data.value) {
                 data.value[0].EventRegions[0].EventImpacts.map(impact => {
                   let amountMeasure = ''
                   switch (impact.TypeImpact.UnitOfMeasure) {
@@ -85,13 +92,44 @@ class EventResponseTab extends React.Component {
                       break
                     default:
                       amountMeasure = '(Count)'
-                  }
-                  impacts.push({
-                    impact: impact.TypeImpact.TypeImpactName,
-                    amount: impact.Measure && impact.Measure !== 0 ? 
+                  } 
+                  //console.log(impact)
+                  // Agriculture
+                  if(impact.TypeImpact.ParentTypeImpactId === 36 || impact.TypeImpactId === 36 ){
+                    agricultureImpacts.push({
+                      impact: impact.TypeImpact.TypeImpactName,
+                      amount: impact.Measure && impact.Measure !== 0 ?
                       `${impact.Measure} ${amountMeasure}`
                       : 'No amount recorded'
-                  })
+                    })
+                  }
+                  // Infrastrucutre
+                  if(impact.TypeImpact.ParentTypeImpactId === 54 || impact.TypeImpactId === 54){
+                    infrastrucutureImpacts.push({
+                      impact: impact.TypeImpact.TypeImpactName,
+                      amount: impact.Measure && impact.Measure !== 0 ?
+                      `${impact.Measure} ${amountMeasure}`
+                      : 'No amount recorded'
+                    })
+                  }
+                  // People
+                  if(impact.TypeImpact.ParentTypeImpactId === 60 || impact.TypeImpactId === 60){
+                    peopleImpacts.push({
+                      impact: impact.TypeImpact.TypeImpactName,
+                      amount: impact.Measure && impact.Measure !== 0 ?
+                      `${impact.Measure} ${amountMeasure}`
+                      : 'No amount recorded'
+                    })
+                  }
+                  // Game
+                  if(impact.TypeImpact.ParentTypeImpactId === 14 || impact.TypeImpactId === 14){
+                    gameImpacts.push({
+                      impact: impact.TypeImpact.TypeImpactName,
+                      amount: impact.Measure && impact.Measure !== 0 ?
+                      `${impact.Measure} ${amountMeasure}`
+                      : 'No amount recorded'
+                    })
+                  }
                 })
                 const tableData = {
                   columns: [
@@ -105,18 +143,47 @@ class EventResponseTab extends React.Component {
                     }
                   ]
                 }
+
                 return (<>
                   <br />
                   <div>
                     <div style={{ width: '500px' }}>
-                      <h4>Event Impacts Recorded</h4>
-                      {impacts.length > 0 ?
+                      <h4>People Impacted</h4>
+                      {peopleImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={impacts} />
+                          <TableBody rows={peopleImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
+                        </Table> : <i>None recorded</i>}
+                    </div>
+                    <hr />
+                    <div style={{ width: '500px' }}>
+                      <h4>Agriculture Impacted</h4>
+                      {agricultureImpacts.length > 0 ?
+                        <Table small striped>
+                          <TableHead color='grey' columns={tableData.columns} />
+                          <TableBody rows={agricultureImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
+                        </Table> : <i>None recorded</i>}
+                    </div>
+                    <hr />
+                    <div style={{ width: '500px' }}>
+                      <h4>Infrastrucuture Impacted</h4>
+                      {infrastrucutureImpacts.length > 0 ?
+                        <Table small striped>
+                          <TableHead color='grey' columns={tableData.columns} />
+                          <TableBody rows={infrastrucutureImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
+                        </Table> : <i>None recorded</i>}
+                    </div>
+                    <hr />
+                    <div style={{ width: '500px' }}>
+                      <h4>Game Impacted</h4>
+                      {gameImpacts.length > 0 ?
+                        <Table small striped>
+                          <TableHead color='grey' columns={tableData.columns} />
+                          <TableBody rows={gameImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                   </div>
+                  <br />
                 </>
                 )
               }

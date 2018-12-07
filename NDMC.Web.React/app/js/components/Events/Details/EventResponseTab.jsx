@@ -62,7 +62,7 @@ class EventResponseTab extends React.Component {
             {({ loading, error, data }) => {
               if (loading) { return <div>Loading...</div> }
               if (error) { return <div>Error Loading Data From Server</div> }
-              if (data) {
+              if (data && data.value) {
                 data.value.map(curr => {
                   if (curr.TypeMitigation.ParentTypeMitigationId === 12 || curr.TypeMitigationId === 12) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
@@ -80,7 +80,7 @@ class EventResponseTab extends React.Component {
                       response: curr.TypeMitigation.TypeMitigationName,
                       amount: curr.Value ? 
                         isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} ((${curr.TypeMitigation.UnitOfMeasure})` 
+                        : `${curr.Value} (${curr.TypeMitigation.UnitOfMeasure})` 
                           : 'No amount recorded'
                     })
                   }
@@ -100,7 +100,7 @@ class EventResponseTab extends React.Component {
                       response: curr.TypeMitigation.TypeMitigationName,
                       amount: curr.Value ? 
                         isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} ${curr.TypeMitigation.UnitOfMeasure}` 
+                        : `${curr.Value} (${curr.TypeMitigation.UnitOfMeasure})` 
                           : 'No amount recorded'
                     })
                   }
@@ -126,34 +126,38 @@ class EventResponseTab extends React.Component {
                       {emergencyResponses.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={emergencyResponses} />
+                          <TableBody rows={emergencyResponses.sort((a,b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
+                    <hr />
                     <div style={{width:'500px'}}>
                       <h4>Rehabilitation and Reconstruction Responses</h4>
                       {rehabResponses.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={rehabResponses} />
+                          <TableBody rows={rehabResponses.sort((a,b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
+                    <hr />
                     <div style={{width:'500px'}}>
                       <h4>Mitigation Responses</h4>
                       {mitigationResponses.length > 0 ?
                         <Table small striped>
-                          <TableHead color='grey'  columns={tableData.columns} />
-                          <TableBody rows={mitigationResponses} />
+                          <TableHead color='grey' columns={tableData.columns} />
+                          <TableBody rows={mitigationResponses.sort((a,b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
+                    <hr />
                     <div style={{width:'500px'}}>
                       <h4>Adaptation Responses</h4>
                       {adaptationResponses.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey'  columns={tableData.columns} />
-                          <TableBody rows={adaptationResponses} />
+                          <TableBody rows={adaptationResponses.sort((a,b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                   </div>
+                  <br/>
                 </>
                 )
               }

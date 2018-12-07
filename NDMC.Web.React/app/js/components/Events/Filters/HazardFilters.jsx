@@ -20,68 +20,74 @@ import '../../../../css/antd.select.css' //Overrides default antd.select css
 const Option = Select.Option;
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { hazardFilter } } = state
-  return { hazardFilter }
+  let { filterData: { hazardFilter, hazards } } = state
+  return { hazardFilter, hazards }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     loadHazardFilter: payload => {
       dispatch({ type: ACTION_TYPES.LOAD_HAZARD_FILTER, payload })
+    },
+    loadHazards: payload => {
+      dispatch({ type: "LOAD_HAZARDS", payload })
     }
   }
 }
-
-let _data
 
 class HazardFilters extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      value: "Select...",
-      data: []
+      value: "Select..."
     }
 
     this.optionClick = this.optionClick.bind(this)
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
 
-    let { hazardFilter } = this.props
-    if(hazardFilter.name === "" || hazardFilter === 0) hazardFilter = { id: 0, name: "Select..." }
+    let { hazardFilter, hazards } = this.props
 
-    if(hazardFilter.name !== this.state.value){
-      this.setState({ value: hazardFilter.name})
+    let searchHazards = hazards.filter(h => h.TypeEventId == hazardFilter)
+    let hazardName = "Select..."
+    if (searchHazards.length > 0) {
+      hazardName = searchHazards[0].TypeEventName
     }
+
+    if (hazardName !== this.state.value) {
+      this.setState({ value: hazardName })
+    }
+
   }
 
   optionClick(value) {
 
-    let { loadHazardFilter } = this.props
+    let { loadHazardFilter, hazards } = this.props
     let id = 0
 
     let filteredData
 
-    if (_data) { 
-      filteredData = _data.filter(x => x.TypeEventName === value) 
+    if (hazards) {
+      filteredData = hazards.filter(x => x.TypeEventName === value)
     }
 
-    if (filteredData) { 
-      filteredData[0].TypeEventId ? id = filteredData[0].TypeEventId : '' 
+    if (filteredData) {
+      filteredData[0].TypeEventId ? id = filteredData[0].TypeEventId : ''
     }
 
     if (value[0] !== this.state.value && value !== "Select...") {
       this.setState({ value: value })
-      loadHazardFilter({ id: id, name: value })
+      loadHazardFilter(id)
     }
   }
 
-  renderOptions(data){
+  renderOptions(data) {
     let options = []
 
     //Sort
-    data.value.sort((a,b) => (a.TypeEventName > b.TypeEventName) ? 1 : ((b.TypeEventName > a.TypeEventName) ? -1 : 0))
+    data.value.sort((a, b) => (a.TypeEventName > b.TypeEventName) ? 1 : ((b.TypeEventName > a.TypeEventName) ? -1 : 0))
 
     data.value.map(item => {
       options.push(
@@ -111,13 +117,20 @@ class HazardFilters extends React.Component {
             }
 
             if (data && data.value) {
-              _data = data.value
+
+              //Dispatch data to store
+              setTimeout(() => {
+                if(!_.isEqual(data.value, this.props.hazards)){
+                  this.props.loadHazards(data.value)
+                }
+              }, 100)
+
               return (
                 <Select
                   style={{ width: "100%" }}
                   onChange={this.optionClick}
-                  value={this.state.value} 
-                  dropdownMatchSelectWidth={false} 
+                  value={this.state.value}
+                  dropdownMatchSelectWidth={false}
                 >
                   {this.renderOptions(data)}
                 </Select>

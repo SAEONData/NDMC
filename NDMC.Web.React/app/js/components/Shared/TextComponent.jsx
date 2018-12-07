@@ -65,16 +65,41 @@ class TextComponent extends React.Component {
 
   render() {
 
-    let { col, label, id, editMode, value } = this.props
+    let { col, label, id, editMode, value, labelStyle } = this.props
     value = this.fixNullOrUndefinedValue(value)
 
     let uiconf = UILookup(id, label)
 
+    if(!labelStyle) labelStyle = {}
+
     return (
       <div className={col}>
-        <label data-tip={uiconf.tooltip} style={{ fontWeight: 'bold', color: this.getLabelFontColour(uiconf), marginBottom: "0px" }}>{uiconf.label}</label>
-        <Input size="sm" id={id} readOnly={!editMode} value={value} onChange={this.valueChange.bind(this)}
-          style={{ marginTop: "-15px", color: this.getFontColour(), border: "1px solid lightgrey", borderRadius: "5px", padding: "5px" }} />
+        <label
+          data-tip={uiconf.tooltip}
+          style={{
+            fontWeight: 'bold',
+            color: this.getLabelFontColour(uiconf),
+            marginBottom: "0px",
+            ...labelStyle
+          }}
+        >
+          {uiconf.label}
+        </label>
+
+        <Input
+          size="sm"
+          id={id}
+          readOnly={!editMode}
+          value={value}
+          onChange={this.valueChange.bind(this)}
+          style={{
+            marginTop: "-15px",
+            color: this.getFontColour(),
+            border: "1px solid lightgrey",
+            borderRadius: "5px",
+            padding: "5px"
+          }}
+        />
       </div>
     )
   }

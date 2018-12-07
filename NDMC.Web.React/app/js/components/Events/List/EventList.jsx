@@ -46,10 +46,11 @@ const _gf = require('../../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } } = state
-  let { globalData: { addFormVisible } } = state
+  let { globalData: { addFormVisible, showListExpandCollapse, showFavoritesOption } } = state
   let { eventData: { events, listScrollPos } } = state
   return {
-    hazardFilter, regionFilter, dateFilter, impactFilter, addFormVisible, events, favoritesFilter, listScrollPos
+    hazardFilter, regionFilter, dateFilter, impactFilter, addFormVisible, events, favoritesFilter, listScrollPos,
+    showListExpandCollapse, showFavoritesOption
   }
 }
 
@@ -80,9 +81,9 @@ class EventList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      _hazardFilter: { id: 0, name: '' },
-      _regionFilter: { id: 0, name: '' },
-      _impactFilter: { id: 0, name: '' },
+      _hazardFilter: 0,
+      _regionFilter: 0,
+      _impactFilter: 0,
       _dateFilter: {
         startDate: 0,
         endDate: 0
@@ -145,7 +146,7 @@ class EventList extends React.Component {
   componentDidUpdate() {
     let { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } = this.props
     let { _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter } = this.state
-    if (hazardFilter.id !== _hazardFilter.id || regionFilter.id !== _regionFilter.id || impactFilter.id !== _impactFilter.id ||
+    if (hazardFilter !== _hazardFilter || regionFilter !== _regionFilter || impactFilter !== _impactFilter ||
       dateFilter.startDate !== _dateFilter.startDate || dateFilter.endDate !== _dateFilter.endDate ||
       favoritesFilter !== _favoritesFilter) {
       this.setState({
@@ -213,11 +214,11 @@ class EventList extends React.Component {
       let top = eventListSize - events.length
       top = top > 0 ? top : 0
 
-      let fetchURL = `https://localhost:44334/odata/Events/Extensions.Filter?$skip=${skip}&$top=${top}&$expand=eventRegions($expand=Region),TypeEvent`
+      let fetchURL = `${apiBaseURL}Events/Extensions.Filter?$skip=${skip}&$top=${top}&$expand=eventRegions($expand=Region),TypeEvent`
       let postBody = {
-        region: _regionFilter.id,
-        hazard: _hazardFilter.id,
-        impact: _impactFilter.id,
+        region: _regionFilter,
+        hazard: _hazardFilter,
+        impact: _impactFilter,
         startDate: _dateFilter.startDate,
         endDate: _dateFilter.endDate,
         favorites: _favoritesFilter === true ? _gf.ReadCookie("NDMC_Event_Favorites") : ""
@@ -520,78 +521,97 @@ class EventList extends React.Component {
           <b>Events</b>
         </h4>
         <div style={{ float: "right" }}>
-          <img
-            src={location.hash.includes("events") ? popin : popout}
-            style={{
-              width: "25px",
-              margin: "-4px 5px 0px 0px",
-              cursor: "pointer"
-            }}
-            onClick={() => {
-              this.props.setScrollPos(0)
-              location.hash = (location.hash.includes("events") ? "" : "/events")
-            }}
-          />
-          <Popover
-            content={
-              <div>
-                <p style={{ display: "inline-block", margin: "10px 5px 10px 5px" }}>
-                  Favorites:
-                </p>
-                <Button
-                  size="sm"
-                  color=""
-                  style={{
-                    padding: "4px 10px 5px 10px",
-                    marginTop: "1px",
-                    marginRight: "-1px",
-                    width: "40px",
-                    backgroundColor: _favoritesFilter ? DEAGreen : "grey"
-                  }}
-                  onClick={() => {
-                    this.props.toggleFavorites(!_favoritesFilter)
-                    this.setState({ ellipsisMenu: false })
-                  }}
-                >
-                  On
-                </Button>
-                <Button
-                  size="sm"
-                  color=""
-                  style={{
-                    padding: "4px 10px 5px 10px",
-                    marginTop: "1px",
-                    marginLeft: "-1px",
-                    width: "40px",
-                    backgroundColor: !_favoritesFilter ? DEAGreen : "grey"
-                  }}
-                  onClick={() => {
-                    this.props.toggleFavorites(!_favoritesFilter)
-                    this.setState({ ellipsisMenu: false })
-                  }}
-                >
-                  Off
-                </Button>
-              </div>
-            }
-            placement="leftTop"
-            trigger="click"
-            visible={ellipsisMenu}
-            onVisibleChange={(visible) => { this.setState({ ellipsisMenu: visible }) }}
-          >
-            <Fa
-              icon="ellipsis-v"
-              size="lg"
+
+          {
+            this.props.showListExpandCollapse &&
+            <img
+              src={location.hash.includes("events") ? popin : popout}
               style={{
-                color: "black",
-                margin: "11px 15px 5px 15px",
-                padding: "5px 10px 5px 10px",
+                width: "25px",
+                margin: "-4px 5px 0px 0px",
                 cursor: "pointer"
               }}
+              onClick={() => {
+                this.props.setScrollPos(0)
+                //location.hash = (location.hash.includes("events") ? "" : "/events")
+                let navTo = ""
+                if (location.hash.includes("events")) {
+                  navTo = location.hash.replace("#/events", "")
+                }
+                else {
+                  navTo = location.hash.replace("#/", "#/events")
+                }
+                location.hash = navTo
+              }}
             />
-          </Popover>
+          }
+
+          {
+            this.props.showFavoritesOption === true &&
+            <Popover
+              content={
+                <div>
+                  <p style={{ display: "inline-block", margin: "10px 5px 10px 5px" }}>
+                    Favorites:
+                </p>
+                  <Button
+                    size="sm"
+                    color=""
+                    style={{
+                      padding: "4px 10px 5px 10px",
+                      marginTop: "1px",
+                      marginRight: "-1px",
+                      width: "40px",
+                      backgroundColor: _favoritesFilter ? DEAGreen : "grey"
+                    }}
+                    onClick={() => {
+                      this.props.toggleFavorites(!_favoritesFilter)
+                      this.setState({ ellipsisMenu: false })
+                    }}
+                  >
+                    On
+                </Button>
+                  <Button
+                    size="sm"
+                    color=""
+                    style={{
+                      padding: "4px 10px 5px 10px",
+                      marginTop: "1px",
+                      marginLeft: "-1px",
+                      width: "40px",
+                      backgroundColor: !_favoritesFilter ? DEAGreen : "grey"
+                    }}
+                    onClick={() => {
+                      this.props.toggleFavorites(!_favoritesFilter)
+                      this.setState({ ellipsisMenu: false })
+                    }}
+                  >
+                    Off
+                </Button>
+                </div>
+              }
+              placement="leftTop"
+              trigger="click"
+              visible={ellipsisMenu}
+              onVisibleChange={(visible) => { this.setState({ ellipsisMenu: visible }) }}
+            >
+              <Fa
+                icon="ellipsis-v"
+                size="lg"
+                style={{
+                  color: "black",
+                  margin: "11px 15px 5px 15px",
+                  padding: "5px 10px 5px 10px",
+                  cursor: "pointer"
+                }}
+              />
+            </Popover>
+          }
+
         </div>
+
         <hr />
+
         <div>
           {this.buildList(this.props.events)}
           <br />
@@ -625,6 +645,7 @@ class EventList extends React.Component {
             </Button>
           }
         </div>
+
         {/* ### ADD FORM ### */}
         <div>
           <Drawer
@@ -747,8 +768,8 @@ class EventList extends React.Component {
                               })}
                             </Select>
                             <div style={{ paddingTop: 10 }}>
-                                <InputNumber style={{ height: 35, width: 120 }} onChange={this.onImpactAmount}></InputNumber>
-                              </div>
+                              <InputNumber style={{ height: 35, width: 120 }} onChange={this.onImpactAmount}></InputNumber>
+                            </div>
                           </Modal>
                         }
                       }}
@@ -832,7 +853,7 @@ class EventList extends React.Component {
                     </OData>
                     <ListGroup>
                       {responses.length ? responses.map((response) => {
-                        return <ListGroupItem key={response.responseTypeName}>{response.responseTypeName}: {response.responseValue}({response.responseMeasuretype})</ListGroupItem>
+                        return <ListGroupItem key={response.responseTypeName}>{response.responseTypeName}: {response.responseValue}</ListGroupItem>
                       }) : <ListGroupItem>No Response added</ListGroupItem>}
                       <ListGroupItem></ListGroupItem>
                     </ListGroup>
@@ -842,7 +863,7 @@ class EventList extends React.Component {
             </Form>
             <div
               style={{
-                position: 'absolute',
+                position: 'relative',
                 bottom: 0,
                 width: '100%',
                 borderTop: '1px solid #e8e8e8',
@@ -862,6 +883,7 @@ class EventList extends React.Component {
             </div>
           </Drawer>
         </div>
+
       </div >
     )
   }

@@ -5,31 +5,30 @@ export const footerContent = {
     {
       text: "Technology",
       links: [
-        { text: "DEA NCCRD uses open source, government funded facilities provided by SAEON. The DST funds the SAEON Open Data Platform (ODP) and associated dissemination portals. Developed by SAEON on behalf of DST, DEA, and other stakeholders." },
+        { text: "DEA NHE uses open source, government funded facilities provided by SAEON. The DST and NRF funds the SAEON Open Data Platform (ODP) and associated portals. Developed by SAEON on behalf of DST, DEA, DRDLR, and other stakeholders." },
       ]
     },
     {
       text: "Legal",
       links: [
-        { text: "Disclaimer", link: "http://www.example.com" },
-        { text: "Terms and Conditions", link: "http://www.example.com" },
-        { text: "Data Licenses", link: "http://www.example.com" },
-        { text: "Privacy", link: "http://www.example.com" }
+        { text: "Disclaimer", link: "http://noframe.media.dirisa.org/wiki-1/disclaimer?searchterm=disclaimer" },
+        { text: "Terms and Conditions", link: "http://noframe.media.dirisa.org/wiki-1/conditions-of-use?searchterm=conditions" },
+        { text: "Data Licenses", link: "https://docs.google.com/document/d/e/2PACX-1vT8ajcogJEEo0ZC9BGIej_jOH2EV8lMFrwOu8LB4K9pDq7Tki94mUoVxU8hGM-J5EL8V3w5o83_TuEl/pub" },
+        { text: "Privacy", link: "http://noframe.media.dirisa.org/wiki-1/privacy-statement"}
       ]
     },
     {
       text: "SAEON ODP",
       links: [
-        { text: "Open Data Platform", link: "http://www.example.com" },
-        { text: "For Stakeholders", link: "http://www.example.com" },
-        { text: "For Developers", link: "http://www.example.com" },
-        { text: "Contact Us", link: "http://www.example.com" }
+        { text: "Open Data Platform", link: "https://docs.google.com/document/d/e/2PACX-1vQ7DWVfot6ZEuX22aciju9MW5PAZJoi6v_lFUFCiwVajRzG91YxjPaCj2NCsUV5WI8hlTdOfBrCxxc1/pub" },
+        { text: "Contribute", link: "http://app01.saeon.ac.za/dev/UI_footside/page_contribute.html" },
+        { text: "Contact Us", link: "http://app01.saeon.ac.za/dev/UI_footside/page_contact.html" }
       ]
     },
     {
       text: "Funding",
       links: [
-        { src: DEA_Logo, width: "100%", link: "http://www.example.com" }
+        { src: DEA_Logo, width: "100%"/*, link: "http://www.example.com"*/ }
       ]
     }
   ]

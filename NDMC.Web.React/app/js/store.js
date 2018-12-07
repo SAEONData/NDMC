@@ -15,25 +15,40 @@ const store = createStore(
     globalData: {
       addFormVisible: false,
       eventsFullView: false,
-      forceNavRender: true
+      forceNavRender: true,
+      showSideNavButton: true,
+      showSideNav: false,
+      showHeader: true,
+      showNavbar: true,
+      showFooter: true,
+      showListFilterOptions: true,
+      showBackToList: true,
+      showListExpandCollapse: true,
+      showListViewOption: true,
+      showFavoritesOption: true,
+      showListFilterOptions: true,
+      showDetailsInParent: false
     },
     eventData: {
       events: [],
       listScrollPos: 0
     },
     filterData: {
-      regionFilter: {id: 0, name: ''},
-      hazardFilter: {id: 0, name: ''},
-      impactFilter: {id: 0, name: ''},
+      regions: [],
+      hazards: [],
+      impacts: [],
+      regionFilter: 0,
+      hazardFilter: 0,
+      impactFilter: 0,
       dateFilter: { startDate: 0, endDate: 0 },
       favoritesFilter: false
     },
-    chartData:{
+    chartData: {
       chart1: [],
       chart2: [],
       chart3: [],
       chart4: []
-  }
+    }
 
   }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )

@@ -146,14 +146,15 @@ namespace APIv2.Controllers
                     type = "Feature",
                     geometry = new
                     {
-                        type = "MultiPolygon",
+                        type = "Polygon",
                         coordinates = GetCoordinates(e.EventRegions, regions, vmsRegions)
                     },
                     properties = new
                     {
                         id = e.EventId,
-                        regions = e.EventRegions.Select(er => er.RegionId).ToArray(),
+                        regions = GetGeoProps(e.EventRegions.Select(er => er.RegionId).ToArray(), regions), 
                         hazard = e.TypeEventId,
+                        hazardName = e.TypeEvent.TypeEventName,
                         startDate = ConvertToDateString(e.StartDate),
                         endDate = ConvertToDateString(e.EndDate),
                         declaredDates = e.DeclaredEvents.Select(de => ConvertToDateString(de.DeclaredDate)).ToArray(),
@@ -179,7 +180,7 @@ namespace APIv2.Controllers
                 {
                     var polygon = new List<object>();
 
-                    var vmsRegion = vmsRegions.FirstOrDefault(v => v.Value.StartsWith(region.RegionName));
+                    var vmsRegion = vmsRegions.FirstOrDefault(v => v.Value.Replace("-", " ").StartsWith(region.RegionName.Replace("-", " ")));
                     if (vmsRegion != null)
                     {
                         var simpleWKT = vmsRegion.AdditionalData.FirstOrDefault(ad => ad.Key == "SimpleWKT");
@@ -220,7 +221,7 @@ namespace APIv2.Controllers
                 eventImpactIDs.AddRange(
                     eventImpacts
                     .Where(ei => ei.EventRegionId == erID)
-                    .Select(ei => ei.EventImpactId)
+                    .Select(ei => ei.TypeImpactId)
                     .ToArray()
                 );
             }
@@ -230,12 +231,7 @@ namespace APIv2.Controllers
 
         private string ConvertToDateString(long? unixTime)
         {
-            if (unixTime == null)
-            {
-                var dt = DateTime.Now;
-                unixTime = ((DateTimeOffset)dt).ToUnixTimeSeconds();
-            }
-            long _unixTime = (long)unixTime;
+            long _unixTime = unixTime != null ? (long)unixTime : 0;
 
             // Unix timestamp is seconds past epoch
             return DateTimeOffset.FromUnixTimeSeconds(_unixTime).Date.ToString("yyyy-MM-dd");
@@ -274,6 +270,53 @@ namespace APIv2.Controllers
             }
 
             return result.Items;
+        }
+
+
+        private List<int> GetParents(int filterID, Region[] data)
+        {
+            int? parentId = 0;
+
+            //Get ParentId
+            var vmsItem = data.FirstOrDefault(x => x.RegionId == filterID);
+            if (vmsItem != null && vmsItem.ParentRegionId != null)
+            {
+                parentId = vmsItem.ParentRegionId;
+            }
+
+            var parents = data
+                .Where(x =>
+                    x.RegionId == parentId
+                )
+                .Select(x => x.RegionId)
+                .ToList();
+
+            var addParents = new List<int>();
+            foreach (var p in parents)
+            {
+                //Add to temp list so as to not modify 'parents' during iteration
+                addParents.AddRange(GetParents(p, data));
+            }
+            //Transfer to actual list
+            parents.AddRange(addParents);
+
+            return parents;
+        }
+
+        private List<List<int>> GetGeoProps(int[] items, Region[] vmsItems)
+        {
+            var geoItems = new List<List<int>>();
+
+            foreach (var r in items)
+            {
+                var itemGroup = new List<int>();
+                itemGroup.Add(r);
+                itemGroup.AddRange(GetParents(r, vmsItems));
+
+                geoItems.Add(itemGroup);
+            }
+
+            return geoItems;
         }
     }
 }

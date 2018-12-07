@@ -154,9 +154,9 @@ class Footer extends React.Component {
                 height: "500px",
                 margin: "0px",
                 border: "1px solid gainsboro",
-                backgroundImage: `url(${loader})`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "50% 50%"
+                // backgroundImage: `url(${loader})`,
+                // backgroundRepeat: "no-repeat",
+                // backgroundPosition: "50% 50%"
               }}
               src={modalSrc}
             />
