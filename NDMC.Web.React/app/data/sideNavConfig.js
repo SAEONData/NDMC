@@ -9,10 +9,10 @@ export const data = {
 		{
 			id: 1, text: "About", children: [
 				{ id: 11, window: "modal", text: "NCCIS", link: "http://app01.saeon.ac.za/dev/UI_footside/page_about_NCCIS.html" },
-				{ id: 12, window: "modal", text: "NCCRD", link: "http://app01.saeon.ac.za/dev/UI_footside/page_about_NDMC.html" },
-				{ id: 13, window: "modal", text: "NDEDB", link: "http://app01.saeon.ac.za/dev/UI_footside/page_about_NDEDB.html" },
-				{ id: 14, window: "modal", text: "SAEON", link: "http://app01.saeon.ac.za/dev/UI_footside/page_SAEON.html" },
-				{ id: 15, window: "modal", text: "Open Data Platform", link: "http://app01.saeon.ac.za/dev/UI_footside/page_ODP.html" },
+				{ id: 12, window: "modal", text: "NCCRD", link: "http://app01.saeon.ac.za/dev/UI_footside/page_about_NCCRD.html" },
+				{ id: 13, window: "modal", text: "NHE (NDEDB)", link: "http://app01.saeon.ac.za/dev/UI_footside/page_about_NDEDB.html" },
+				// { id: 14, window: "modal", text: "SAEON", link: "http://app01.saeon.ac.za/dev/UI_footside/page_SAEON.html" },
+				// { id: 15, window: "modal", text: "Open Data Platform", link: "http://app01.saeon.ac.za/dev/UI_footside/page_ODP.html" },
 			]
 		},
 		{
@@ -31,7 +31,7 @@ export const data = {
 				{ id: 32, window: "modal", text: "Options", link: "http://app01.saeon.ac.za/dev/UI_footside/page_options.html" },
 				{ id: 33, window: "modal", text: "Data", link: "http://app01.saeon.ac.za/dev/UI_footside/page_data.html" },
 				{ id: 35, window: "modal", text: "Example APIs", link: "http://app01.saeon.ac.za/dev/UI_footside/page_API.html" },
-				{ id: 36, window: "modal", text: "Example Components", link: "http://app01.saeon.ac.za/dev/UI_footside/page_components.html" }
+				{ id: 36, window: "modal", text: "Example Components", link: "http://app01.saeon.ac.za/dev/UI_footside/page_component.html" }
 			]
 		},
 	]
