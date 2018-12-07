@@ -16,7 +16,7 @@ const store = createStore(
       addFormVisible: false,
       eventsFullView: false,
       forceNavRender: true,
-      showSideNavButton: false,
+      showSideNavButton: true,
       showSideNav: false,
       showHeader: true,
       showNavbar: true,

@@ -89,7 +89,7 @@ class SideNav extends React.Component {
             <SideNavItem
               key={"lnk_" + x.id}
               onClick={() => {
-                this.showContent(x.link, x.text)
+                this.showContent(x.link, x.text, x.window)
               }}
             >
               <Fa style={{ marginRight: "10px" }} icon="link" />
@@ -119,8 +119,16 @@ class SideNav extends React.Component {
     //this.props.toggleSideNav(false)
   }
 
-  showContent(link, title) {
-    this.setState({ showContent: true, contentLink: link, contentTitle: title })
+  showContent(link, title, window) {
+
+    if(window === 'blank'){
+      var win = open(link, '_blank');
+      win.focus();
+    }
+    else{
+      this.setState({ showContent: true, contentLink: link, contentTitle: title })
+    }
+
   }
 
   render() {
@@ -179,9 +187,9 @@ class SideNav extends React.Component {
                 width: width,
                 height: (height - 75) + "px",
                 border: "0px solid black",
-                backgroundImage: `url(${loader})`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "50% 50%"
+                // backgroundImage: `url(${loader})`,
+                // backgroundRepeat: "no-repeat",
+                // backgroundPosition: "50% 50%"
               }}
               src={contentLink}
             />
