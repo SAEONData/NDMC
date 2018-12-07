@@ -98,7 +98,7 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     //this.genTestConfig()
     this.processURLConfig()
   }
