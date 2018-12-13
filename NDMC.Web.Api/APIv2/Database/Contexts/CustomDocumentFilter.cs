@@ -236,7 +236,7 @@ namespace APIv2.Database.Contexts
             {
                 listParams.Add(pi.ParameterType.ToString());
             }
-            sb.Append(string.Join(", ", listParams.ToArray()));
+            sb.Append(string.Join(",", listParams.ToArray()));
             if (parameterInfo.Length > 0) sb.Append(")");
 
             //Construct search path/name
