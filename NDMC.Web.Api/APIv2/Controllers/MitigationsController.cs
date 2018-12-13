@@ -25,12 +25,23 @@ namespace APIv2.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of Mitigation
+        /// </summary>
+        /// <returns>List of Mitigation</returns>
+        [HttpGet]
         [EnableQuery]
         public IQueryable<Mitigation> Get()
         {
             return _context.Mitigations.AsQueryable();
         }
 
+        /// <summary>
+        /// Get a specific Mitigation by id
+        /// </summary>
+        /// <param name="id">MitigationId</param>
+        /// <returns>Specific Mitigation by id</returns>
+        [HttpGet]
         [EnableQuery]
         [ODataRoute("({id})")]
         public SingleResult<Mitigation> Get(int id)

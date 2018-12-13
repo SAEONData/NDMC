@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>APIv2</name>
+    </assembly>
+    <members>
+        <member name="M:APIv2.Controllers.DeclaredEventsController.Get">
+            <summary>
+            Get a list of DeclaredEvent
+            </summary>
+            <returns>List of DeclaredEvent</returns>
+        </member>
+        <member name="M:APIv2.Controllers.EventImpactsController.Get">
+            <summary>
+            Get a list of EventImpact
+            </summary>
+            <returns>List of EventImpact</returns>
+        </member>
+        <member name="M:APIv2.Controllers.EventRegionsController.Get">
+            <summary>
+            Get a list of EventRegion
+            </summary>
+            <returns>List of EventRegion</returns>
+        </member>
+        <member name="M:APIv2.Controllers.EventsController.Get">
+            <summary>
+            Get a list of Event
+            </summary>
+            <returns>List of Event</returns>
+        </member>
+        <member name="M:APIv2.Controllers.EventsController.Get(System.Int32)">
+            <summary>
+            Get a specific Event by id
+            </summary>
+            <param name="id">EventId</param>
+            <returns>Specific Event by id</returns>
+        </member>
+        <member name="M:APIv2.Controllers.EventsController.Post(APIv2.Database.Models.Event)">
+            <summary>
+            Add/Update an Event
+            </summary>
+            <param name="newEvent">Event to add/update</param>
+            <returns>Success/Fail status</returns>
+        </member>
+        <member name="M:APIv2.Controllers.EventsController.Filter(APIv2.ViewModels.Filters)">
+            <summary>
+            Get a filtered list of Event
+            </summary>
+            <param name="filters">Composite object containing filters</param>
+            <returns>Filtered list of Event</returns>
+        </member>
+        <member name="M:APIv2.Controllers.EventsController.GeoJson">
+            <summary>
+            Get a list of Event in GeoJSON format
+            </summary>
+            <returns>List of Event in GeoJSON format</returns>
+        </member>
+        <member name="M:APIv2.Controllers.MitigationsController.Get">
+            <summary>
+            Get a list of Mitigation
+            </summary>
+            <returns>List of Mitigation</returns>
+        </member>
+        <member name="M:APIv2.Controllers.MitigationsController.Get(System.Int32)">
+            <summary>
+            Get a specific Mitigation by id
+            </summary>
+            <param name="id">MitigationId</param>
+            <returns>Specific Mitigation by id</returns>
+        </member>
+        <member name="M:APIv2.Controllers.RegionsController.Get">
+            <summary>
+            Get a list of Region
+            </summary>
+            <returns>List of Region</returns>
+        </member>
+        <member name="M:APIv2.Controllers.RegionTypesController.Get">
+            <summary>
+            Get a list of RegionType
+            </summary>
+            <returns>List of RegionType</returns>
+        </member>
+        <member name="M:APIv2.Controllers.TypeEventsController.Get">
+            <summary>
+            Get a list of TypeEvent
+            </summary>
+            <returns>List of TypeEvent</returns>
+        </member>
+        <member name="M:APIv2.Controllers.TypeImpactsController.Get">
+            <summary>
+            Get a list of TypeImpact
+            </summary>
+            <returns>List of TypeImpact</returns>
+        </member>
+        <member name="M:APIv2.Controllers.TypeMitigationsController.Get">
+            <summary>
+            Get a list of TypeMitigation
+            </summary>
+            <returns>List of TypeMitigation</returns>
+        </member>
+        <member name="M:APIv2.Controllers.TypeSourcesController.Get">
+            <summary>
+            Get a list of TypeSource
+            </summary>
+            <returns>List of TypeSource</returns>
+        </member>
+        <member name="T:APIv2.Database.Contexts.CustomDocumentFilter">
+            <summary>
+            I found the starting point of this class and its implemetation on StackOverflow and GitHub:
+            https://stackoverflow.com/a/51774147/4261155
+            https://github.com/nycdanielp/swashbuckle-custom-odata/blob/master/CustomDocumentFilter.cs
+            </summary>
+        </member>
+    </members>
+</doc>

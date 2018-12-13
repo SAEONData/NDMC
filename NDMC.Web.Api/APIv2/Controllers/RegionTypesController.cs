@@ -24,6 +24,11 @@ namespace APIv2.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of RegionType
+        /// </summary>
+        /// <returns>List of RegionType</returns>
+        [HttpGet]
         [EnableQuery]
         public IQueryable<RegionType> Get()
         {
