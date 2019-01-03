@@ -134,7 +134,7 @@ class EventCard extends React.Component {
           <CardTitle>Disaster at {RegionName} ({hazardtype} - {startdate}) </CardTitle>
 
           <CardText>
-            {startdate ? `Date: ${startdate} until ${enddate}` : ''} <br />
+            {startdate !== 'N/A' ? `Date: ${startdate} until ${enddate}` : 'No Dates Recorded'} <br />
             {hazardtype ? `Type: ${hazardtype}` : ' '}
           </CardText>
 

@@ -23,5 +23,7 @@ namespace APIv2.Database.Models
         public int TypeImpactId { get; set; }
         //[Required]
         public TypeImpact TypeImpact { get; set; }
+        
+        public string UnitOfMeasure { get; set; }
     }
 }
