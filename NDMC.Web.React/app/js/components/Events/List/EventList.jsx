@@ -273,7 +273,7 @@ class EventList extends React.Component {
   async onSubmit() {
     this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
-      return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impact.impactUnitMeasure }
+      return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
     })
     const formattedResponses = this.state.responses.map(response => {
       return {
