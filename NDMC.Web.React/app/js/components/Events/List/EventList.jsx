@@ -675,7 +675,7 @@ class EventList extends React.Component {
             <Form layout="vertical" hideRequiredMark>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Region">
+                  <Form.Item label="Select the region in which  the event ocurred">
                     <OData baseUrl={apiBaseURL + 'regions'} query={regionQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
@@ -688,7 +688,7 @@ class EventList extends React.Component {
                             value={this.state.regionTreeValue}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                             treeData={regionTree}
-                            placeholder="Please select a region"
+                            placeholder="Region"
                             onSelect={this.onRegionSelect}
                           >
                           </TreeSelect>
@@ -698,7 +698,7 @@ class EventList extends React.Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Hazard">
+                  <Form.Item label="Select the type of event that ocurred">
                     <OData baseUrl={apiBaseURL + 'TypeEvents'} query={hazardQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
@@ -708,7 +708,7 @@ class EventList extends React.Component {
                           return <Select
                             showSearch
                             style={{ width: 400 }}
-                            placeholder="Select a hazard"
+                            placeholder="Hazard"
                             optionFilterProp="children"
                             onChange={this.onHazardSelect}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -725,7 +725,7 @@ class EventList extends React.Component {
               </Row>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Hazard Date Range">
+                  <Form.Item label="Select the date range in which the event ocurred">
                     <DatePicker.RangePicker
                       style={{ width: '100%' }}
                       getPopupContainer={trigger => trigger.parentNode}
@@ -736,14 +736,14 @@ class EventList extends React.Component {
               </Row>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Date Declared">
+                  <Form.Item label="If the event has been declared, please provide date of declaration">
                     <DatePicker onChange={this.onDeclaredDateSelect} />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={16}>
                 <Col span={24}>
-                  <Form.Item label="Impacts">
+                  <Form.Item label="All impacts that occured">
                     <Button onClick={this.onImpactOpen} size="sm" color=""
                       style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
                       Add Impact
@@ -759,7 +759,7 @@ class EventList extends React.Component {
                         if (data) {
                           data.value.sort((prev, next) => prev.TypeImpactName.localeCompare(next.TypeImpactName))
                           return <Modal
-                            title="New Impact"
+                            title="New Impact Creation"
                             visible={this.state.impactModalVisible}
                             onOk={this.onImpactAdd}
                             onCancel={this.onImpactClose}
@@ -780,12 +780,12 @@ class EventList extends React.Component {
                             <div className="row" style={{paddingLeft: 15}}>
                               <div style={{ paddingTop: 1, className: 'col-sm-1', paddingRight: 10 }}>
                                 <br></br>
-                                <h6>Enter Amount </h6>
-                                <InputNumber style={{ height: 35, width: 120 }} onChange={this.onImpactAmount}></InputNumber>
+                                <h6>Enter Amount as number </h6>
+                                <InputNumber style={{ height: 35, width: 160 }} onChange={this.onImpactAmount}></InputNumber>
                               </div>
                               <div style={{ paddingTop: 1, className: 'col-sm-1', paddingLeft: 10 }}>
                                 <br></br>
-                                <h6>Enter Unit Of Measure </h6>
+                                <h6>Enter Unit Of Measure for impact </h6>
                                 <Select
                                 showSearch
                                 style={{width: 200}}
@@ -818,7 +818,7 @@ class EventList extends React.Component {
               </Row>
               <Row gutter={16}>
                 <Col span={24}>
-                  <Form.Item label="Responses">
+                  <Form.Item label="All responses implemented">
                     <Button onClick={this.onResponseOpen} size="sm" color=""
                       style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
                       Add Response
