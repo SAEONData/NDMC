@@ -183,16 +183,16 @@ class EventList extends React.Component {
   buildList(events) {
     let ar = []
     events.map(i => {
-      let startdate = new Date(i.StartDate * 1000)
-      let enddate = new Date(i.EndDate * 1000)
+      let startdate = i.StartDate > 0 ? new Date(i.StartDate * 1000) : 'N/A'
+      let enddate = i.EndDate > 0 ? new Date(i.EndDate * 1000) : 'N/A'
       if (i.TypeEvent !== null && i.EventRegions[0] !== undefined) {
         ar.push(
           <EventCard
             key={i.EventId}
             eid={i.EventId}
             region={i.EventRegions[0].Region}
-            startdate={startdate.toDateString()}
-            enddate={enddate.toDateString()}
+            startdate={ startdate === 'N/A'? 'N/A' : startdate.toDateString()}
+            enddate={enddate === 'N/A'? 'N/A' : enddate.toDateString()}
             hazardtype={i.TypeEvent.TypeEventName}
           />
         )
