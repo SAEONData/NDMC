@@ -24,6 +24,11 @@ namespace APIv2.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of TypeSource
+        /// </summary>
+        /// <returns>List of TypeSource</returns>
+        [HttpGet]
         [EnableQuery]
         public IQueryable<TypeSource> Get()
         {

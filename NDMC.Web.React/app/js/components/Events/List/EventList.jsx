@@ -17,7 +17,6 @@ import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 //MDBReact
 import { Button, Fa, ListGroup, ListGroupItem } from 'mdbreact'
 
-//AntD
 //Inputs
 import Modal from 'antd/lib/modal'
 import Form from 'antd/lib/form'
@@ -105,6 +104,7 @@ class EventList extends React.Component {
       impactTypeTemp: '',
       impactTypeNameTemp: '',
       impactAmountTemp: '',
+      impactUnitMeasureTemp: '',
       responseTypeTemp: '',
       responseTypeNameTemp: '',
       responseValueTemp: '',
@@ -135,6 +135,7 @@ class EventList extends React.Component {
     this.onResponseValue = this.onResponseValue.bind(this)
     this.onMeasureSelect = this.onMeasureSelect.bind(this)
     this.onResponseDateSelect = this.onResponseDateSelect.bind(this)
+    this.onImpactUnitMeasure = this.onImpactUnitMeasure.bind(this)
   }
 
   componentDidMount() {
@@ -183,16 +184,16 @@ class EventList extends React.Component {
   buildList(events) {
     let ar = []
     events.map(i => {
-      let startdate = new Date(i.StartDate * 1000)
-      let enddate = new Date(i.EndDate * 1000)
+      let startdate = i.StartDate > 0 ? new Date(i.StartDate * 1000) : 'N/A'
+      let enddate = i.EndDate > 0 ? new Date(i.EndDate * 1000) : 'N/A'
       if (i.TypeEvent !== null && i.EventRegions[0] !== undefined) {
         ar.push(
           <EventCard
             key={i.EventId}
             eid={i.EventId}
             region={i.EventRegions[0].Region}
-            startdate={startdate.toDateString()}
-            enddate={enddate.toDateString()}
+            startdate={startdate === 'N/A' ? 'N/A' : startdate.toDateString()}
+            enddate={enddate === 'N/A' ? 'N/A' : enddate.toDateString()}
             hazardtype={i.TypeEvent.TypeEventName}
           />
         )
@@ -260,6 +261,7 @@ class EventList extends React.Component {
       impactTypeTemp: '',
       impactTypeNameTemp: '',
       impactAmountTemp: '',
+      impactUnitMeasureTemp: '',
       responseTypeTemp: '',
       responseTypeNameTemp: '',
       responseValueTemp: '',
@@ -271,7 +273,7 @@ class EventList extends React.Component {
   async onSubmit() {
     this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
-      return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType }
+      return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
     })
     const formattedResponses = this.state.responses.map(response => {
       return {
@@ -330,6 +332,7 @@ class EventList extends React.Component {
       impactTypeTemp: '',
       impactTypeNameTemp: '',
       impactAmountTemp: '',
+      impactUnitMeasureTemp: '',
       responseTypeTemp: '',
       responseTypeNameTemp: '',
       responseValueTemp: '',
@@ -384,6 +387,7 @@ class EventList extends React.Component {
         impactTypeTemp: '',
         impactTypeNameTemp: '',
         impactAmountTemp: '',
+        impactUnitMeasureTemp: '',
       })
     }
   }
@@ -392,7 +396,8 @@ class EventList extends React.Component {
     let newimpact = {
       impactType: this.state.impactTypeTemp,
       impactTypeName: this.state.impactTypeNameTemp,
-      impactAmount: this.state.impactAmountTemp
+      impactAmount: this.state.impactAmountTemp,
+      impactUnitMeasure: this.state.impactUnitMeasureTemp
     }
 
     if (this.state.impacts.length > 0) {
@@ -412,6 +417,7 @@ class EventList extends React.Component {
       impactTypeTemp: '',
       impactTypeNameTemp: '',
       impactAmountTemp: '',
+      impactUnitMeasure: '',
     })
   }
 
@@ -421,6 +427,10 @@ class EventList extends React.Component {
 
   onImpactAmount(value) {
     this.setState({ impactAmountTemp: value })
+  }
+
+  onImpactUnitMeasure(value) {
+    this.setState({ impactUnitMeasureTemp: value })
   }
 
   onImpactUndo() {
@@ -665,7 +675,7 @@ class EventList extends React.Component {
             <Form layout="vertical" hideRequiredMark>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Region">
+                  <Form.Item label="Select the region in which  the event ocurred">
                     <OData baseUrl={apiBaseURL + 'regions'} query={regionQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
@@ -678,7 +688,7 @@ class EventList extends React.Component {
                             value={this.state.regionTreeValue}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                             treeData={regionTree}
-                            placeholder="Please select a region"
+                            placeholder="Region"
                             onSelect={this.onRegionSelect}
                           >
                           </TreeSelect>
@@ -688,7 +698,7 @@ class EventList extends React.Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Hazard">
+                  <Form.Item label="Select the type of event that ocurred">
                     <OData baseUrl={apiBaseURL + 'TypeEvents'} query={hazardQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
@@ -698,7 +708,7 @@ class EventList extends React.Component {
                           return <Select
                             showSearch
                             style={{ width: 400 }}
-                            placeholder="Select a hazard"
+                            placeholder="Hazard"
                             optionFilterProp="children"
                             onChange={this.onHazardSelect}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -715,7 +725,7 @@ class EventList extends React.Component {
               </Row>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Hazard Date Range">
+                  <Form.Item label="Select the date range in which the event ocurred">
                     <DatePicker.RangePicker
                       style={{ width: '100%' }}
                       getPopupContainer={trigger => trigger.parentNode}
@@ -726,14 +736,14 @@ class EventList extends React.Component {
               </Row>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Date Declared">
+                  <Form.Item label="If the event has been declared, please provide date of declaration">
                     <DatePicker onChange={this.onDeclaredDateSelect} />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={16}>
                 <Col span={24}>
-                  <Form.Item label="Impacts">
+                  <Form.Item label="All impacts that occured">
                     <Button onClick={this.onImpactOpen} size="sm" color=""
                       style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
                       Add Impact
@@ -749,7 +759,7 @@ class EventList extends React.Component {
                         if (data) {
                           data.value.sort((prev, next) => prev.TypeImpactName.localeCompare(next.TypeImpactName))
                           return <Modal
-                            title="New Impact"
+                            title="New Impact Creation"
                             visible={this.state.impactModalVisible}
                             onOk={this.onImpactAdd}
                             onCancel={this.onImpactClose}
@@ -767,8 +777,31 @@ class EventList extends React.Component {
                                 return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
                               })}
                             </Select>
-                            <div style={{ paddingTop: 10 }}>
-                              <InputNumber style={{ height: 35, width: 120 }} onChange={this.onImpactAmount}></InputNumber>
+                            <div className="row" style={{paddingLeft: 15}}>
+                              <div style={{ paddingTop: 1, className: 'col-sm-1', paddingRight: 10 }}>
+                                <br></br>
+                                <h6>Enter Amount as number </h6>
+                                <InputNumber style={{ height: 35, width: 160 }} onChange={this.onImpactAmount}></InputNumber>
+                              </div>
+                              <div style={{ paddingTop: 1, className: 'col-sm-1', paddingLeft: 10 }}>
+                                <br></br>
+                                <h6>Enter Unit Of Measure for impact </h6>
+                                <Select
+                                showSearch
+                                style={{width: 200}}
+                                placeholder="Select a Unit Of Measure"
+                                optionFilterProp="children"
+                                onChange={this.onImpactUnitMeasure}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                >
+                                <Option key={1} value={'Rands'}>Rands</Option>
+                                <Option key={2} value={'Metres'}>Metres</Option>
+                                <Option key={3} value={'Kilometres'}>Kilometres</Option>
+                                <Option key={4} value={'Hectares'}>Hectares</Option>
+                                <Option key={5} value={'Acres'}>Acres</Option>
+                                <Option key={6} value={'Count'}>Count</Option>
+                                </Select>
+                              </div>
                             </div>
                           </Modal>
                         }
@@ -776,7 +809,7 @@ class EventList extends React.Component {
                     </OData>
                     <ListGroup>
                       {impacts.length ? impacts.map((impact) => {
-                        return <ListGroupItem key={impact.impactTypeName} >{impact.impactTypeName}: {impact.impactAmount}</ListGroupItem>
+                        return <ListGroupItem key={impact.impactTypeName} >{impact.impactTypeName}: {impact.impactAmount}({impact.impactUnitMeasure})</ListGroupItem>
                       }) : <ListGroupItem>No Impact added</ListGroupItem>}
                       <ListGroupItem></ListGroupItem>
                     </ListGroup>
@@ -785,7 +818,7 @@ class EventList extends React.Component {
               </Row>
               <Row gutter={16}>
                 <Col span={24}>
-                  <Form.Item label="Responses">
+                  <Form.Item label="All responses implemented">
                     <Button onClick={this.onResponseOpen} size="sm" color=""
                       style={{ marginLeft: "0px", marginTop: "0px", backgroundColor: DEAGreen }}>
                       Add Response

@@ -24,6 +24,11 @@ namespace APIv2.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of TypeImpact
+        /// </summary>
+        /// <returns>List of TypeImpact</returns>
+        [HttpGet]
         [EnableQuery]
         public IQueryable<TypeImpact> Get()
         {

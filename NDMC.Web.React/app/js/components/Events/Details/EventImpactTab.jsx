@@ -77,7 +77,7 @@ class EventResponseTab extends React.Component {
               if (data && data.value) {
                 data.value[0].EventRegions[0].EventImpacts.map(impact => {
                   let amountMeasure = ''
-                  switch (impact.TypeImpact.UnitOfMeasure) {
+                  switch (impact.UnitOfMeasure ? impact.UnitOfMeasure : impact.TypeImpact.UnitOfMeasure) {
                     case 'Hectare':
                       amountMeasure = '(Hectares)'
                       break
@@ -90,44 +90,47 @@ class EventResponseTab extends React.Component {
                     case 'Rands':
                       amountMeasure = formatter.format(impact.Measure)
                       break
+                    case 'Kilometres':
+                      amountMeasure = '(Kilometres)'
+                      break
                     default:
                       amountMeasure = '(Count)'
-                  } 
+                  }
                   //console.log(impact)
                   // Agriculture
-                  if(impact.TypeImpact.ParentTypeImpactId === 36 || impact.TypeImpactId === 36 ){
+                  if (impact.TypeImpact.ParentTypeImpactId === 36 || impact.TypeImpactId === 36) {
                     agricultureImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                      `${impact.Measure} ${amountMeasure}`
-                      : 'No amount recorded'
+                        `${impact.Measure} ${amountMeasure}`
+                        : 'No amount recorded'
                     })
                   }
                   // Infrastrucutre
-                  if(impact.TypeImpact.ParentTypeImpactId === 54 || impact.TypeImpactId === 54){
+                  if (impact.TypeImpact.ParentTypeImpactId === 54 || impact.TypeImpactId === 54) {
                     infrastrucutureImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                      `${impact.Measure} ${amountMeasure}`
-                      : 'No amount recorded'
+                        `${impact.Measure} ${amountMeasure}`
+                        : 'No amount recorded'
                     })
                   }
                   // People
-                  if(impact.TypeImpact.ParentTypeImpactId === 60 || impact.TypeImpactId === 60){
+                  if (impact.TypeImpact.ParentTypeImpactId === 60 || impact.TypeImpactId === 60) {
                     peopleImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                      `${impact.Measure} ${amountMeasure}`
-                      : 'No amount recorded'
+                        `${impact.Measure} ${amountMeasure}`
+                        : 'No amount recorded'
                     })
                   }
                   // Game
-                  if(impact.TypeImpact.ParentTypeImpactId === 14 || impact.TypeImpactId === 14){
+                  if (impact.TypeImpact.ParentTypeImpactId === 14 || impact.TypeImpactId === 14) {
                     gameImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                      `${impact.Measure} ${amountMeasure}`
-                      : 'No amount recorded'
+                        `${impact.Measure} ${amountMeasure}`
+                        : 'No amount recorded'
                     })
                   }
                 })
@@ -152,7 +155,7 @@ class EventResponseTab extends React.Component {
                       {peopleImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={peopleImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
+                          <TableBody rows={peopleImpacts.sort((a, b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                     <hr />
@@ -161,7 +164,7 @@ class EventResponseTab extends React.Component {
                       {agricultureImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={agricultureImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
+                          <TableBody rows={agricultureImpacts.sort((a, b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                     <hr />
@@ -170,7 +173,7 @@ class EventResponseTab extends React.Component {
                       {infrastrucutureImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={infrastrucutureImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
+                          <TableBody rows={infrastrucutureImpacts.sort((a, b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                     <hr />
@@ -179,7 +182,7 @@ class EventResponseTab extends React.Component {
                       {gameImpacts.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={gameImpacts.sort((a,b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
+                          <TableBody rows={gameImpacts.sort((a, b) => (a.impact > b.impact) ? 1 : ((b.impact > a.impact) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                   </div>

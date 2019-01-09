@@ -63,8 +63,8 @@ class EventDetailsTab extends React.Component {
               if (error) { return <div>Error Loading Data From Server</div> }
               if (data && data.value) {
                 const event = data.value[0]
-                let startdate = new Date(event.StartDate * 1000)
-                let enddate = new Date(event.EndDate * 1000)
+                let startdate = event.StartDate > 0 ? new Date(event.StartDate * 1000) : 'N/A'
+                let enddate = event.EndDate > 0 ? new Date(event.EndDate * 1000) : 'N/A'
                 let declareddate = new Date(event.DeclaredEvents[0].DeclaredDate * 1000)
                 return (<>
                   <br />
@@ -95,8 +95,8 @@ class EventDetailsTab extends React.Component {
                       label='Date'
                       id='txtEventDate'
                       inputWidth='100px'
-                      valueFrom={`${startdate.getFullYear()}\/${startdate.getMonth() + 1}\/${startdate.getDate()}`}
-                      valueTo={`${enddate.getFullYear()}\/${enddate.getMonth() + 1}\/${enddate.getDay()}`}
+                      valueFrom={ startdate !== 'N/A' ?`${startdate.getFullYear()}\/${startdate.getMonth() + 1}\/${startdate.getDate()}` : startdate}
+                      valueTo={ enddate !== 'N/A' ? `${enddate.getFullYear()}\/${enddate.getMonth() + 1}\/${enddate.getDay()}` : enddate}
                       allowEdit={false}
                     />
                   </div>

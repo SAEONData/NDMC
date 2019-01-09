@@ -24,6 +24,11 @@ namespace APIv2.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of DeclaredEvent
+        /// </summary>
+        /// <returns>List of DeclaredEvent</returns>
+        [HttpGet]
         [EnableQuery]
         public IQueryable<DeclaredEvent> Get()
         {

@@ -24,6 +24,11 @@ namespace APIv2.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of EventRegion
+        /// </summary>
+        /// <returns>List of EventRegion</returns>
+        [HttpGet]
         [EnableQuery]
         public IQueryable<EventRegion> Get()
         {

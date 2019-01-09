@@ -36,19 +36,35 @@ namespace APIv2.Controllers
             _config = config;
         }
 
+        /// <summary>
+        /// Get a list of Event
+        /// </summary>
+        /// <returns>List of Event</returns>
+        [HttpGet]
         [EnableQuery(MaxExpansionDepth = 0)]
         public IQueryable<Event> Get()
         {
             return _context.Events.AsQueryable();
         }
 
+        /// <summary>
+        /// Get a specific Event by id
+        /// </summary>
+        /// <param name="id">EventId</param>
+        /// <returns>Specific Event by id</returns>
+        [HttpGet]
         [EnableQuery]
         [ODataRoute("({id})")]
-        public SingleResult<Event> Get(int id)
+        public Event Get(int id)
         {
-            return SingleResult.Create(_context.Events.Where(x => x.EventId == id));
+            return _context.Events.FirstOrDefault(x => x.EventId == id);
         }
 
+        /// <summary>
+        /// Add/Update an Event
+        /// </summary>
+        /// <param name="newEvent">Event to add/update</param>
+        /// <returns>Success/Fail status</returns>
         [HttpPost]
         //[Authorize(Roles = "Contributor,Custodian,Configurator,SysAdmin")]
         [EnableQuery]
@@ -70,6 +86,11 @@ namespace APIv2.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Get a filtered list of Event
+        /// </summary>
+        /// <param name="filters">Composite object containing filters</param>
+        /// <returns>Filtered list of Event</returns>
         [HttpPost]
         [EnableQuery]
         public IQueryable<Event> Filter([FromBody] Filters filters)
@@ -131,6 +152,10 @@ namespace APIv2.Controllers
             return events;
         }
 
+        /// <summary>
+        /// Get a list of Event in GeoJSON format
+        /// </summary>
+        /// <returns>List of Event in GeoJSON format</returns>
         [HttpGet]
         [EnableQuery]
         public JsonResult GeoJson()
@@ -167,6 +192,7 @@ namespace APIv2.Controllers
 
             return new JsonResult(geoJSON);
         }
+
 
         private object[] GetCoordinates(ICollection<EventRegion> evenRegions, Region[] regions, List<StandardVocabItem> vmsRegions)
         {

@@ -24,6 +24,11 @@ namespace APIv2.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of EventImpact
+        /// </summary>
+        /// <returns>List of EventImpact</returns>
+        [HttpGet]
         [EnableQuery]
         public IQueryable<EventImpact> Get()
         {

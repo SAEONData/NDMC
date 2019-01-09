@@ -24,6 +24,11 @@ namespace APIv2.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get a list of TypeMitigation
+        /// </summary>
+        /// <returns>List of TypeMitigation</returns>
+        [HttpGet]
         [EnableQuery]
         public IQueryable<TypeMitigation> Get()
         {
