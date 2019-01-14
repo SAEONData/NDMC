@@ -1,18 +1,15 @@
 'use strict'
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { connect } from 'react-redux'
 import ReactTooltip from 'react-tooltip'
-
-//Local
 import EventDetailsTab from './EventDetailsTab.jsx'
 import EventResoponseTab from './EventResponseTab.jsx'
 import EventImpactTab from './EventImpactTab.jsx'
-
-//MDBReact
 import { Button } from 'mdbreact'
-
-//React Tabs
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 
@@ -31,6 +28,10 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * EventResponseTab Class for response details tab of individual events
+ * @class
+ */
 class EventDetails extends React.Component {
   constructor(props) {
     super(props)
@@ -46,6 +47,9 @@ class EventDetails extends React.Component {
   componentDidUpdate() {
   }
 
+  /**
+   * Handle changes for navigating back to events
+   */
   navBack() {
     setTimeout(() => { this.props.setForceNavRender(true) }, 250)
     let navTo = location.hash.replace(
@@ -55,8 +59,10 @@ class EventDetails extends React.Component {
     location.hash = navTo
   }
 
+  /**
+   * Handle navigating back to events list
+   */
   backToList() {
-    let { eventDetails } = this.props
     let dataState = 'original'
     if (dataState === 'original') {
       this.navBack()
@@ -67,7 +73,6 @@ class EventDetails extends React.Component {
   }
 
   render() {
-    const { eventDetails } = this.props
     const { eventId } = this.state
     return (
       <>
@@ -77,7 +82,6 @@ class EventDetails extends React.Component {
             <i className='fa fa-chevron-circle-left' aria-hidden='true'></i>&nbsp;&nbsp;Back To List
           </Button>          
         }
-
         <br />
         <Tabs forceRenderTabPanel={true}>
           <TabList>

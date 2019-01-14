@@ -1,16 +1,12 @@
 'use strict'
-
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
-import { Button, Input } from 'mdbreact'
 import { connect } from 'react-redux'
-
-//Local
 import TextComponent from '../../Shared/TextComponent.jsx'
-import TextAreaComponent from '../../Shared/TextAreaComponent.jsx'
 import RangeComponent from '../../Shared/RangeComponent.jsx'
-
-//Odata
 import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
@@ -18,6 +14,10 @@ const mapStateToProps = (state, props) => {
   return {}
 }
 
+/**
+ * EventDetailsTab Class for details tab of individual events
+ * @class
+ */
 class EventDetailsTab extends React.Component {
   constructor(props) {
     super(props)
@@ -56,7 +56,6 @@ class EventDetailsTab extends React.Component {
           padding: "10px",
           marginTop: "-10px"
         }}>
-
           <OData baseUrl={apiBaseURL + 'Events'} query={impactQuery}>
             {({ loading, error, data }) => {
               if (loading) { return <div>Loading...</div> }

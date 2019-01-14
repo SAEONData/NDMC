@@ -1,17 +1,11 @@
 'use strict'
-
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
-import { Button, Input } from 'mdbreact'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHead } from 'mdbreact';
-
-//Local
-import TextComponent from '../../Shared/TextComponent.jsx'
-import TextAreaComponent from '../../Shared/TextAreaComponent.jsx'
-import RangeComponent from '../../Shared/RangeComponent.jsx'
-
-//Odata
 import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
@@ -19,6 +13,10 @@ const mapStateToProps = (state, props) => {
   return {}
 }
 
+/**
+ * EventResponseTab Class for response details tab of individual events
+ * @class
+ */
 class EventResponseTab extends React.Component {
   constructor(props) {
     super(props)
@@ -35,7 +33,6 @@ class EventResponseTab extends React.Component {
       },
       expand: ['TypeMitigation']
     }
-
     const formatter = new Intl.NumberFormat('en-Za', {
       style: 'currency',
       currency: 'ZAR',
