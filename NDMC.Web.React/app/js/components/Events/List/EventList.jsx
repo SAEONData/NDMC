@@ -1,23 +1,17 @@
 'use strict'
-
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { connect } from 'react-redux'
+import { Button, Fa, ListGroup, ListGroupItem } from 'mdbreact'
+import OData from 'react-odata'
 import popout from '../../../../images/popout.png'
 import popin from '../../../../images/popin.png'
-
-//Local
 import EventCard from './EventCard.jsx'
 import { DEAGreen } from '../../../config/colours.cfg'
-
-//Odata
-import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
-
-//MDBReact
-import { Button, Fa, ListGroup, ListGroupItem } from 'mdbreact'
-
-//Inputs
 import Modal from 'antd/lib/modal'
 import Form from 'antd/lib/form'
 import Col from 'antd/lib/col'
@@ -26,11 +20,9 @@ import InputNumber from 'antd/lib/input-number'
 import Select from 'antd/lib/select'
 import DatePicker from 'antd/lib/date-picker'
 import Drawer from 'antd/lib/drawer'
-import List from 'antd/lib/list'
 import TreeSelect from 'antd/lib/tree-select'
 import Popover from 'antd/lib/popover'
 const { Option } = Select
-//Styles
 import 'antd/lib/modal/style/index.css'
 import 'antd/lib/form/style/index.css'
 import 'antd/lib/input-number/style/index.css'
@@ -76,6 +68,10 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * The EventList class for displaying events on the dashboard
+ * @class
+ */
 class EventList extends React.Component {
   constructor(props) {
     super(props)
@@ -178,9 +174,11 @@ class EventList extends React.Component {
     }
   }
 
-  /*
-  Create a list of event cards to be used to populate the events page and parse in the relevant information for each event
-  */
+  /**
+   * Build A list of event cards to be rendered
+   * @param {object} events An object containing the array of events to render
+   * @returns {Array} An array of cards containing events
+   */
   buildList(events) {
     let ar = []
     events.map(i => {
@@ -202,6 +200,9 @@ class EventList extends React.Component {
     return ar
   }
 
+  /**
+   * Query events from API with any filter's selected
+   */
   getEvents() {
     //Set loading true
     this.setState({ eventsLoading: true }, async () => {
@@ -247,6 +248,9 @@ class EventList extends React.Component {
     })
   }
 
+  /**
+   * Handle closing the input form
+   */
   onClose() {
     this.props.toggleAddForm(false)
     this.setState({
@@ -270,6 +274,9 @@ class EventList extends React.Component {
     })
   }
 
+   /**
+   * Handle submitting a new event from the input form
+   */
   async onSubmit() {
     this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
@@ -341,6 +348,9 @@ class EventList extends React.Component {
     })
   }
 
+   /**
+   * Handle scrolling to top of page
+   */
   backToTop() {
     window.scroll({
       top: 0,
@@ -349,6 +359,10 @@ class EventList extends React.Component {
     })
   }
 
+  /**
+   * Transform a flat array of regions from API into a tree for tree select inputs
+   * @param {*} filteredRegions 
+   */
   transformDataTree(filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
@@ -360,26 +374,49 @@ class EventList extends React.Component {
     return resultArray
   }
 
+  /**
+   * Handle selecting region in input form
+   * @param {string} value The value of the region selected node
+   * @param {object} node An object containing all data for selected region node
+   */
   onRegionSelect(value, node) {
     this.setState({ region: value, regionTreeValue: node.props.title })
   }
 
+  /**
+   * Handle selecting hazard in input form
+   * @param {string} value The value of the hazard selected node
+   */
   onHazardSelect(value) {
     this.setState({ hazard: value })
   }
 
-  onDeclaredDateSelect(date, dateString) {
+  /**
+   * Handle selecting a declared date
+   * @param {string} dateString The date string of the chosen declared date
+   */
+  onDeclaredDateSelect(dateString) {
     this.setState({ declaredDate: Date.parse(dateString) / 1000 })
   }
 
-  onDateRangeSelect(date, dateString) {
+  /**
+   * Handle selecting a hazard date range
+   * @param {string} dateString The date string of the chosen date range
+   */
+  onDateRangeSelect( dateString) {
     this.setState({ startDate: Date.parse(dateString[0]) / 1000, endDate: Date.parse(dateString[1]) / 1000 })
   }
 
+  /**
+   * Handle opening the impact input dialog
+   */
   onImpactOpen() {
     this.setState({ impactModalVisible: true })
   }
 
+  /**
+   * Handle closing the impact input dialog
+   */
   onImpactClose() {
     if (!isNaN(this.state.impactAmountTemp && this.state.impactAmountTemp)) {
       this.setState({ impactModalVisible: false })
@@ -392,6 +429,9 @@ class EventList extends React.Component {
     }
   }
 
+  /**
+   * Handle adding a new impact to the impact array for the event
+   */
   onImpactAdd() {
     let newimpact = {
       impactType: this.state.impactTypeTemp,
@@ -421,18 +461,34 @@ class EventList extends React.Component {
     })
   }
 
+  /**
+   * Handle impact select in impact dialog
+   * @param {string} value The impact string of the selected impact node
+   * @param {object} next The node object containing details of the selected node
+   */
   onImpactSelect(value, next) {
     this.setState({ impactTypeTemp: value, impactTypeNameTemp: next.props.children })
   }
 
+  /**
+   * Handle impact amount/value input for a given impact
+   * @param {string} value The string value of the amount inputted
+   */
   onImpactAmount(value) {
     this.setState({ impactAmountTemp: value })
   }
 
+  /**
+   * Handle impact Unit of Measure selecting for a given impact
+   * @param {string} value The string of the unit of measure selected
+   */
   onImpactUnitMeasure(value) {
     this.setState({ impactUnitMeasureTemp: value })
   }
 
+  /**
+   * Handle removing the last impact added in input form
+   */
   onImpactUndo() {
     let arr = this.state.impacts
     arr.pop()
@@ -441,14 +497,23 @@ class EventList extends React.Component {
     })
   }
 
+  /**
+   * Handle opening the response input dialog
+   */
   onResponseOpen() {
     this.setState({ responseModalVisible: true })
   }
 
+  /**
+   * Handle closing the response input dialog
+   */
   onResponseClose() {
     this.setState({ responseModalVisible: false })
   }
 
+  /**
+   * Handle adding a new response to the array of responses for the event
+   */
   onResponseAdd() {
     let newResponse = {
       responseType: this.state.responseTypeTemp,
@@ -479,14 +544,26 @@ class EventList extends React.Component {
     })
   }
 
+  /**
+   * Handle selecting a response in response dialog
+   * @param {string} value The string value of the selected response
+   * @param {object} next The object containing details of the selected node 
+   */
   onResponseSelect(value, next) {
     this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.children })
   }
 
+  /**
+   * Handle inputting value for a response
+   * @param {string} value The string value of the inputted response value
+   */
   onResponseValue(value) {
     this.setState({ responseValueTemp: value })
   }
 
+  /**
+   * Handle removing the last response added in input form
+   */
   onResponseUndo() {
     let arr = this.state.responses
     arr.pop()
@@ -495,13 +572,21 @@ class EventList extends React.Component {
     })
   }
 
+  /**
+   * Handle measure input for a response
+   * @param {string} value The string value of the amount inputted
+   */
   onMeasureSelect(value) {
     this.setState({
       measureTemp: value
     })
   }
 
-  onResponseDateSelect(value, dateString) {
+  /**
+   * Handle date selection for a response
+   * @param {string} dateString The string value of the selected date chosen for the response
+   */
+  onResponseDateSelect(dateString) {
     this.setState({
       responseDateTemp: Date.parse(dateString) / 1000
     })
@@ -867,18 +952,6 @@ class EventList extends React.Component {
                               <DatePicker
                                 style={{ width: 150, paddingTop: 10, paddingLeft: 10 }}
                                 onChange={this.onResponseDateSelect} />
-                              {/* <Select
-                              showSearch
-                              style={{ width: 150, height: 20, paddingTop: 10, paddingLeft: 10 }}
-                              placeholder="Select a Measure"
-                              optionFilterProp="children"
-                              onChange={this.onMeasureSelect}
-                              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            >
-                              {responseMeasures.map(measure => {
-                                return <Option key={measure} value={measure}>{measure}</Option>
-                              })}
-                            </Select> */}
                             </div>
                           </Modal>
                         }
