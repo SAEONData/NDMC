@@ -1,19 +1,23 @@
+'use strict'
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { Col, Row, Modal, ModalBody, ModalHeader } from 'mdbreact';
-import { DEAGreen, DEAGreenDark } from '../../config/colours.cfg'
-
+import { DEAGreen } from '../../config/colours.cfg'
 import { footerContent } from '../../../data/footerConfig'
-import loader from '../../../images/loader.gif'
 
+/**
+ * The Footer class for displaying a footer for references and additional information
+ * @class
+ */
 class Footer extends React.Component {
-
   constructor(props) {
     super(props);
-
     this.toggleModal = this.toggleModal.bind(this)
     this.renderLinks = this.renderLinks.bind(this)
     this.handleResize = this.handleResize.bind(this)
-
     this.state = {
       showModal: false,
       modalHeader: "",
@@ -30,12 +34,21 @@ class Footer extends React.Component {
     window.removeEventListener("resize", this.handleResize)
   }
 
+  /**
+   * Handle page resizing for narrow display
+   */
   handleResize() {
     this.setState({
       isNarrowDisplay: (window.innerWidth < 900)
     })
   }
 
+  /**
+   * Handle toggling header/footer model
+   * @param {string} state The state to set 
+   * @param {string} header The custom defined header
+   * @param {string} src Data sources
+   */
   toggleModal(state, header = "", src = "") {
     this.setState({
       showModal: state,
@@ -44,10 +57,12 @@ class Footer extends React.Component {
     })
   }
 
+  /**
+   * Handle what data to render
+   * @param {*} data 
+   */
   renderSections(data) {
-
     let sections = []
-
     for (let i = 0; i < 4; i++) {
       let section = data.sections[i]
       sections.push(
@@ -57,17 +72,16 @@ class Footer extends React.Component {
         </Col>
       )
     }
-
     return sections
   }
 
-
+  /**
+   * Handle what links to render on footer
+   * @param {object} section The render section object
+   */
   renderLinks(section) {
-
     let links = []
-
     for (let i = 0; i < section.links.length; i++) {
-
       let link = section.links[i]
       if (link.text) {
         links.push(
@@ -98,14 +112,11 @@ class Footer extends React.Component {
         )
       }
     }
-
     return links
   }
 
   render() {
-
-    let { showModal, modalHeader, modalSrc, isNarrowDisplay } = this.state
-
+    let { showModal, modalHeader, modalSrc } = this.state
     return (
       <>
         <div style={{
@@ -122,7 +133,6 @@ class Footer extends React.Component {
           </Row>
           <br />
         </div>
-
         <div style={{
           padding: "10px 45px 10px 45px",
           backgroundColor: DEAGreen,
@@ -144,7 +154,6 @@ class Footer extends React.Component {
             </Col>
           </Row>
         </div>
-
         <Modal isOpen={showModal} toggle={() => this.toggleModal(false)} size="fluid" style={{ width: "95%" }} >
           <ModalHeader toggle={() => this.toggleModal(false)}>{modalHeader}</ModalHeader>
           <ModalBody>
@@ -166,5 +175,4 @@ class Footer extends React.Component {
     )
   }
 }
-
 export default Footer

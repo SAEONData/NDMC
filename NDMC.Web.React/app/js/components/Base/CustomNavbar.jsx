@@ -1,8 +1,11 @@
 'use strict'
-
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { connect } from 'react-redux'
-import { Navbar, NavbarNav, NavbarToggler, Collapse, NavItem, Button, Fa } from 'mdbreact'
+import { Navbar, NavbarNav, NavbarToggler, Collapse, Button, Fa } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { forceNavRender, toggleSideNav, showSideNav, showSideNavButton } } = state
@@ -23,17 +26,18 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * The CustomNavbar class for displaying a top navigation bar
+ * @class
+ */
 class CustomNavbar extends React.Component {
-
   constructor(props) {
     super(props)
-
     this.state = {
       collapse: false,
       isWideEnough: false,
       dropdownOpen: false
     }
-
     this.onClick = this.onClick.bind(this)
     this.toggle = this.toggle.bind(this)
   }
@@ -46,23 +50,29 @@ class CustomNavbar extends React.Component {
     this.checkForceNavRender()
   }
 
+  /**
+   * Handle navigation bar rendering on component updates
+   */
   checkForceNavRender() {
-
     if (this.props.forceNavRender === true) {
-
       this.props.setForceNavRender(false)
-
       // Force a render without state change...
       this.forceUpdate()
     }
   }
 
+  /**
+   * Handle navbar click collapse
+   */
   onClick() {
     this.setState({
       collapse: !this.state.collapse,
     })
   }
 
+  /**
+   * Handle navbar dropdown toggle
+   */
   toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
@@ -70,9 +80,7 @@ class CustomNavbar extends React.Component {
   }
 
   render() {
-
     let { toggleSideNav, showSideNav } = this.props
-
     return (
       <Navbar
         size="sm"
@@ -84,11 +92,9 @@ class CustomNavbar extends React.Component {
           borderTop: "1px solid #E8E8E8",
         }}
       >
-
         {!this.state.isWideEnough && <NavbarToggler style={{ backgroundColor: "#2BBBAD" }} onClick={this.onClick} />}
         <Collapse isOpen={this.state.collapse} navbar>
           <NavbarNav left>
-
             {
               (this.props.showSideNavButton === true && this.props.showNavbar !== "addOnly") &&
               <Button size="sm" color="grey" onClick={() => { toggleSideNav(!showSideNav) }}
@@ -96,7 +102,6 @@ class CustomNavbar extends React.Component {
                 <Fa icon="bars" />
               </Button>
             }
-
             {
               (!location.hash.includes("events/") /*&& (user && !user.expired)*/) &&
               <Button
@@ -108,25 +113,12 @@ class CustomNavbar extends React.Component {
                 Add New Event
               </Button>
             }
-
             {/* INVISIBLE HEIGHT SPACER */}
             <div style={{ height: "32px", margin: "6px" }} />
-
           </NavbarNav>
-
-          {/* <NavbarNav right>
-            <NavItem style={{ marginRight: "15px" }}>
-              <a className="nav-link" href="#">Login</a>
-            </NavItem>
-            <NavItem style={{ marginRight: "15px" }}>
-              <a className="nav-link" href="#/events">Register</a>
-            </NavItem>
-          </NavbarNav> */}
-
         </Collapse>
       </Navbar>
     )
   }
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(CustomNavbar)
