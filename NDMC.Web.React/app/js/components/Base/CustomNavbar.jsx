@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class CustomNavbar extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       collapse: false,
@@ -42,18 +42,18 @@ class CustomNavbar extends React.Component {
     this.toggle = this.toggle.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.checkForceNavRender()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     this.checkForceNavRender()
   }
 
   /**
    * Handle navigation bar rendering on component updates
    */
-  checkForceNavRender() {
+  checkForceNavRender () {
     if (this.props.forceNavRender === true) {
       this.props.setForceNavRender(false)
       // Force a render without state change...
@@ -64,7 +64,7 @@ class CustomNavbar extends React.Component {
   /**
    * Handle navbar click collapse
    */
-  onClick() {
+  onClick () {
     this.setState({
       collapse: !this.state.collapse,
     })
@@ -73,13 +73,13 @@ class CustomNavbar extends React.Component {
   /**
    * Handle navbar dropdown toggle
    */
-  toggle() {
+  toggle () {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
     })
   }
 
-  render() {
+  render () {
     let { toggleSideNav, showSideNav } = this.props
     return (
       <Navbar

@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class SideNav extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.renderLinks = this.renderLinks.bind(this)
     this.toggleNav = this.toggleNav.bind(this)
@@ -43,27 +43,27 @@ class SideNav extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
   /**
    * Handle the updating of window dimensions based of window size
    */
-  updateWindowDimensions() {
+  updateWindowDimensions () {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
 
   /**
    * Handle toggling the side navigation bar
-   * @param {string} key String key used to update state of sidebar 
+   * @param {string} key String key used to update state of sidebar
    */
-  toggleNav(key) {
+  toggleNav (key) {
     let { navOpen } = this.state
     if (navOpen.includes(key)) {
       navOpen = navOpen.filter(x => x !== key)
@@ -79,7 +79,7 @@ class SideNav extends React.Component {
    * @param {array} data The array of objects to render
    * @param {number} level The number level of links to render
    */
-  renderLinks(data, level = 0) {
+  renderLinks (data, level = 0) {
     let links = []
     //let indent = (level > 1 ? 26 * (level - 1) : 0) + "px"
     data.forEach(x => {
@@ -129,7 +129,7 @@ class SideNav extends React.Component {
   /**
    * Handle closing the sidenav model
    */
-  closeModal() {
+  closeModal () {
     this.setState({ showContent: false })
     //this.props.toggleSideNav(false)
   }
@@ -140,7 +140,7 @@ class SideNav extends React.Component {
    * @param {string} title The string title of conent
    * @param {string} window The window name on which conent should be displayed
    */
-  showContent(link, title, window) {
+  showContent (link, title, window) {
     if (window === 'blank') {
       var win = open(link, '_blank');
       win.focus();
@@ -150,7 +150,7 @@ class SideNav extends React.Component {
     }
   }
 
-  render() {
+  render () {
     let { isOpen, data } = this.props
     let { width, height, showContent, contentLink, contentTitle } = this.state
     //const sideNavWidth = 325

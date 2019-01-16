@@ -10,7 +10,7 @@ import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 import Select from 'antd/lib/select'
 import '../../../../css/antd.select.css' //Overrides default antd.select css
-const Option = Select.Option;
+const Option = Select.Option
 const _ = require('lodash')
 
 const mapStateToProps = (state, props) => {
@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class impactFilters extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       value: 'Select...'
@@ -42,7 +42,7 @@ class impactFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     let { impactFilter, impacts } = this.props
     let searchImpacts = impacts.filter(r => r.TypeImpactId == impactFilter)
     let impactName = "Select..."
@@ -59,7 +59,7 @@ class impactFilters extends React.Component {
    * Handle selecting an impact filter
    * @param {string} value String value of the selected impact node
    */
-  optionClick(value) {
+  optionClick (value) {
     let { loadImpactFilter, impacts } = this.props
     let id = 0
     let filteredData
@@ -77,13 +77,13 @@ class impactFilters extends React.Component {
 
   /**
    * list available render options
-   * @param {Array} data The data array for render options 
+   * @param {Array} data The data array for render options
    */
-  renderOptions(data) {
+  renderOptions (data) {
     let options = []
     data.value.sort((a, b) => (a.TypeImpactName > b.TypeImpactName) ? 1 : ((b.TypeImpactName > a.TypeImpactName) ? -1 : 0))
     var uniq = {}
-    data.value = data.value.filter(obj => !uniq[obj.TypeImpactName] && (uniq[obj.TypeImpactName] = true));
+    data.value = data.value.filter(obj => !uniq[obj.TypeImpactName] && (uniq[obj.TypeImpactName] = true))
     data.value.map(item => {
       options.push(
         <Option key={item.TypeImpactId + "_" + item.TypeImpactName} value={item.TypeImpactName}>
@@ -94,7 +94,7 @@ class impactFilters extends React.Component {
     return options
   }
 
-  render() {
+  render () {
     const impactsQuery = {
       select: ['TypeImpactId', 'TypeImpactName']
     }
@@ -111,7 +111,7 @@ class impactFilters extends React.Component {
             if (data && data.value) {
               //Dispatch data to store
               setTimeout(() => {
-                if(!_.isEqual(data.value, this.props.impacts)){
+                if (!_.isEqual(data.value, this.props.impacts)) {
                   this.props.loadImpacts(data.value)
                 }
               }, 100)

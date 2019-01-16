@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { DEAGreen } from '../../../config/colours.cfg'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
-const moment = require('moment');
+const moment = require('moment')
 
 const mapStateToProps = (state, props) => {
   let { filterData: {
@@ -49,7 +49,7 @@ const mapDispatchToProps = dispatch => {
  * @class
  */
 class EventFilters extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.clearFilters = this.clearFilters.bind(this)
@@ -59,7 +59,7 @@ class EventFilters extends React.Component {
   /**
    * Handle clearing all selected filters
    */
-  clearFilters() {
+  clearFilters () {
     let { clearFilters } = this.props
     clearFilters('')
   }
@@ -67,7 +67,7 @@ class EventFilters extends React.Component {
   /**
    * Handle displaying filter tags for each filter
    */
-  handleTags() {
+  handleTags () {
     let {
       hazardFilter, regionFilter, impactFilter, dateFilter, favoritesFilter, regions, hazards, impacts
     } = this.props
@@ -142,7 +142,7 @@ class EventFilters extends React.Component {
             handleClose={() => {
               this.props.clearDateFilter()
             }}>
-            {`${startdate} - ${endDate}`}
+            {`${ startdate } - ${ endDate }`}
           </Chip>
         )
       }
@@ -168,7 +168,7 @@ class EventFilters extends React.Component {
     return taglist
   }
 
-  render() {
+  render () {
     return (
       <>
         <div style={{ backgroundColor: "white", padding: "10px", borderRadius: "10px", border: "1px solid gainsboro" }}>
@@ -189,7 +189,7 @@ class EventFilters extends React.Component {
             }}
             onClick={this.clearFilters}
           >
-          <Fa icon="trash-o" size="2x" style={{ color: DEAGreen }} />
+            <Fa icon="trash-o" size="2x" style={{ color: DEAGreen }} />
           </Button>
           <hr />
           <div style={{ padding: "10px 20px 10px 20px" }}>

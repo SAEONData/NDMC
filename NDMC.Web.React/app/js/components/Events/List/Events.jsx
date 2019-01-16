@@ -31,15 +31,15 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class Events extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.setEventsFullView(true)
   }
 
-  render() {
+  render () {
     return (
       <>
         {

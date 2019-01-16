@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class RegionFilters extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.onSelect = this.onSelect.bind(this)
     this.state = {
@@ -41,7 +41,7 @@ class RegionFilters extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
 
     let { regionFilter, regions } = this.props
 
@@ -58,10 +58,10 @@ class RegionFilters extends React.Component {
 
   /**
    * Handle selection of region filter
-   * @param {string} value String value of the selected node 
-   * @param {object} node Object of selected node contatining details of node 
+   * @param {string} value String value of the selected node
+   * @param {object} node Object of selected node contatining details of node
    */
-  onSelect(value, node) {
+  onSelect (value, node) {
     let { loadRegionFilter } = this.props
     loadRegionFilter(parseInt(value))
     this.setState({ treeValue: node.props.title })
@@ -72,10 +72,10 @@ class RegionFilters extends React.Component {
    * in a format for antd's tree-select
    * @param {object} filteredRegions Object containing array of pre-filtered regions
    */
-  transformDataTree(filteredRegions) {
+  transformDataTree (filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
-        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${i.RegionId}`, key: i.RegionId
+        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${ i.RegionId }`, key: i.RegionId
       }
     })
     regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
@@ -83,7 +83,7 @@ class RegionFilters extends React.Component {
     return resultArray
   }
 
-  render() {
+  render () {
     const regionQuery = {
       select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
       filter: { RegionTypeId: { ne: 5 } }
@@ -104,7 +104,7 @@ class RegionFilters extends React.Component {
                   }
                 }, 100)
                 let regionTree = this.transformDataTree(data.value)
-                regionTree.sort((a,b) => a.title.localeCompare(b.title))
+                regionTree.sort((a, b) => a.title.localeCompare(b.title))
                 return (
                   <TreeSelect
                     style={{ width: "100%" }}

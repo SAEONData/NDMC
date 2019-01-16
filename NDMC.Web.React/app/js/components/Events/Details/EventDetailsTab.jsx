@@ -19,14 +19,14 @@ const mapStateToProps = (state, props) => {
  * @class
  */
 class EventDetailsTab extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       eventData: {}
     }
   }
 
-  render() {
+  render () {
     const { eventId } = this.props
     let impactQuery = {
       select: ['StartDate', 'EndDate'],
@@ -94,8 +94,8 @@ class EventDetailsTab extends React.Component {
                       label='Date'
                       id='txtEventDate'
                       inputWidth='100px'
-                      valueFrom={ startdate !== 'N/A' ?`${startdate.getFullYear()}\/${startdate.getMonth() + 1}\/${startdate.getDate()}` : startdate}
-                      valueTo={ enddate !== 'N/A' ? `${enddate.getFullYear()}\/${enddate.getMonth() + 1}\/${enddate.getDay()}` : enddate}
+                      valueFrom={startdate !== 'N/A' ? `${ startdate.getFullYear() }\/${ startdate.getMonth() + 1 }\/${ startdate.getDate() }` : startdate}
+                      valueTo={enddate !== 'N/A' ? `${ enddate.getFullYear() }\/${ enddate.getMonth() + 1 }\/${ enddate.getDay() }` : enddate}
                       allowEdit={false}
                     />
                   </div>

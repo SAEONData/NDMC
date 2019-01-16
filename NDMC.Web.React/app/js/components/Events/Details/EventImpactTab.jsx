@@ -5,7 +5,7 @@
  */
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, TableBody, TableHead } from 'mdbreact';
+import { Table, TableBody, TableHead } from 'mdbreact'
 import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
@@ -18,14 +18,14 @@ const mapStateToProps = (state, props) => {
  * @class
  */
 class EventResponseTab extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       eventData: {}
     }
   }
 
-  render() {
+  render () {
     const { eventId } = this.props
     let impactQuery = {
       filter: {
@@ -94,7 +94,7 @@ class EventResponseTab extends React.Component {
                     agricultureImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                        `${impact.Measure} ${amountMeasure}`
+                        `${ impact.Measure } ${ amountMeasure }`
                         : 'No amount recorded'
                     })
                   }
@@ -103,7 +103,7 @@ class EventResponseTab extends React.Component {
                     infrastrucutureImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                        `${impact.Measure} ${amountMeasure}`
+                        `${ impact.Measure } ${ amountMeasure }`
                         : 'No amount recorded'
                     })
                   }
@@ -112,7 +112,7 @@ class EventResponseTab extends React.Component {
                     peopleImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                        `${impact.Measure} ${amountMeasure}`
+                        `${ impact.Measure } ${ amountMeasure }`
                         : 'No amount recorded'
                     })
                   }
@@ -121,7 +121,7 @@ class EventResponseTab extends React.Component {
                     gameImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                        `${impact.Measure} ${amountMeasure}`
+                        `${ impact.Measure } ${ amountMeasure }`
                         : 'No amount recorded'
                     })
                   }

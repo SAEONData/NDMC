@@ -73,7 +73,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class EventList extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       _hazardFilter: 0,
@@ -134,13 +134,13 @@ class EventList extends React.Component {
     this.onImpactUnitMeasure = this.onImpactUnitMeasure.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.getEvents()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     let { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } = this.props
     let { _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter } = this.state
     if (hazardFilter !== _hazardFilter || regionFilter !== _regionFilter || impactFilter !== _impactFilter ||
@@ -159,11 +159,11 @@ class EventList extends React.Component {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
-  handleScroll() {
+  handleScroll () {
     let { showBackToTop } = this.state
     //Toggle BackToTop button
     if (window.pageYOffset > 1450 && showBackToTop === false) {
@@ -179,7 +179,7 @@ class EventList extends React.Component {
    * @param {object} events An object containing the array of events to render
    * @returns {Array} An array of cards containing events
    */
-  buildList(events) {
+  buildList (events) {
     let ar = []
     events.map(i => {
       let startdate = i.StartDate > 0 ? new Date(i.StartDate * 1000) : 'N/A'
@@ -203,7 +203,7 @@ class EventList extends React.Component {
   /**
    * Query events from API with any filter's selected
    */
-  getEvents() {
+  getEvents () {
     //Set loading true
     this.setState({ eventsLoading: true }, async () => {
       //Get Events
@@ -216,7 +216,7 @@ class EventList extends React.Component {
       let top = eventListSize - events.length
       top = top > 0 ? top : 0
 
-      let fetchURL = `${apiBaseURL}Events/Extensions.Filter?$skip=${skip}&$top=${top}&$expand=eventRegions($expand=Region),TypeEvent`
+      let fetchURL = `${ apiBaseURL }Events/Extensions.Filter?$skip=${ skip }&$top=${ top }&$expand=eventRegions($expand=Region),TypeEvent`
       let postBody = {
         region: _regionFilter,
         hazard: _hazardFilter,
@@ -234,24 +234,24 @@ class EventList extends React.Component {
           // 'Authorization': 'Bearer' + (user === null ? '': '')
         },
         body: JSON.stringify(postBody)
-      });
-      const res_1 = await res.json();
+      })
+      const res_1 = await res.json()
 
       if (res_1 && res_1.value && res_1.value.length > 0) {
-        events.push(...res_1.value); //add additional events
+        events.push(...res_1.value) //add additional events
         this.props.loadEvents(events)
       }
 
       this.setState({
         eventsLoading: false //set loading false
-      });
+      })
     })
   }
 
   /**
    * Handle closing the input form
    */
-  onClose() {
+  onClose () {
     this.props.toggleAddForm(false)
     this.setState({
       region: '',
@@ -274,10 +274,10 @@ class EventList extends React.Component {
     })
   }
 
-   /**
-   * Handle submitting a new event from the input form
-   */
-  async onSubmit() {
+  /**
+  * Handle submitting a new event from the input form
+  */
+  async onSubmit () {
     this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
       return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
@@ -348,10 +348,10 @@ class EventList extends React.Component {
     })
   }
 
-   /**
-   * Handle scrolling to top of page
-   */
-  backToTop() {
+  /**
+  * Handle scrolling to top of page
+  */
+  backToTop () {
     window.scroll({
       top: 0,
       left: 0,
@@ -361,12 +361,12 @@ class EventList extends React.Component {
 
   /**
    * Transform a flat array of regions from API into a tree for tree select inputs
-   * @param {*} filteredRegions 
+   * @param {*} filteredRegions
    */
-  transformDataTree(filteredRegions) {
+  transformDataTree (filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
-        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${i.RegionId}`, key: i.RegionId
+        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${ i.RegionId }`, key: i.RegionId
       }
     })
     regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
@@ -379,7 +379,7 @@ class EventList extends React.Component {
    * @param {string} value The value of the region selected node
    * @param {object} node An object containing all data for selected region node
    */
-  onRegionSelect(value, node) {
+  onRegionSelect (value, node) {
     this.setState({ region: value, regionTreeValue: node.props.title })
   }
 
@@ -387,7 +387,7 @@ class EventList extends React.Component {
    * Handle selecting hazard in input form
    * @param {string} value The value of the hazard selected node
    */
-  onHazardSelect(value) {
+  onHazardSelect (value) {
     this.setState({ hazard: value })
   }
 
@@ -395,7 +395,7 @@ class EventList extends React.Component {
    * Handle selecting a declared date
    * @param {string} dateString The date string of the chosen declared date
    */
-  onDeclaredDateSelect(dateString) {
+  onDeclaredDateSelect (dateString) {
     this.setState({ declaredDate: Date.parse(dateString) / 1000 })
   }
 
@@ -403,21 +403,21 @@ class EventList extends React.Component {
    * Handle selecting a hazard date range
    * @param {string} dateString The date string of the chosen date range
    */
-  onDateRangeSelect( dateString) {
+  onDateRangeSelect (dateString) {
     this.setState({ startDate: Date.parse(dateString[0]) / 1000, endDate: Date.parse(dateString[1]) / 1000 })
   }
 
   /**
    * Handle opening the impact input dialog
    */
-  onImpactOpen() {
+  onImpactOpen () {
     this.setState({ impactModalVisible: true })
   }
 
   /**
    * Handle closing the impact input dialog
    */
-  onImpactClose() {
+  onImpactClose () {
     if (!isNaN(this.state.impactAmountTemp && this.state.impactAmountTemp)) {
       this.setState({ impactModalVisible: false })
       this.setState({
@@ -432,7 +432,7 @@ class EventList extends React.Component {
   /**
    * Handle adding a new impact to the impact array for the event
    */
-  onImpactAdd() {
+  onImpactAdd () {
     let newimpact = {
       impactType: this.state.impactTypeTemp,
       impactTypeName: this.state.impactTypeNameTemp,
@@ -466,7 +466,7 @@ class EventList extends React.Component {
    * @param {string} value The impact string of the selected impact node
    * @param {object} next The node object containing details of the selected node
    */
-  onImpactSelect(value, next) {
+  onImpactSelect (value, next) {
     this.setState({ impactTypeTemp: value, impactTypeNameTemp: next.props.children })
   }
 
@@ -474,7 +474,7 @@ class EventList extends React.Component {
    * Handle impact amount/value input for a given impact
    * @param {string} value The string value of the amount inputted
    */
-  onImpactAmount(value) {
+  onImpactAmount (value) {
     this.setState({ impactAmountTemp: value })
   }
 
@@ -482,14 +482,14 @@ class EventList extends React.Component {
    * Handle impact Unit of Measure selecting for a given impact
    * @param {string} value The string of the unit of measure selected
    */
-  onImpactUnitMeasure(value) {
+  onImpactUnitMeasure (value) {
     this.setState({ impactUnitMeasureTemp: value })
   }
 
   /**
    * Handle removing the last impact added in input form
    */
-  onImpactUndo() {
+  onImpactUndo () {
     let arr = this.state.impacts
     arr.pop()
     this.setState({
@@ -500,21 +500,21 @@ class EventList extends React.Component {
   /**
    * Handle opening the response input dialog
    */
-  onResponseOpen() {
+  onResponseOpen () {
     this.setState({ responseModalVisible: true })
   }
 
   /**
    * Handle closing the response input dialog
    */
-  onResponseClose() {
+  onResponseClose () {
     this.setState({ responseModalVisible: false })
   }
 
   /**
    * Handle adding a new response to the array of responses for the event
    */
-  onResponseAdd() {
+  onResponseAdd () {
     let newResponse = {
       responseType: this.state.responseTypeTemp,
       responseTypeName: this.state.responseTypeNameTemp,
@@ -547,9 +547,9 @@ class EventList extends React.Component {
   /**
    * Handle selecting a response in response dialog
    * @param {string} value The string value of the selected response
-   * @param {object} next The object containing details of the selected node 
+   * @param {object} next The object containing details of the selected node
    */
-  onResponseSelect(value, next) {
+  onResponseSelect (value, next) {
     this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.children })
   }
 
@@ -557,14 +557,14 @@ class EventList extends React.Component {
    * Handle inputting value for a response
    * @param {string} value The string value of the inputted response value
    */
-  onResponseValue(value) {
+  onResponseValue (value) {
     this.setState({ responseValueTemp: value })
   }
 
   /**
    * Handle removing the last response added in input form
    */
-  onResponseUndo() {
+  onResponseUndo () {
     let arr = this.state.responses
     arr.pop()
     this.setState({
@@ -576,7 +576,7 @@ class EventList extends React.Component {
    * Handle measure input for a response
    * @param {string} value The string value of the amount inputted
    */
-  onMeasureSelect(value) {
+  onMeasureSelect (value) {
     this.setState({
       measureTemp: value
     })
@@ -586,13 +586,13 @@ class EventList extends React.Component {
    * Handle date selection for a response
    * @param {string} dateString The string value of the selected date chosen for the response
    */
-  onResponseDateSelect(dateString) {
+  onResponseDateSelect (dateString) {
     this.setState({
       responseDateTemp: Date.parse(dateString) / 1000
     })
   }
 
-  render() {
+  render () {
     const { impacts, responses } = this.state
     let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
 
@@ -862,7 +862,7 @@ class EventList extends React.Component {
                                 return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
                               })}
                             </Select>
-                            <div className="row" style={{paddingLeft: 15}}>
+                            <div className="row" style={{ paddingLeft: 15 }}>
                               <div style={{ paddingTop: 1, className: 'col-sm-1', paddingRight: 10 }}>
                                 <br></br>
                                 <h6>Enter Amount as number </h6>
@@ -872,19 +872,19 @@ class EventList extends React.Component {
                                 <br></br>
                                 <h6>Enter Unit Of Measure for impact </h6>
                                 <Select
-                                showSearch
-                                style={{width: 200}}
-                                placeholder="Select a Unit Of Measure"
-                                optionFilterProp="children"
-                                onChange={this.onImpactUnitMeasure}
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                  showSearch
+                                  style={{ width: 200 }}
+                                  placeholder="Select a Unit Of Measure"
+                                  optionFilterProp="children"
+                                  onChange={this.onImpactUnitMeasure}
+                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 >
-                                <Option key={1} value={'Rands'}>Rands</Option>
-                                <Option key={2} value={'Metres'}>Metres</Option>
-                                <Option key={3} value={'Kilometres'}>Kilometres</Option>
-                                <Option key={4} value={'Hectares'}>Hectares</Option>
-                                <Option key={5} value={'Acres'}>Acres</Option>
-                                <Option key={6} value={'Count'}>Count</Option>
+                                  <Option key={1} value={'Rands'}>Rands</Option>
+                                  <Option key={2} value={'Metres'}>Metres</Option>
+                                  <Option key={3} value={'Kilometres'}>Kilometres</Option>
+                                  <Option key={4} value={'Hectares'}>Hectares</Option>
+                                  <Option key={5} value={'Acres'}>Acres</Option>
+                                  <Option key={6} value={'Count'}>Count</Option>
                                 </Select>
                               </div>
                             </div>

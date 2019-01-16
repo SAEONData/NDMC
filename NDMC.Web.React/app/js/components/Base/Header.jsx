@@ -13,10 +13,10 @@ import sa_flag from '../../../images/sa_flag.jpg'
  * @class
  */
 class Header extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
-  render() {
+  render () {
     return (
       <>
         <Row className="align-items-center" style={{ marginBottom: "15px" }}>

@@ -10,7 +10,7 @@ import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 import Select from 'antd/lib/select'
 import '../../../../css/antd.select.css' //Overrides default antd.select css
-const Option = Select.Option;
+const Option = Select.Option
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, hazards } } = state
@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class HazardFilters extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       value: "Select..."
@@ -41,7 +41,7 @@ class HazardFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     let { hazardFilter, hazards } = this.props
     let searchHazards = hazards.filter(h => h.TypeEventId == hazardFilter)
     let hazardName = "Select..."
@@ -57,7 +57,7 @@ class HazardFilters extends React.Component {
    * Handle selecting a hazard from list
    * @param {string} value The string value of the selected node
    */
-  optionClick(value) {
+  optionClick (value) {
     let { loadHazardFilter, hazards } = this.props
     let id = 0
     let filteredData
@@ -76,7 +76,7 @@ class HazardFilters extends React.Component {
    * Set render options
    * @param {object} data The data object
    */
-  renderOptions(data) {
+  renderOptions (data) {
     let options = []
     data.value.sort((a, b) => (a.TypeEventName > b.TypeEventName) ? 1 : ((b.TypeEventName > a.TypeEventName) ? -1 : 0))
     data.value.map(item => {
@@ -89,7 +89,7 @@ class HazardFilters extends React.Component {
     return options
   }
 
-  render() {
+  render () {
     const hazardsQuery = {
       select: ['TypeEventId', 'TypeEventName']
     }
@@ -106,7 +106,7 @@ class HazardFilters extends React.Component {
             if (data && data.value) {
               //Dispatch data to store
               setTimeout(() => {
-                if(!_.isEqual(data.value, this.props.hazards)){
+                if (!_.isEqual(data.value, this.props.hazards)) {
                   this.props.loadHazards(data.value)
                 }
               }, 100)

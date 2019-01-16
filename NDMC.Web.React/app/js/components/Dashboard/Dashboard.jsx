@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class Dashboard extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.handleScroll = this.handleScroll.bind(this)
     this.state = {
@@ -45,19 +45,19 @@ class Dashboard extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.setEventsFullView(false)
     window.addEventListener('scroll', this.handleScroll)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
   /**
-   * Handle user page scrolling 
+   * Handle user page scrolling
    */
-  handleScroll() {
+  handleScroll () {
     let { showBackToTop } = this.state
     //Toggle BackToTop button
     if (window.pageYOffset > 1450 && showBackToTop === false) {
@@ -68,7 +68,7 @@ class Dashboard extends React.Component {
     }
   }
 
-  render() {
+  render () {
     let { showBackToTop } = this.state
     return (
       <div style={{ padding: "15px 0px 15px 0px" }}>

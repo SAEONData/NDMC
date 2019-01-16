@@ -1,3 +1,8 @@
+'use strict'
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { Row, Col, Button } from 'mdbreact'
 import { connect } from 'react-redux'
@@ -23,11 +28,14 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * MapViewCore Class for core map view render options and filters
+ * @class
+ */
 class MapViewCore extends React.Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props);
-
     this.state = {
       activeFilters: {
         region: 0,
@@ -47,7 +55,7 @@ class MapViewCore extends React.Component {
   //   window.removeEventListener("message", this.onMessage)
   // }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
 
     let { regionFilter, hazardFilter, dateFilter, impactFilter } = this.props
     let { activeFilters } = this.state
@@ -90,7 +98,7 @@ class MapViewCore extends React.Component {
   //   }
   // }
 
-  buildMapConfig() {
+  buildMapConfig () {
 
     let { regionFilter, hazardFilter, dateFilter, impactFilter, regions } = this.props
     let mapConfig = MapConfig
@@ -179,11 +187,11 @@ class MapViewCore extends React.Component {
     return encodeURIComponent(JSON.stringify(mapConfig))
   }
 
-  render() {
+  render () {
 
     let { height, width, fullView } = this.props
     let mapConfig = this.buildMapConfig()
-    let mapSrc = `http://app01.saeon.ac.za/components/map?conf=${mapConfig}`
+    let mapSrc = `http://app01.saeon.ac.za/components/map?conf=${ mapConfig }`
 
 
     if (!height) {

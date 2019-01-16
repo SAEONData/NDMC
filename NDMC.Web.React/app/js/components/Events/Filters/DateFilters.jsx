@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../constants/action-types'
 import DatePicker from 'antd/lib/date-picker'
 const { RangePicker } = DatePicker
-import moment from 'moment';
+import moment from 'moment'
 import '../../../../css/antd.date-picker.css'
 import '../../../../css/antd.time-picker.css'
 import '../../../../css/antd.input.css'
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class DateFilters extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.onChange = this.onChange.bind(this)
@@ -42,14 +42,14 @@ class DateFilters extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
   }
 
-  componentDidUpdate(){
+  componentDidUpdate () {
     let { dateFilter } = this.props
-    if(dateFilter === 0) dateFilter = { startDate: 0, endDate: 0 }
-    if(dateFilter.startDate !== this.state.startDate || dateFilter.endDate !== this.state.endDate){
-      this.setState({ startDate: dateFilter.startDate, endDate: dateFilter.endDate})
+    if (dateFilter === 0) dateFilter = { startDate: 0, endDate: 0 }
+    if (dateFilter.startDate !== this.state.startDate || dateFilter.endDate !== this.state.endDate) {
+      this.setState({ startDate: dateFilter.startDate, endDate: dateFilter.endDate })
     }
   }
 
@@ -57,7 +57,7 @@ class DateFilters extends React.Component {
    * Handle selecting/changing the date filter for events
    * @param {Array} dates Array of dates for date range filter selection
    */
-  onChange(dates) {
+  onChange (dates) {
 
     let { loadDateFilter } = this.props
     let unixStartDate = moment(new Date(dates[0])).unix()
@@ -77,7 +77,7 @@ class DateFilters extends React.Component {
 
   }
 
-  render() {
+  render () {
     let { startDate, endDate } = this.state
 
     //Parse StartDate

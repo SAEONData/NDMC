@@ -1,3 +1,8 @@
+'use strict'
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { connect } from 'react-redux'
 import MapViewCore from './MapViewCore.jsx'
@@ -10,22 +15,24 @@ const mapDispatchToProps = (dispatch) => {
   return {}
 }
 
+/**
+ * MapView Class for rendering the map view
+ * @class
+ */
 class MapView extends React.Component {
-
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
   }
 
-  componentDidMount(){
+  componentDidMount () {
     window.scroll({
       top: 175,
       left: 0,
       behavior: 'smooth'
-    });
+    })
   }
 
-  render() {
-
+  render () {
     return (
       <>
         <MapViewCore fullView height="550px" />
