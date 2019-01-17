@@ -1,5 +1,8 @@
 'use strict'
-
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { connect } from 'react-redux'
 import { UILookup } from '../../constants/ui_config.js'
@@ -21,27 +24,39 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * RangeComponent Class for displaying a range component
+ * @class
+ */
 class RangeComponent extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props)
-
     this.getFontColour = this.getFontColour.bind(this)
   }
 
-  getPrefix() {
+  /**
+   * Get prop prefix
+   */
+  getPrefix () {
     if (typeof this.props.prefix !== 'undefined') {
       return <label>{this.props.prefix}&nbsp;</label>
     }
   }
 
-  getSuffix() {
+  /**
+  * Get prop suffix
+  */
+  getSuffix () {
     if (typeof this.props.suffix !== 'undefined') {
       return <label>&nbsp;{this.props.suffix}</label>
     }
   }
 
-  getId(key) {
+  /**
+   * Get props Id
+   * @param {string} key props key
+   */
+  getId (key) {
     if (key === 'from') {
       return this.props.id + 'From'
     }
@@ -50,12 +65,14 @@ class RangeComponent extends React.Component {
     }
   }
 
-  getLabel() {
-
+  /**
+   * Get props label
+   */
+  getLabel () {
     let { label, id, size, labelStyle } = this.props
-
     let uiconf = UILookup(id, label)
-    if(!labelStyle) labelStyle = {}
+
+    if (!labelStyle) labelStyle = {}
 
     return (
       <div>
@@ -64,7 +81,10 @@ class RangeComponent extends React.Component {
     )
   }
 
-  getLabelFontColour(uiconf) {
+  /**
+   * Get props label font color
+   */
+  getLabelFontColour (uiconf) {
     if (typeof uiconf.required != 'undefined' && uiconf.required === true) {
       return 'red'
     }
@@ -73,7 +93,10 @@ class RangeComponent extends React.Component {
     }
   }
 
-  getFontColour() {
+  /**
+   * Get props font color
+   */
+  getFontColour () {
     if (this.props.editMode) {
       return 'steelblue'
     }
@@ -82,7 +105,11 @@ class RangeComponent extends React.Component {
     }
   }
 
-  valueFromChange(event) {
+  /**
+   * Get value from event change
+   * @param {object} event Event object
+   */
+  valueFromChange (event) {
 
     let { setValueFromKey, setValueFrom, parentId, editMode } = this.props
 
@@ -91,8 +118,11 @@ class RangeComponent extends React.Component {
     }
   }
 
-  valueToChange(event) {
-
+  /**
+  * Get value to event change
+  * @param {object} event Event object
+  */
+  valueToChange (event) {
     let { setValueToKey, setValueTo, parentId, editMode } = this.props
 
     if (typeof setValueToKey !== 'undefined' && !isNaN(event.target.value)) {
@@ -100,8 +130,12 @@ class RangeComponent extends React.Component {
     }
   }
 
-  fixNullOrUndefinedValue(value) {
-
+  /**
+   * Check for null or undefined value
+   * @param {*} value Value to be checked
+   * @returns {string} Empty string if value is undefined
+   */
+  fixNullOrUndefinedValue (value) {
     if (typeof value === 'undefined' || value === null) {
       value = ''
     }
@@ -109,39 +143,28 @@ class RangeComponent extends React.Component {
     return value
   }
 
-  render() {
-
+  render () {
     let { label, inputWidth, col, valueFrom, valueTo, editMode } = this.props
     valueFrom = this.fixNullOrUndefinedValue(valueFrom)
-    valueTo = this.fixNullOrUndefinedValue(valueTo)    
-    
+    valueTo = this.fixNullOrUndefinedValue(valueTo)
+
     return (
       <div className={col}>
-
         {this.getLabel()}
-
-        <div className="row" style={{marginTop: "8px"}}>
-
+        <div className="row" style={{ marginTop: "8px" }}>
           <span style={{ width: "16px" }} />
-
           {this.getPrefix()}
-
           <Input size="sm" id={this.getId("from")} readOnly={!editMode}
             style={{ marginTop: "-31px", marginBottom: "-25px", color: this.getFontColour(), width: inputWidth, border: "1px solid lightgrey", borderRadius: "5px", padding: "5px" }}
             value={this.fixNullOrUndefinedValue(valueFrom)}
             onChange={this.valueFromChange.bind(this)} />
-
           {this.getSuffix()}
-
           <h6 style={{ marginTop: "5px", marginLeft: "10px", marginRight: "10px" }}> - </h6>
-
           {this.getPrefix()}
-
           <Input size="sm" id={this.getId("to")} readOnly={!editMode}
             style={{ marginTop: "-31px", marginBottom: "-25px", color: this.getFontColour(), width: inputWidth, border: "1px solid lightgrey", borderRadius: "5px", padding: "5px" }}
             value={this.fixNullOrUndefinedValue(valueTo)}
             onChange={this.valueToChange.bind(this)} />
-
           {this.getSuffix()}
         </div>
       </div>
