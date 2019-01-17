@@ -1,19 +1,15 @@
 'use strict'
-
-//Styles - Ant.Design (has to be loaded before MDB so that MDB can replace all applicable styles)
+/**
+ * @ignore
+ * Imports
+ */
 import 'antd/lib/style/index.css'
-
-//Styles - MDB
 import 'font-awesome/css/font-awesome.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdbreact/dist/css/mdb.css'
-
-//React
 import React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
-
-//Local
 import Dashboard from './components/Dashboard/Dashboard.jsx'
 import Events from './components/Events/List/Events.jsx'
 import EventDetails from './components/Events/Details/EventDetails.jsx'
@@ -28,7 +24,6 @@ import DashGraph2FullView from './components/Dashboard/DashGraph2FullView.jsx'
 import DashGraph3FullView from './components/Dashboard/DashGraph3FullView.jsx'
 import DashGraph4FullView from './components/Dashboard/DashGraph4FullView.jsx'
 import moment from 'moment';
-
 import { data as NavData } from '../data/sideNavConfig'
 const queryString = require('query-string')
 
@@ -85,11 +80,11 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 /**
- * App
+ * Root level App class
+ * @class
  */
 class App extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = { navbar: true }
     if (location.toString().includes('navbar=hidden')) {
@@ -98,12 +93,12 @@ class App extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     //this.genTestConfig()
     this.processURLConfig()
   }
 
-  genTestConfig() {
+  genTestConfig () {
     // TEST //
     let config = {
       header: true, // true/false  >>>  toggle header on/off
@@ -130,10 +125,10 @@ class App extends React.Component {
 
     config = encodeURI(JSON.stringify(config))
     console.log("config", config)
-    // TEST //    
+    // TEST //
   }
 
-  processURLConfig() {
+  processURLConfig () {
     try {
       const parsedHash = queryString.parse(location.hash.substring(location.hash.indexOf("?")))
       if (parsedHash.config) {
@@ -239,8 +234,7 @@ class App extends React.Component {
     }
   }
 
-  render() {
-
+  render () {
     let { navbar } = this.state
     let { showSideNav } = this.props
 
@@ -250,17 +244,14 @@ class App extends React.Component {
           <div>
             {this.props.showHeader === true && <Header />}
             {this.props.showNavbar && <CustomNavbar />}
-
             {
               this.props.showSideNavButton === true &&
               <SideNav data={NavData} isOpen={showSideNav} />
             }
-
             {
               (this.props.showHeader === true || this.props.showNavbar !== false) &&
               <div style={{ height: "15px", backgroundColor: "whitesmoke" }} />
             }
-
             <div style={{ backgroundColor: "whitesmoke" }}>
               <div style={{ margin: "0px" }}>
                 <Switch>
@@ -275,16 +266,13 @@ class App extends React.Component {
                 </Switch>
               </div>
             </div>
-
             {
               (this.props.showFooter === true) &&
               <div>
                 <div style={{ height: "15px", backgroundColor: "whitesmoke" }} />
                 <Footer />
               </div>
-
             }
-
           </div>
         </Router>
       </div>
