@@ -80,12 +80,12 @@ class EventList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      _hazardFilter: 0,
-      _regionFilter: 0,
-      _impactFilter: 0,
+      _hazardFilter: null,
+      _regionFilter: null,
+      _impactFilter: null,
       _dateFilter: {
-        startDate: 0,
-        endDate: 0
+        startDate: null,
+        endDate: null
       },
       eventListSize: 25,
       eventsLoading: false,
@@ -139,12 +139,17 @@ class EventList extends React.Component {
   }
 
   componentDidMount() {
-    this.getEvents()
+    //this.getEvents()
+    this.Init()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
 
   componentDidUpdate() {
+    this.Init()
+  }
+
+  Init(){
     let { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } = this.props
     let { _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter } = this.state
     if (hazardFilter !== _hazardFilter || regionFilter !== _regionFilter || impactFilter !== _impactFilter ||
@@ -208,6 +213,13 @@ class EventList extends React.Component {
       //Get Events
       let { eventListSize, _hazardFilter, _regionFilter, _impactFilter, _dateFilter, _favoritesFilter } = this.state
       let { events } = this.props
+
+      console.log("hazardFilter", _hazardFilter)
+      console.log("regionFilter", _regionFilter)
+      console.log("impactFilter", _impactFilter)
+      console.log("dateFilter", _dateFilter)
+      console.log("favoritesFilter", _favoritesFilter)
+  
 
       let skip = events.length
       skip = skip > 0 ? skip : 0

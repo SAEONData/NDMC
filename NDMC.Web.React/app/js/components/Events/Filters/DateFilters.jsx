@@ -48,11 +48,14 @@ class DateFilters extends React.Component {
   }
 
   componentDidMount() {
-    let { loadStartDate, loadEndDate } = this.props
+    this.Init()
   }
 
   componentDidUpdate(){
+    this.Init()
+  }
 
+  Init(){
     let { dateFilter } = this.props
 
     if(dateFilter === 0) dateFilter = { startDate: 0, endDate: 0 }
