@@ -76,6 +76,26 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+const defaultState = {
+  region: 0,
+  regionTreeValue: '',
+  impacts: [],
+  responses: [],
+  hazard: 0,
+  startDate: null,
+  endDate: null,
+  declaredDate: null,
+  impactTypeTemp: '',
+  impactTypeNameTemp: '',
+  impactAmountTemp: '',
+  impactUnitMeasureTemp: '',
+  responseTypeTemp: '',
+  responseTypeNameTemp: '',
+  responseValueTemp: '',
+  responseDateTemp: '',
+  measureTemp: '',
+}
+
 class EventList extends React.Component {
   constructor(props) {
     super(props)
@@ -94,22 +114,7 @@ class EventList extends React.Component {
       impactModalVisible: false,
       responseModalVisible: false,
       regionTreeValue: '',
-      region: '',
-      impacts: [],
-      responses: [],
-      hazard: '',
-      startDate: '',
-      endDate: '',
-      declaredDate: '',
-      impactTypeTemp: '',
-      impactTypeNameTemp: '',
-      impactAmountTemp: '',
-      impactUnitMeasureTemp: '',
-      responseTypeTemp: '',
-      responseTypeNameTemp: '',
-      responseValueTemp: '',
-      responseDateTemp: '',
-      measureTemp: '',
+      ...defaultState,
       showBackToTop: false
     }
 
@@ -149,7 +154,7 @@ class EventList extends React.Component {
     this.Init()
   }
 
-  Init(){
+  Init() {
     let { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } = this.props
     let { _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter } = this.state
     if (hazardFilter !== _hazardFilter || regionFilter !== _regionFilter || impactFilter !== _impactFilter ||
@@ -214,13 +219,6 @@ class EventList extends React.Component {
       let { eventListSize, _hazardFilter, _regionFilter, _impactFilter, _dateFilter, _favoritesFilter } = this.state
       let { events } = this.props
 
-      console.log("hazardFilter", _hazardFilter)
-      console.log("regionFilter", _regionFilter)
-      console.log("impactFilter", _impactFilter)
-      console.log("dateFilter", _dateFilter)
-      console.log("favoritesFilter", _favoritesFilter)
-  
-
       let skip = events.length
       skip = skip > 0 ? skip : 0
 
@@ -262,28 +260,39 @@ class EventList extends React.Component {
   onClose() {
     this.props.toggleAddForm(false)
     this.setState({
-      region: '',
-      regionTreeValue: '',
-      impacts: [],
-      responses: [],
-      hazard: '',
-      startDate: '',
-      endDate: '',
-      declaredDate: '',
-      impactTypeTemp: '',
-      impactTypeNameTemp: '',
-      impactAmountTemp: '',
-      impactUnitMeasureTemp: '',
-      responseTypeTemp: '',
-      responseTypeNameTemp: '',
-      responseValueTemp: '',
-      responseDateTemp: '',
-      measureTemp: '',
+      ...defaultState
     })
   }
 
+  ValidateInput() {
+
+    let { startDate, endDate, region, hazard } = this.state
+    let validationMessage = ''
+
+    if (region === 0) {
+      validationMessage = "Region is required. Please select a region."
+    }
+    else if (hazard === 0) {
+      validationMessage = "Hazard is required. Please select a hazard."
+    }
+    else if (startDate === null) {
+      validationMessage = "Start-date is required. Please select a start-date."
+    }
+    else if (endDate === null) {
+      validationMessage = "End-date is required. Please select a end-date."
+    }
+
+    if (validationMessage !== '') {
+      console.error(validationMessage)
+      alert(validationMessage)
+      return false
+    }
+
+    return true
+  }
+
   async onSubmit() {
-    this.props.toggleAddForm(false)
+    // this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
       return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
     })
@@ -304,53 +313,52 @@ class EventList extends React.Component {
       EventRegions: [{
         RegionId: parseInt(this.state.region),
         EventImpacts: formattedImpacts
-      }],
-      DeclaredEvents: [{
+      }]
+    }
+
+    //Add declared date if available
+    if (this.state.declaredDate !== null) {
+      fetchBody.DeclaredEvents = [{
         DeclaredEventId: 0,
         DeclaredDate: this.state.declaredDate
-      }],
-      Mitigations: formattedResponses
+      }]
     }
 
-    try {
-      const res = await fetch(apiBaseURL + 'Events/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-          // "Authorization": "Bearer " + (user === null ? "" : user.access_token)
-        },
-        body: JSON.stringify(fetchBody)
-      })
+    if(formattedResponses && formattedResponses.length > 0){
+      fetchBody.Mitigations = formattedResponses
+    }
 
-      if (!res.ok) {
-        res = await res.json()
-        throw new Error(res.error.message)
+    console.log("post-data", fetchBody)
+
+    if (this.ValidateInput()) {
+      try {
+        let res = await fetch(apiBaseURL + 'Events/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            // "Authorization": "Bearer " + (user === null ? "" : user.access_token)
+          },
+          body: JSON.stringify(fetchBody)
+        })
+
+        if (!res.ok) {
+          res = await res.json()
+          throw new Error(res.error.message)
+        }
+
+        //Reset on success
+        this.setState({
+          ...defaultState
+        })
+
+        this.props.toggleAddForm(false)
+      }
+      catch (ex) {
+        console.error(ex)
+        alert(ex)
       }
     }
-    catch (ex) {
-      console.error(ex)
-    }
-
-    this.setState({
-      region: '',
-      regionTreeValue: '',
-      impacts: [],
-      responses: [],
-      hazard: '',
-      startDate: '',
-      endDate: '',
-      declaredDate: '',
-      impactTypeTemp: '',
-      impactTypeNameTemp: '',
-      impactAmountTemp: '',
-      impactUnitMeasureTemp: '',
-      responseTypeTemp: '',
-      responseTypeNameTemp: '',
-      responseValueTemp: '',
-      responseDateTemp: '',
-      measureTemp: '',
-    })
   }
 
   backToTop() {
@@ -789,7 +797,7 @@ class EventList extends React.Component {
                                 return <Option key={item.TypeImpactId} value={item.TypeImpactId}>{item.TypeImpactName}</Option>
                               })}
                             </Select>
-                            <div className="row" style={{paddingLeft: 15}}>
+                            <div className="row" style={{ paddingLeft: 15 }}>
                               <div style={{ paddingTop: 1, className: 'col-sm-1', paddingRight: 10 }}>
                                 <br></br>
                                 <h6>Enter Amount as number </h6>
@@ -799,19 +807,19 @@ class EventList extends React.Component {
                                 <br></br>
                                 <h6>Enter Unit Of Measure for impact </h6>
                                 <Select
-                                showSearch
-                                style={{width: 200}}
-                                placeholder="Select a Unit Of Measure"
-                                optionFilterProp="children"
-                                onChange={this.onImpactUnitMeasure}
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                  showSearch
+                                  style={{ width: 200 }}
+                                  placeholder="Select a Unit Of Measure"
+                                  optionFilterProp="children"
+                                  onChange={this.onImpactUnitMeasure}
+                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 >
-                                <Option key={1} value={'Rands'}>Rands</Option>
-                                <Option key={2} value={'Metres'}>Metres</Option>
-                                <Option key={3} value={'Kilometres'}>Kilometres</Option>
-                                <Option key={4} value={'Hectares'}>Hectares</Option>
-                                <Option key={5} value={'Acres'}>Acres</Option>
-                                <Option key={6} value={'Count'}>Count</Option>
+                                  <Option key={1} value={'Rands'}>Rands</Option>
+                                  <Option key={2} value={'Metres'}>Metres</Option>
+                                  <Option key={3} value={'Kilometres'}>Kilometres</Option>
+                                  <Option key={4} value={'Hectares'}>Hectares</Option>
+                                  <Option key={5} value={'Acres'}>Acres</Option>
+                                  <Option key={6} value={'Count'}>Count</Option>
                                 </Select>
                               </div>
                             </div>

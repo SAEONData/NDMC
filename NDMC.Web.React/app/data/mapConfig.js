@@ -1,7 +1,7 @@
-import { siteBaseURL } from '../js/config/serviceURLs.cfg'
+import { siteBaseURL, apiBaseURL } from '../js/config/serviceURLs.cfg'
 
 export const MapConfig = {
-  "service": "http://app01.saeon.ac.za/ndmcapi/odata/events/extensions.geojson",
+  "service": `${apiBaseURL}events/extensions.geojson`,
   "domain": siteBaseURL,
   "IDField": "properties.id",
   "toolTipTitle": "properties.hazardName",
