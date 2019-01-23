@@ -83,7 +83,7 @@ namespace APIv2.Controllers
                 await _context.SaveChangesAsync();
                 return Created(newEvent);
             }
-            return null;
+            return Ok(newEvent);
         }
 
         /// <summary>

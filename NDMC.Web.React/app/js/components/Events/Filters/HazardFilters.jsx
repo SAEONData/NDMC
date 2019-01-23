@@ -41,13 +41,23 @@ class HazardFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
   }
 
-  componentDidUpdate () {
+  componentDidMount(){
+    this.Init()
+  }
+
+  componentDidUpdate() {
+    this.Init()
+  }
+
+  Init(){
     let { hazardFilter, hazards } = this.props
+
     let searchHazards = hazards.filter(h => h.TypeEventId == hazardFilter)
     let hazardName = "Select..."
     if (searchHazards.length > 0) {
       hazardName = searchHazards[0].TypeEventName
     }
+
     if (hazardName !== this.state.value) {
       this.setState({ value: hazardName })
     }

@@ -68,6 +68,26 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+const defaultState = {
+  region: 0,
+  regionTreeValue: '',
+  impacts: [],
+  responses: [],
+  hazard: 0,
+  startDate: null,
+  endDate: null,
+  declaredDate: null,
+  impactTypeTemp: '',
+  impactTypeNameTemp: '',
+  impactAmountTemp: '',
+  impactUnitMeasureTemp: '',
+  responseTypeTemp: '',
+  responseTypeNameTemp: '',
+  responseValueTemp: '',
+  responseDateTemp: '',
+  measureTemp: '',
+}
+
 /**
  * The EventList class for displaying events on the dashboard
  * @class
@@ -76,12 +96,12 @@ class EventList extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      _hazardFilter: 0,
-      _regionFilter: 0,
-      _impactFilter: 0,
+      _hazardFilter: null,
+      _regionFilter: null,
+      _impactFilter: null,
       _dateFilter: {
-        startDate: 0,
-        endDate: 0
+        startDate: null,
+        endDate: null
       },
       eventListSize: 25,
       eventsLoading: false,
@@ -90,22 +110,7 @@ class EventList extends React.Component {
       impactModalVisible: false,
       responseModalVisible: false,
       regionTreeValue: '',
-      region: '',
-      impacts: [],
-      responses: [],
-      hazard: '',
-      startDate: '',
-      endDate: '',
-      declaredDate: '',
-      impactTypeTemp: '',
-      impactTypeNameTemp: '',
-      impactAmountTemp: '',
-      impactUnitMeasureTemp: '',
-      responseTypeTemp: '',
-      responseTypeNameTemp: '',
-      responseValueTemp: '',
-      responseDateTemp: '',
-      measureTemp: '',
+      ...defaultState,
       showBackToTop: false
     }
 
@@ -134,13 +139,18 @@ class EventList extends React.Component {
     this.onImpactUnitMeasure = this.onImpactUnitMeasure.bind(this)
   }
 
-  componentDidMount () {
-    this.getEvents()
+  componentDidMount() {
+    //this.getEvents()
+    this.Init()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
+    this.Init()
+  }
+
+  Init() {
     let { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } = this.props
     let { _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter } = this.state
     if (hazardFilter !== _hazardFilter || regionFilter !== _regionFilter || impactFilter !== _impactFilter ||
@@ -254,31 +264,43 @@ class EventList extends React.Component {
   onClose () {
     this.props.toggleAddForm(false)
     this.setState({
-      region: '',
-      regionTreeValue: '',
-      impacts: [],
-      responses: [],
-      hazard: '',
-      startDate: '',
-      endDate: '',
-      declaredDate: '',
-      impactTypeTemp: '',
-      impactTypeNameTemp: '',
-      impactAmountTemp: '',
-      impactUnitMeasureTemp: '',
-      responseTypeTemp: '',
-      responseTypeNameTemp: '',
-      responseValueTemp: '',
-      responseDateTemp: '',
-      measureTemp: '',
+      ...defaultState
     })
   }
 
+  ValidateInput() {
+
+    let { startDate, endDate, region, hazard } = this.state
+    let validationMessage = ''
+
+    if (region === 0) {
+      validationMessage = "Region is required. Please select a region."
+    }
+    else if (hazard === 0) {
+      validationMessage = "Hazard is required. Please select a hazard."
+    }
+    else if (startDate === null) {
+      validationMessage = "Start-date is required. Please select a start-date."
+    }
+    else if (endDate === null) {
+      validationMessage = "End-date is required. Please select a end-date."
+    }
+
+    if (validationMessage !== '') {
+      console.error(validationMessage)
+      alert(validationMessage)
+      return false
+    }
+
+    return true
+  }
+
+  // this.props.toggleAddForm(false)
   /**
   * Handle submitting a new event from the input form
   */
   async onSubmit () {
-    this.props.toggleAddForm(false)
+    //this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
       return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
     })
@@ -299,53 +321,52 @@ class EventList extends React.Component {
       EventRegions: [{
         RegionId: parseInt(this.state.region),
         EventImpacts: formattedImpacts
-      }],
-      DeclaredEvents: [{
+      }]
+    }
+
+    //Add declared date if available
+    if (this.state.declaredDate !== null) {
+      fetchBody.DeclaredEvents = [{
         DeclaredEventId: 0,
         DeclaredDate: this.state.declaredDate
-      }],
-      Mitigations: formattedResponses
+      }]
     }
 
-    try {
-      const res = await fetch(apiBaseURL + 'Events/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-          // "Authorization": "Bearer " + (user === null ? "" : user.access_token)
-        },
-        body: JSON.stringify(fetchBody)
-      })
+    if(formattedResponses && formattedResponses.length > 0){
+      fetchBody.Mitigations = formattedResponses
+    }
 
-      if (!res.ok) {
-        res = await res.json()
-        throw new Error(res.error.message)
+    console.log("post-data", fetchBody)
+
+    if (this.ValidateInput()) {
+      try {
+        let res = await fetch(apiBaseURL + 'Events/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            // "Authorization": "Bearer " + (user === null ? "" : user.access_token)
+          },
+          body: JSON.stringify(fetchBody)
+        })
+
+        if (!res.ok) {
+          res = await res.json()
+          throw new Error(res.error.message)
+        }
+
+        //Reset on success
+        this.setState({
+          ...defaultState
+        })
+
+        this.props.toggleAddForm(false)
+      }
+      catch (ex) {
+        console.error(ex)
+        alert(ex)
       }
     }
-    catch (ex) {
-      console.error(ex)
-    }
-
-    this.setState({
-      region: '',
-      regionTreeValue: '',
-      impacts: [],
-      responses: [],
-      hazard: '',
-      startDate: '',
-      endDate: '',
-      declaredDate: '',
-      impactTypeTemp: '',
-      impactTypeNameTemp: '',
-      impactAmountTemp: '',
-      impactUnitMeasureTemp: '',
-      responseTypeTemp: '',
-      responseTypeNameTemp: '',
-      responseValueTemp: '',
-      responseDateTemp: '',
-      measureTemp: '',
-    })
   }
 
   /**

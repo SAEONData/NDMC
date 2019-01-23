@@ -42,8 +42,17 @@ class impactFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
   }
 
-  componentDidUpdate () {
+  componentDidMount(){
+    this.Init()
+  }
+
+  componentDidUpdate() {
+    this.Init()
+  }
+
+  Init(){
     let { impactFilter, impacts } = this.props
+
     let searchImpacts = impacts.filter(r => r.TypeImpactId == impactFilter)
     let impactName = "Select..."
     if (searchImpacts.length > 0) {

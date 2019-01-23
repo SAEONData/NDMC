@@ -41,8 +41,15 @@ class RegionFilters extends React.Component {
     }
   }
 
-  componentDidUpdate () {
+  componentDidMount(){
+    this.Init()
+  }
 
+  componentDidUpdate() {
+    this.Init()
+  }
+
+  Init(){
     let { regionFilter, regions } = this.props
 
     let searchRegions = regions.filter(r => r.RegionId == regionFilter)
