@@ -1,18 +1,14 @@
 'use strict'
-
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { connect } from 'react-redux'
-
-//Local
 import * as ACTION_TYPES from '../../../constants/action-types'
-
-//AntD Tree
 import TreeSelect from 'antd/lib/tree-select'
 import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
 import '../../../../css/antd.select.css' //Overrides default antd.select css
-
-//Odata
 import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
@@ -32,8 +28,12 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * RegionFilters Class for dealing with region filter selection and rendering
+ * @class
+ */
 class RegionFilters extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.onSelect = this.onSelect.bind(this)
     this.state = {
@@ -63,21 +63,26 @@ class RegionFilters extends React.Component {
     }
   }
 
-  onSelect(value, node) {
+  /**
+   * Handle selection of region filter
+   * @param {string} value String value of the selected node
+   * @param {object} node Object of selected node contatining details of node
+   */
+  onSelect (value, node) {
     let { loadRegionFilter } = this.props
     loadRegionFilter(parseInt(value))
-
     this.setState({ treeValue: node.props.title })
   }
 
-  /* TransformDataTree
-  Converts a flat array of regions that contain regionId's and parentRegionId's into a region tree
-  in a format for antd's tree-select
-  */
-  transformDataTree(filteredRegions) {
+  /**
+   * Converts a flat array of regions that contain regionId's and parentRegionId's into a region tree
+   * in a format for antd's tree-select
+   * @param {object} filteredRegions Object containing array of pre-filtered regions
+   */
+  transformDataTree (filteredRegions) {
     let regions = filteredRegions.map(i => {
       return {
-        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${i.RegionId}`, key: i.RegionId
+        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${ i.RegionId }`, key: i.RegionId
       }
     })
     regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
@@ -85,7 +90,7 @@ class RegionFilters extends React.Component {
     return resultArray
   }
 
-  render() {
+  render () {
     const regionQuery = {
       select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
       filter: { RegionTypeId: { ne: 5 } }
@@ -99,16 +104,14 @@ class RegionFilters extends React.Component {
             if (error) { return <div>Error Loading Data From Server</div> }
             if (data) {
               if (data.value) {
-
                 //Dispatch data to store
                 setTimeout(() => {
                   if (!_.isEqual(data.value, this.props.regions)) {
                     this.props.loadRegions(data.value)
                   }
                 }, 100)
-
                 let regionTree = this.transformDataTree(data.value)
-                regionTree.sort((a,b) => a.title.localeCompare(b.title))
+                regionTree.sort((a, b) => a.title.localeCompare(b.title))
                 return (
                   <TreeSelect
                     style={{ width: "100%" }}

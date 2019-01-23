@@ -1,17 +1,11 @@
 'use strict'
-
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
-import { Button, Input } from 'mdbreact'
 import { connect } from 'react-redux'
-import { Table, TableBody, TableHead } from 'mdbreact';
-
-//Local
-import TextComponent from '../../Shared/TextComponent.jsx'
-import TextAreaComponent from '../../Shared/TextAreaComponent.jsx'
-import RangeComponent from '../../Shared/RangeComponent.jsx'
-
-//Odata
+import { Table, TableBody, TableHead } from 'mdbreact'
 import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
@@ -19,15 +13,19 @@ const mapStateToProps = (state, props) => {
   return {}
 }
 
+/**
+ * EventResponseTab Class for response details tab of individual events
+ * @class
+ */
 class EventResponseTab extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       eventData: {}
     }
   }
 
-  render() {
+  render () {
     const { eventId } = this.props
     const mitigationQuery = {
       filter: {
@@ -35,7 +33,6 @@ class EventResponseTab extends React.Component {
       },
       expand: ['TypeMitigation']
     }
-
     const formatter = new Intl.NumberFormat('en-Za', {
       style: 'currency',
       currency: 'ZAR',
@@ -68,40 +65,40 @@ class EventResponseTab extends React.Component {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     rehabResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
-                      amount: curr.Value ? 
-                        isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} (${curr.TypeMitigation.UnitOfMeasure})` 
-                          : 'No amount recorded'
+                      amount: curr.Value ?
+                        isCurrency ? `${ formatter.format(curr.Value) }`
+                          : `${ curr.Value } (${ curr.TypeMitigation.UnitOfMeasure })`
+                        : 'No amount recorded'
                     })
                   }
                   if (curr.TypeMitigation.ParentTypeMitigationId === 45 || curr.TypeMitigationId === 45) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     emergencyResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
-                      amount: curr.Value ? 
-                        isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} (${curr.TypeMitigation.UnitOfMeasure})` 
-                          : 'No amount recorded'
+                      amount: curr.Value ?
+                        isCurrency ? `${ formatter.format(curr.Value) }`
+                          : `${ curr.Value } (${ curr.TypeMitigation.UnitOfMeasure })`
+                        : 'No amount recorded'
                     })
                   }
                   if (curr.TypeMitigation.ParentTypeMitigationId === 46 || curr.TypeMitigationId === 46) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     mitigationResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
-                      amount: curr.Value ? 
-                        isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} (${curr.TypeMitigation.UnitOfMeasure})` 
-                          : 'No amount recorded'
+                      amount: curr.Value ?
+                        isCurrency ? `${ formatter.format(curr.Value) }`
+                          : `${ curr.Value } (${ curr.TypeMitigation.UnitOfMeasure })`
+                        : 'No amount recorded'
                     })
                   }
                   if (curr.TypeMitigation.ParentTypeMitigationId === 47 || curr.TypeMitigationId === 47) {
                     let isCurrency = curr.TypeMitigation.UnitOfMeasure === 'Rands'
                     adaptationResponses.push({
                       response: curr.TypeMitigation.TypeMitigationName,
-                      amount: curr.Value ? 
-                        isCurrency? `${formatter.format(curr.Value)}`
-                        : `${curr.Value} (${curr.TypeMitigation.UnitOfMeasure})` 
-                          : 'No amount recorded'
+                      amount: curr.Value ?
+                        isCurrency ? `${ formatter.format(curr.Value) }`
+                          : `${ curr.Value } (${ curr.TypeMitigation.UnitOfMeasure })`
+                        : 'No amount recorded'
                     })
                   }
                 })
@@ -121,43 +118,43 @@ class EventResponseTab extends React.Component {
                 return (<>
                   <br />
                   <div>
-                    <div style={{width:'500px'}}>
+                    <div style={{ width: '500px' }}>
                       <h4>Emergency Responses</h4>
                       {emergencyResponses.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={emergencyResponses.sort((a,b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
+                          <TableBody rows={emergencyResponses.sort((a, b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                     <hr />
-                    <div style={{width:'500px'}}>
+                    <div style={{ width: '500px' }}>
                       <h4>Rehabilitation and Reconstruction Responses</h4>
                       {rehabResponses.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={rehabResponses.sort((a,b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
+                          <TableBody rows={rehabResponses.sort((a, b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                     <hr />
-                    <div style={{width:'500px'}}>
+                    <div style={{ width: '500px' }}>
                       <h4>Mitigation Responses</h4>
                       {mitigationResponses.length > 0 ?
                         <Table small striped>
                           <TableHead color='grey' columns={tableData.columns} />
-                          <TableBody rows={mitigationResponses.sort((a,b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
+                          <TableBody rows={mitigationResponses.sort((a, b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                     <hr />
-                    <div style={{width:'500px'}}>
+                    <div style={{ width: '500px' }}>
                       <h4>Adaptation Responses</h4>
                       {adaptationResponses.length > 0 ?
                         <Table small striped>
-                          <TableHead color='grey'  columns={tableData.columns} />
-                          <TableBody rows={adaptationResponses.sort((a,b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
+                          <TableHead color='grey' columns={tableData.columns} />
+                          <TableBody rows={adaptationResponses.sort((a, b) => (a.response > b.response) ? 1 : ((b.response > a.response) ? -1 : 0))} />
                         </Table> : <i>None recorded</i>}
                     </div>
                   </div>
-                  <br/>
+                  <br />
                 </>
                 )
               }

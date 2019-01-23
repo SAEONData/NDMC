@@ -1,18 +1,22 @@
 'use strict'
-
-// MDBReact
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
-import { Col, Row, Container } from 'mdbreact'
-
-// Images
+import { Col, Row } from 'mdbreact'
 import environmental_affairs_logo from '../../../images/environmental_affairs_logo.png'
 import sa_flag from '../../../images/sa_flag.jpg'
 
+/**
+ * The Header class for displaying a header for detailed information and icons
+ * @class
+ */
 class Header extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
-  render() {
+  render () {
     return (
       <>
         <Row className="align-items-center" style={{ marginBottom: "15px" }}>

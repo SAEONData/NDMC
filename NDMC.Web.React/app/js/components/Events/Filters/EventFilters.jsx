@@ -1,15 +1,15 @@
 'use strict'
-
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
-import { Button, Collapse, Chip, Fa } from 'mdbreact'
+import { Button, Chip, Fa } from 'mdbreact'
 import { connect } from 'react-redux'
-import { DEAGreen, DEAGreenDark } from '../../../config/colours.cfg'
-
-//Local
+import { DEAGreen } from '../../../config/colours.cfg'
 import * as ACTION_TYPES from '../../../constants/action-types'
 
-const moment = require('moment');
+const moment = require('moment')
 
 const mapStateToProps = (state, props) => {
   let { filterData: {
@@ -44,20 +44,30 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
+/**
+ * EventFilters Class for displaying and handling all event filters
+ * @class
+ */
 class EventFilters extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.clearFilters = this.clearFilters.bind(this)
     this.handleTags = this.handleTags.bind(this)
   }
 
-  clearFilters() {
+  /**
+   * Handle clearing all selected filters
+   */
+  clearFilters () {
     let { clearFilters } = this.props
     clearFilters('')
   }
 
-  handleTags() {
+  /**
+   * Handle displaying filter tags for each filter
+   */
+  handleTags () {
     let {
       hazardFilter, regionFilter, impactFilter, dateFilter, favoritesFilter, regions, hazards, impacts
     } = this.props
@@ -71,7 +81,6 @@ class EventFilters extends React.Component {
         let searchHazards = hazards.filter(h => h.TypeEventId == hazardFilter)
         if (searchHazards.length > 0) {
           let hazardName = searchHazards[0].TypeEventName
-
           taglist.push(
             <Chip
               key="fcHazard"
@@ -90,7 +99,6 @@ class EventFilters extends React.Component {
         let searchRegions = regions.filter(r => r.RegionId == regionFilter)
         if (searchRegions.length > 0) {
           let regionName = searchRegions[0].RegionName
-
           taglist.push(
             <Chip
               key="fcRegion"
@@ -109,7 +117,6 @@ class EventFilters extends React.Component {
         let searchImpacts = impacts.filter(r => r.TypeImpactId == impactFilter)
         if (searchImpacts.length > 0) {
           let impactName = searchImpacts[0].TypeImpactName
-
           taglist.push(
             <Chip
               key="fcImpact"
@@ -125,10 +132,8 @@ class EventFilters extends React.Component {
       }
 
       if (dateFilter.startDate) {
-
         let startdate = moment.unix(dateFilter.startDate).format("YYYY/MM/DD")
         let endDate = moment.unix(dateFilter.endDate).format("YYYY/MM/DD")
-
         taglist.push(
           <Chip
             key="fcDates"
@@ -137,7 +142,7 @@ class EventFilters extends React.Component {
             handleClose={() => {
               this.props.clearDateFilter()
             }}>
-            {`${startdate} - ${endDate}`}
+            {`${ startdate } - ${ endDate }`}
           </Chip>
         )
       }
@@ -163,12 +168,10 @@ class EventFilters extends React.Component {
     return taglist
   }
 
-  render() {
+  render () {
     return (
       <>
-
         <div style={{ backgroundColor: "white", padding: "10px", borderRadius: "10px", border: "1px solid gainsboro" }}>
-
           <h4 style={{ margin: "5px 5px 0px 19px", display: "inline-block" }}>
             <b>Current Filters</b>
           </h4>
@@ -188,13 +191,10 @@ class EventFilters extends React.Component {
           >
             <Fa icon="trash-o" size="2x" style={{ color: DEAGreen }} />
           </Button>
-
           <hr />
-
           <div style={{ padding: "10px 20px 10px 20px" }}>
             {this.handleTags()}
           </div>
-
         </div >
       </>
     )

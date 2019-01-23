@@ -1,17 +1,11 @@
 'use strict'
-
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
-import { Button, Input } from 'mdbreact'
 import { connect } from 'react-redux'
-import { Table, TableBody, TableHead } from 'mdbreact';
-
-//Local
-import TextComponent from '../../Shared/TextComponent.jsx'
-import TextAreaComponent from '../../Shared/TextAreaComponent.jsx'
-import RangeComponent from '../../Shared/RangeComponent.jsx'
-
-//Odata
+import { Table, TableBody, TableHead } from 'mdbreact'
 import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
 
@@ -19,15 +13,19 @@ const mapStateToProps = (state, props) => {
   return {}
 }
 
+/**
+ * EventResponseTab Class for response details tab of individual events
+ * @class
+ */
 class EventResponseTab extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       eventData: {}
     }
   }
 
-  render() {
+  render () {
     const { eventId } = this.props
     let impactQuery = {
       filter: {
@@ -49,8 +47,6 @@ class EventResponseTab extends React.Component {
       currency: 'ZAR',
       minimumFractionDigits: 2
     })
-
-    let impacts = []
     let agricultureImpacts = []
     let infrastrucutureImpacts = []
     let gameImpacts = []
@@ -69,11 +65,8 @@ class EventResponseTab extends React.Component {
         }}>
           <OData baseUrl={apiBaseURL + 'Events'} query={impactQuery}>
             {({ loading, error, data }) => {
-
               if (loading) { return <div>Loading...</div> }
-
               if (error) { return <div>Error Loading Data From Server</div> }
-
               if (data && data.value) {
                 data.value[0].EventRegions[0].EventImpacts.map(impact => {
                   let amountMeasure = ''
@@ -96,13 +89,12 @@ class EventResponseTab extends React.Component {
                     default:
                       amountMeasure = '(Count)'
                   }
-                  //console.log(impact)
                   // Agriculture
                   if (impact.TypeImpact.ParentTypeImpactId === 36 || impact.TypeImpactId === 36) {
                     agricultureImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                        `${impact.Measure} ${amountMeasure}`
+                        `${ impact.Measure } ${ amountMeasure }`
                         : 'No amount recorded'
                     })
                   }
@@ -111,7 +103,7 @@ class EventResponseTab extends React.Component {
                     infrastrucutureImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                        `${impact.Measure} ${amountMeasure}`
+                        `${ impact.Measure } ${ amountMeasure }`
                         : 'No amount recorded'
                     })
                   }
@@ -120,7 +112,7 @@ class EventResponseTab extends React.Component {
                     peopleImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                        `${impact.Measure} ${amountMeasure}`
+                        `${ impact.Measure } ${ amountMeasure }`
                         : 'No amount recorded'
                     })
                   }
@@ -129,7 +121,7 @@ class EventResponseTab extends React.Component {
                     gameImpacts.push({
                       impact: impact.TypeImpact.TypeImpactName,
                       amount: impact.Measure && impact.Measure !== 0 ?
-                        `${impact.Measure} ${amountMeasure}`
+                        `${ impact.Measure } ${ amountMeasure }`
                         : 'No amount recorded'
                     })
                   }
@@ -146,7 +138,6 @@ class EventResponseTab extends React.Component {
                     }
                   ]
                 }
-
                 return (<>
                   <br />
                   <div>

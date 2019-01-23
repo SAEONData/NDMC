@@ -1,8 +1,11 @@
 'use strict'
-
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Button, Fa } from 'mdbreact'
+import { Row, Col } from 'mdbreact'
 import RegionFilters from '../Events/Filters/RegionFilters.jsx'
 import HazardFilters from '../Events/Filters/HazardFilters.jsx'
 import DateFilters from '../Events/Filters/DateFilters.jsx'
@@ -29,31 +32,33 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * The Dashboard class for the root level dashboard view
+ * @class
+ */
 class Dashboard extends React.Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props)
-
     this.handleScroll = this.handleScroll.bind(this)
-
     this.state = {
       showBackToTop: false
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.setEventsFullView(false)
     window.addEventListener('scroll', this.handleScroll)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
-  handleScroll() {
-
+  /**
+   * Handle user page scrolling
+   */
+  handleScroll () {
     let { showBackToTop } = this.state
-
     //Toggle BackToTop button
     if (window.pageYOffset > 1450 && showBackToTop === false) {
       this.setState({ showBackToTop: true })
@@ -63,13 +68,10 @@ class Dashboard extends React.Component {
     }
   }
 
-  render() {
-
+  render () {
     let { showBackToTop } = this.state
-
     return (
       <div style={{ padding: "15px 0px 15px 0px" }}>
-
         <Row style={{ marginTop: "15px", marginBottom: "15px", marginLeft: "-10px" }}>
           <Col md="2">
             <div style={{ marginTop: "2px" }}>
@@ -81,7 +83,6 @@ class Dashboard extends React.Component {
               </h3>
             </div>
           </Col>
-
           {/* FILTERS */}
           <Col md="10">
             <Row>
@@ -89,17 +90,14 @@ class Dashboard extends React.Component {
                 <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Region:</b></label>
                 <RegionFilters />
               </Col>
-
               <Col md="2">
                 <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Hazard:</b></label>
                 <HazardFilters />
               </Col>
-
               <Col md="4">
                 <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Date Range:</b></label>
                 <DateFilters />
               </Col>
-
               <Col md="2">
                 <label style={{ color: "grey", fontSize: "14px", marginLeft: "1px" }}><b>Impact:</b></label>
                 <ImpactFilters />
@@ -107,73 +105,51 @@ class Dashboard extends React.Component {
             </Row>
           </Col>
         </Row>
-
         <Row>
-
           <Col md={showBackToTop ? "12" : "7"}>
             <EventList />
           </Col>
-
           {
             !showBackToTop &&
             <Col md="5">
-
               <Row>
                 <Col md="12">
                   <EventFilters />
                 </Col>
               </Row>
-
               <br />
-
               <Row>
                 {/* map */}
                 <Col md="12">
                   <MapViewCore />
                 </Col>
               </Row>
-
               <br />
-
               <Row>
                 {/* graphs */}
                 <Col md="12">
-
                   <Row>
-
                     <Col md="6">
                       <DashGraph1Preview />
                     </Col>
-
                     <Col md="6">
                       <DashGraph2Preview />
                     </Col>
-
                   </Row>
-
                   <br />
-
                   <Row>
-
                     <Col md="6">
                       <DashGraph3Preview />
                     </Col>
-
                     <Col md="6">
                       <DashGraph4Preview />
                     </Col>
-
                   </Row>
-
                 </Col>
               </Row>
-
             </Col>
           }
-
-
         </Row>
-
       </div>
     )
   }

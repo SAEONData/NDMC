@@ -1,8 +1,7 @@
 'use strict'
-
 /**
- * Dependencies
  * @ignore
+ * Imports
  */
 import React from 'react'
 import { HashRouter as Router, Route, IndexRoute, Redirect, Switch } from 'react-router-dom'
@@ -14,11 +13,11 @@ import store from './store'
 const history = createHashHistory()
 
 class SwitchRouter extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <Router history={history}>
         <Switch>

@@ -1,9 +1,12 @@
 'use strict'
-
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
-import { Card, CardBody, CardText, CardTitle, Button, Fa } from 'mdbreact'
+import { CardBody, CardText, CardTitle, Button, Fa } from 'mdbreact'
 import { connect } from 'react-redux'
-import { DEAGreen, DEAGreenDark } from '../../../config/colours.cfg'
+import { DEAGreen } from '../../../config/colours.cfg'
 
 const _gf = require('../../../globalFunctions')
 
@@ -23,25 +26,29 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * The EventCard class for individual event card data
+ * @class
+ */
 class EventCard extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
-
     this.togleFavorite = this.togleFavorite.bind(this)
-
     this.state = {
       favorite: false
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     let { eid } = this.props
     let favs = this.GetFavorites()
     this.setState({ favorite: favs.includes(eid) })
   }
 
-  togleFavorite() {
-
+  /**
+   * Handle toggling favorite events
+   */
+  togleFavorite () {
     let { favorite } = this.state
     let { eid } = this.props
 
@@ -64,28 +71,30 @@ class EventCard extends React.Component {
         favs.splice(index, 1)
       }
     }
-
     this.SetFavorites(favs)
   }
 
-  GetFavorites() {
+  /**
+   * Handle fetching favorite events
+   */
+  GetFavorites () {
     let strFavs = _gf.ReadCookie("NDMC_Event_Favorites")
 
     if (strFavs !== null && strFavs.length > 0) {
       let favs = strFavs.split(",")
-
       if (favs.length > 0) {
         return favs.map(x => parseInt(x))
       }
     }
-
     return []
   }
 
-  SetFavorites(favs) {
-
+  /**
+   * Handle setting favorite events
+   * @param {array} favs The array of favorite events to set
+   */
+  SetFavorites (favs) {
     favs = favs.filter(f => !isNaN(f))
-
     let strFavs = ""
     if (favs.length > 0) {
       strFavs = favs.map(x => x.toString()).join(",")
@@ -97,8 +106,10 @@ class EventCard extends React.Component {
     _gf.CreateCookie("NDMC_Event_Favorites", strFavs, 3650)
   }
 
-  onTouchTap() {
-
+  /**
+   * Handle touch tap event
+   */
+  onTouchTap () {
     if (this.props.showDetailsInParent) {
       let payload = {}
       payload.action = "showDetails"
@@ -111,33 +122,28 @@ class EventCard extends React.Component {
       this.props.setForceNavRender(true)
 
       let navTo = ""
-      if(location.hash.includes("events")){
+      if (location.hash.includes("events")) {
         navTo = location.hash.replace("#/events", "#/events/" + this.props.eid)
       }
-      else{
+      else {
         navTo = location.hash.replace("#/", "#/events/" + this.props.eid)
       }
-
-      location.hash = navTo      
+      location.hash = navTo
     }
   }
 
-  render() {
-
+  render () {
     const { region: { RegionName }, startdate, enddate, hazardtype } = this.props
     let { favorite } = this.state
 
     return (
       <>
         <CardBody>
-
           <CardTitle>Disaster at {RegionName} ({hazardtype} - {startdate}) </CardTitle>
-
           <CardText>
-            {startdate !== 'N/A' ? `Date: ${startdate} until ${enddate}` : 'No Dates Recorded'} <br />
-            {hazardtype ? `Type: ${hazardtype}` : ' '}
+            {startdate !== 'N/A' ? `Date: ${ startdate } until ${ enddate }` : 'No Dates Recorded'} <br />
+            {hazardtype ? `Type: ${ hazardtype }` : ' '}
           </CardText>
-
           {
             this.props.showListViewOption === true &&
             <Button
@@ -167,9 +173,8 @@ class EventCard extends React.Component {
                   </tr>
                 </tbody>
               </table>
-            </Button>            
+            </Button>
           }
-
           {
             this.props.showFavoritesOption === true &&
             <Button
@@ -199,11 +204,9 @@ class EventCard extends React.Component {
                   </tr>
                 </tbody>
               </table>
-            </Button>            
+            </Button>
           }
-
         </CardBody>
-        
         <hr style={{ margin: "0px 0px 15px 0px" }} />
       </>
     )

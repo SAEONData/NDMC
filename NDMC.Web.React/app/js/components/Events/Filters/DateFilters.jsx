@@ -1,23 +1,14 @@
 'use strict'
-
-//React
+/**
+ * @ignore
+ * Imports
+ */
 import React from 'react'
 import { connect } from 'react-redux'
-import ReactTooltip from 'react-tooltip'
-
-//Local
 import * as ACTION_TYPES from '../../../constants/action-types'
-
-//MDBReact
-import { Button } from 'mdbreact'
-
-//MUI
-// import { DatePicker } from 'material-ui'
-// import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
 import DatePicker from 'antd/lib/date-picker'
-const { MonthPicker, RangePicker, WeekPicker } = DatePicker
-import moment from 'moment';
+const { RangePicker } = DatePicker
+import moment from 'moment'
 import '../../../../css/antd.date-picker.css'
 import '../../../../css/antd.time-picker.css'
 import '../../../../css/antd.input.css'
@@ -35,8 +26,12 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+/**
+ * DateFilters Class for dealing with date filter selection and rendering
+ * @class
+ */
 class DateFilters extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.onChange = this.onChange.bind(this)
@@ -65,7 +60,11 @@ class DateFilters extends React.Component {
     }
   }
 
-  onChange(dates, dateStrings) {
+  /**
+   * Handle selecting/changing the date filter for events
+   * @param {Array} dates Array of dates for date range filter selection
+   */
+  onChange (dates) {
 
     let { loadDateFilter } = this.props
     let unixStartDate = moment(new Date(dates[0])).unix()
@@ -85,9 +84,7 @@ class DateFilters extends React.Component {
 
   }
 
-  render() {
-
-    let { dateFilter } = this.props
+  render () {
     let { startDate, endDate } = this.state
 
     //Parse StartDate
