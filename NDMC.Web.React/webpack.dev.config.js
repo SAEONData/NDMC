@@ -110,7 +110,9 @@ module.exports = {
     // }),
     new webpack.DefinePlugin({
       CONSTANTS: {
-        PRODUCTION: mode === 'production'
+        PROD: false,
+        TEST: false,
+        DEV: true
       }
     }),
     new webpack.IgnorePlugin(/^(fs|ipc)$/)

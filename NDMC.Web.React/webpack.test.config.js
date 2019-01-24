@@ -101,8 +101,8 @@ module.exports = {
     new webpack.DefinePlugin({
       CONSTANTS: {
         CONSTANTS: {
-          PROD: true,
-          TEST: false,
+          PROD: false,
+          TEST: true,
           DEV: false
         }
       }
