@@ -1,11 +1,11 @@
 {
-  "name": "ndmc",
+  "name": "nhe",
   "version": "1.0.0",
   "main": "./app/index.ejs",
   "scripts": {
-    "start": "npm run webpack-app --optimize-minimize --progress & echo 'Output files are saved in ./dist'",
     "app-dev": "webpack-dev-server --hot --watch-poll --progress=true --open --config ./webpack.dev.config.js",
-    "webpack-app": "./node_modules/.bin/webpack --progress=true -p"
+    "build-test": "webpack --optimize-minimize --progress --config ./webpack.test.config.js",
+    "build-prod": "webpack --optimize-minimize --progress"
   },
   "author": "SAEON",
   "license": "MIT",
