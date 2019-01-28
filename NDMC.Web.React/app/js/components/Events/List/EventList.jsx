@@ -302,8 +302,6 @@ class EventList extends React.Component {
   */
   async onSubmit () {
     //this.props.toggleAddForm(false)
-    console.log(this.state.region)
-    return
     const formattedImpacts = this.state.impacts.map(impact => {
       return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
     })
