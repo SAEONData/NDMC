@@ -10,7 +10,7 @@ import TreeSelect from 'antd/lib/tree-select'
 import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
 import '../../../../css/antd.select.css' //Overrides default antd.select css
 import OData from 'react-odata'
-import { apiBaseURL } from '../../../config/serviceURLs.cfg'
+import { vmsBaseURL } from '../../../config/serviceURLs.cfg'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter, regions } } = state
@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class RegionFilters extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.onSelect = this.onSelect.bind(this)
     this.state = {
@@ -41,7 +41,7 @@ class RegionFilters extends React.Component {
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.Init()
   }
 
@@ -49,7 +49,7 @@ class RegionFilters extends React.Component {
     this.Init()
   }
 
-  Init(){
+  Init() {
     let { regionFilter, regions } = this.props
 
     let searchRegions = regions.filter(r => r.RegionId == regionFilter)
@@ -58,9 +58,9 @@ class RegionFilters extends React.Component {
       regionName = searchRegions[0].RegionName
     }
 
-    if (regionName !== this.state.treeValue) {
-      this.setState({ treeValue: regionName })
-    }
+    // if (regionName !== this.state.treeValue) {
+    //   this.setState({ treeValue: regionName })
+    // }
   }
 
   /**
@@ -68,56 +68,58 @@ class RegionFilters extends React.Component {
    * @param {string} value String value of the selected node
    * @param {object} node Object of selected node contatining details of node
    */
-  onSelect (value, node) {
+  onSelect(value, node) {
     let { loadRegionFilter } = this.props
-    loadRegionFilter(parseInt(value))
-    this.setState({ treeValue: node.props.title })
+    loadRegionFilter(parseInt(node.props.id))
+    this.setState({ treeValue: value })
   }
 
-  /**
-   * Converts a flat array of regions that contain regionId's and parentRegionId's into a region tree
-   * in a format for antd's tree-select
-   * @param {object} filteredRegions Object containing array of pre-filtered regions
-   */
-  transformDataTree (filteredRegions) {
-    let regions = filteredRegions.map(i => {
-      return {
-        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${ i.RegionId }`, key: i.RegionId
-      }
-    })
-    regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
-    var resultArray = regions.filter(f => f.ParentRegionId == null)
-    return resultArray
-  }
-
-  render () {
+  render() {
     const regionQuery = {
-      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
-      filter: { RegionTypeId: { ne: 5 } }
+      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId']
     }
     return (
       <>
         <br />
-        <OData baseUrl={apiBaseURL + 'regions'} query={regionQuery}>
+        <OData baseUrl={vmsBaseURL + 'regions/flat'} query={regionQuery}>
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }
             if (data) {
-              if (data.value) {
-                //Dispatch data to store
-                setTimeout(() => {
-                  if (!_.isEqual(data.value, this.props.regions)) {
-                    this.props.loadRegions(data.value)
+              //Dispatch data to store
+              setTimeout(() => {
+                if (!_.isEqual(data.items, this.props.regions)) {
+                  this.props.loadRegions(data.items)
+                }
+              }, 100)
+            }
+          }
+          }
+        </OData>
+        <OData baseUrl={vmsBaseURL + 'regions'} query={regionQuery}>
+          {({ loading, error, data }) => {
+            if (loading) { return <div>Loading...</div> }
+            if (error) { return <div>Error Loading Data From Server</div> }
+            if (data) {
+              if (data.items) {
+                let regionsFormatted = data.items.map(region => {
+                  return {
+                    ...region, title: region.value, children: region.children.map(subRegion => {
+                      return {
+                        ...subRegion, title: subRegion.value, children: subRegion.children.map(subSubRegion => {
+                          return { ...subSubRegion, title: subSubRegion.value }
+                        })
+                      }
+                    })
                   }
-                }, 100)
-                let regionTree = this.transformDataTree(data.value)
-                regionTree.sort((a, b) => a.title.localeCompare(b.title))
+                })
+                data.items.sort((a, b) => a.value.localeCompare(b.value))
                 return (
                   <TreeSelect
                     style={{ width: "100%" }}
                     value={this.state.treeValue}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                    treeData={regionTree}
+                    treeData={regionsFormatted}
                     placeholder="Select..."
                     onSelect={this.onSelect}
                   >

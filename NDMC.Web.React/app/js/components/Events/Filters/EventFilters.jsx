@@ -96,9 +96,9 @@ class EventFilters extends React.Component {
       }
 
       if (regionFilter > 0) {
-        let searchRegions = regions.filter(r => r.RegionId == regionFilter)
+        let searchRegions = regions.filter(r => r.id == regionFilter)
         if (searchRegions.length > 0) {
-          let regionName = searchRegions[0].RegionName
+          let regionName = searchRegions[0].value
           taglist.push(
             <Chip
               key="fcRegion"
