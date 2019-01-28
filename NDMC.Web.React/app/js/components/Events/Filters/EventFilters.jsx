@@ -6,8 +6,8 @@
 import React from 'react'
 import { Button, Chip, Fa } from 'mdbreact'
 import { connect } from 'react-redux'
-import { DEAGreen } from '../../../config/colours.cfg'
-import * as ACTION_TYPES from '../../../constants/action-types'
+import { DEAGreen } from '../../../config/colours.js'
+import * as ACTION_TYPES from '../../../config/action-types'
 
 const moment = require('moment')
 

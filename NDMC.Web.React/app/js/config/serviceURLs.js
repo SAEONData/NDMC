@@ -6,7 +6,7 @@ let _ccisBaseURL = ''
 let _mapServerBaseURL = ''
 
 if (CONSTANTS.DEV) {
-  _apiBaseURL = 'http://app01.saeon.ac.za/ndmctestapi/odata/' //'https://localhost:44334/odata/'
+  _apiBaseURL = 'https://localhost:44334/odata/' //'http://app01.saeon.ac.za/ndmctestapi/odata/'
   _siteBaseURL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/`
   _ccisBaseURL = 'http://app01.saeon.ac.za/ccistestapi/odata/' //'https://localhost:44301/odata/'
   _vmsBaseURL = 'http://app01.saeon.ac.za/vmstest/api/' //'http://localhost:64161/api/'

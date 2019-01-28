@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import popout from '../../../images/popout.png'
 import OData from 'react-odata'
-import { apiBaseURL } from '../../config/serviceURLs.cfg'
+import { apiBaseURL } from '../../config/serviceURLs.js'
 import { BarChart, Bar, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import buildQuery from 'odata-query'
 import moment from 'moment';

@@ -6,7 +6,7 @@
 import React from 'react'
 import { CardBody, CardText, CardTitle, Button, Fa } from 'mdbreact'
 import { connect } from 'react-redux'
-import { DEAGreen } from '../../../config/colours.cfg'
+import { DEAGreen } from '../../../config/colours.js'
 
 const _gf = require('../../../globalFunctions')
 
@@ -133,8 +133,14 @@ class EventCard extends React.Component {
   }
 
   render () {
-    const { region: { RegionName }, startdate, enddate, hazardtype } = this.props
+    //const { region: { RegionName }, startdate, enddate, hazardtype } = this.props
+    const { region, startdate, enddate, hazardtype } = this.props
     let { favorite } = this.state
+
+    let RegionName = "UNKNOWN"
+    if(typeof region !== 'undefined' && region !== null){
+      RegionName = region.value
+    }
 
     return (
       <>

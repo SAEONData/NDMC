@@ -5,9 +5,9 @@
  */
 import React from 'react'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from '../../../constants/action-types'
+import * as ACTION_TYPES from '../../../config/action-types'
 import OData from 'react-odata'
-import { apiBaseURL } from '../../../config/serviceURLs.cfg'
+import { apiBaseURL } from '../../../config/serviceURLs.js'
 import Select from 'antd/lib/select'
 import '../../../../css/antd.select.css' //Overrides default antd.select css
 const Option = Select.Option
