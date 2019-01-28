@@ -21,8 +21,6 @@ namespace APIv2.Database.Models
         //FK - Region
         [Required]
         public int RegionId { get; set; }
-        //[Required]
-        public Region Region { get; set; }
 
         public ICollection<EventImpact> EventImpacts { get; set; }
     }
