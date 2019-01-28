@@ -12,6 +12,7 @@ import popin from '../../../../images/popin.png'
 import EventCard from './EventCard.jsx'
 import { DEAGreen } from '../../../config/colours.cfg'
 import { apiBaseURL } from '../../../config/serviceURLs.cfg'
+import { vmsBaseURL } from '../../../config/serviceURLs.cfg'
 import Modal from 'antd/lib/modal'
 import Form from 'antd/lib/form'
 import Col from 'antd/lib/col'
@@ -301,6 +302,8 @@ class EventList extends React.Component {
   */
   async onSubmit () {
     //this.props.toggleAddForm(false)
+    console.log(this.state.region)
+    return
     const formattedImpacts = this.state.impacts.map(impact => {
       return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
     })
@@ -381,27 +384,12 @@ class EventList extends React.Component {
   }
 
   /**
-   * Transform a flat array of regions from API into a tree for tree select inputs
-   * @param {*} filteredRegions
-   */
-  transformDataTree (filteredRegions) {
-    let regions = filteredRegions.map(i => {
-      return {
-        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${ i.RegionId }`, key: i.RegionId
-      }
-    })
-    regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
-    var resultArray = regions.filter(f => f.ParentRegionId == null)
-    return resultArray
-  }
-
-  /**
    * Handle selecting region in input form
    * @param {string} value The value of the region selected node
    * @param {object} node An object containing all data for selected region node
    */
   onRegionSelect (value, node) {
-    this.setState({ region: value, regionTreeValue: node.props.title })
+    this.setState({ region: node.props.id, regionTreeValue: node.props.title })
   }
 
   /**
@@ -618,8 +606,7 @@ class EventList extends React.Component {
     let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
 
     const regionQuery = {
-      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
-      filter: { RegionTypeId: { ne: 5 } }
+      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId']
     }
     const hazardQuery = {
       select: ['TypeEventId', 'TypeEventName']
@@ -782,18 +769,28 @@ class EventList extends React.Component {
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="Select the region in which  the event ocurred">
-                    <OData baseUrl={apiBaseURL + 'regions'} query={regionQuery}>
+                    <OData baseUrl={vmsBaseURL + 'regions'} query={regionQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
-                          let regionTree = this.transformDataTree(data.value)
+                          let regionsFormatted = data.items.map(region => {
+                            return {
+                              ...region, title: region.value, children: region.children.map(subRegion => {
+                                return {
+                                  ...subRegion, title: subRegion.value, children: subRegion.children.map(subSubRegion => {
+                                    return { ...subSubRegion, title: subSubRegion.value }
+                                  })
+                                }
+                              })
+                            }
+                          })
                           return <TreeSelect
                             key={new Date().valueOf()}
                             style={{ width: "100%" }}
                             value={this.state.regionTreeValue}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                            treeData={regionTree}
+                            treeData={regionsFormatted}
                             placeholder="Region"
                             onSelect={this.onRegionSelect}
                           >
