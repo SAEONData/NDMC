@@ -557,7 +557,7 @@ class EventList extends React.Component {
    * @param {object} next The object containing details of the selected node
    */
   onResponseSelect (value, next) {
-    this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.children })
+    this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.title })
   }
 
   /**
@@ -599,6 +599,17 @@ class EventList extends React.Component {
     })
   }
 
+  transformDataTree (responseData) {
+    let responses = responseData.map(i => {
+      return {
+        ParentTypeMitigationId: i.ParentTypeMitigationId, TypeMitigationId: i.TypeMitigationId, children: [], title: i.TypeMitigationName, value: `${ i.TypeMitigationId }`, key: i.TypeMitigationId
+      }
+    })
+    responses.forEach(f => { f.children = responses.filter(g => g.ParentTypeMitigationId === f.TypeMitigationId) })
+    var resultArray = responses.filter(f => f.ParentTypeMitigationId == null)
+    return resultArray
+}
+
   render () {
     const { impacts, responses } = this.state
     let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
@@ -613,7 +624,7 @@ class EventList extends React.Component {
       select: ['TypeImpactId', 'TypeImpactName']
     }
     const responseQuery = {
-      select: ['TypeMitigationId', 'TypeMitigationName', 'UnitOfMeasure']
+      select: ['TypeMitigationId', 'TypeMitigationName', 'UnitOfMeasure', 'ParentTypeMitigationId']
     }
 
     return (
@@ -622,7 +633,6 @@ class EventList extends React.Component {
           <b>Events</b>
         </h4>
         <div style={{ float: "right" }}>
-
           {
             this.props.showListExpandCollapse &&
             <img
@@ -646,7 +656,6 @@ class EventList extends React.Component {
               }}
             />
           }
-
           {
             this.props.showFavoritesOption === true &&
             <Popover
@@ -708,11 +717,8 @@ class EventList extends React.Component {
               />
             </Popover>
           }
-
         </div>
-
         <hr />
-
         <div>
           {this.buildList(this.props.events)}
           <br />
@@ -746,7 +752,6 @@ class EventList extends React.Component {
             </Button>
           }
         </div>
-
         {/* ### ADD FORM ### */}
         <div>
           <Drawer
@@ -933,6 +938,7 @@ class EventList extends React.Component {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
+                          let responses = this.transformDataTree(data.value)
                           const responseUnique = [...new Set(data.value.map(response => response.UnitOfMeasure))]
                           const responseMeasures = responseUnique.filter(item => {
                             if (item !== '' || item !== null) {
@@ -948,18 +954,16 @@ class EventList extends React.Component {
                             destroyOnClose={true}
                           >
                             <div className='row'>
-                              <Select
-                                showSearch
-                                style={{ width: 400 }}
-                                placeholder="Select a Response"
-                                optionFilterProp="children"
-                                onChange={this.onResponseSelect}
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                              >
-                                {data.value.map(item => {
-                                  return <Option key={item.TypeMitigationId} value={item.TypeMitigationId}>{item.TypeMitigationName}</Option>
-                                })}
-                              </Select>
+                            <TreeSelect
+                            key={new Date().valueOf()}
+                            style={{ width: "100%" }}
+                            value={this.state.responseTypeNameTemp}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                            treeData={responses}
+                            placeholder="Select Response"
+                            onSelect={this.onResponseSelect}
+                          >
+                          </TreeSelect>
                             </div>
                             <div className='row'>
                               <div style={{ paddingTop: 10 }}>
