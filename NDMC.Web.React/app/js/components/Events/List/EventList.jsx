@@ -252,8 +252,6 @@ class EventList extends React.Component {
       })
       const res_1 = await res.json()
 
-      console.log('EVENTS', res_1)
-
       if (res_1 && res_1.value && res_1.value.length > 0) {
         events.push(...res_1.value) //add additional events
         this.props.loadEvents(events)
