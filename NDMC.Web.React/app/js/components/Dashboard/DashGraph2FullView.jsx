@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import popin from '../../../images/popin.png'
-import { apiBaseURL } from '../../config/serviceURLs.cfg'
+import { apiBaseURL } from '../../config/serviceURLs.js'
 import { BarChart, Bar, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from 'recharts'
 import buildQuery from 'odata-query'
 import moment from 'moment';

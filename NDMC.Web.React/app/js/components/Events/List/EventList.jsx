@@ -10,9 +10,9 @@ import OData from 'react-odata'
 import popout from '../../../../images/popout.png'
 import popin from '../../../../images/popin.png'
 import EventCard from './EventCard.jsx'
-import { DEAGreen } from '../../../config/colours.cfg'
-import { apiBaseURL } from '../../../config/serviceURLs.cfg'
-import { vmsBaseURL } from '../../../config/serviceURLs.cfg'
+import { DEAGreen } from '../../../config/colours.js'
+import { apiBaseURL } from '../../../config/serviceURLs.js'
+import { vmsBaseURL } from '../../../config/serviceURLs.js'
 import Modal from 'antd/lib/modal'
 import Form from 'antd/lib/form'
 import Col from 'antd/lib/col'
@@ -37,12 +37,12 @@ import 'antd/lib/list/style/index.css'
 const _gf = require('../../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } } = state
+  let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter, regions } } = state
   let { globalData: { addFormVisible, showListExpandCollapse, showFavoritesOption } } = state
   let { eventData: { events, listScrollPos } } = state
   return {
     hazardFilter, regionFilter, dateFilter, impactFilter, addFormVisible, events, favoritesFilter, listScrollPos,
-    showListExpandCollapse, showFavoritesOption
+    showListExpandCollapse, showFavoritesOption, regions
   }
 }
 
@@ -191,16 +191,20 @@ class EventList extends React.Component {
    * @returns {Array} An array of cards containing events
    */
   buildList (events) {
+
+    let { regions } = this.props
+
     let ar = []
     events.map(i => {
       let startdate = i.StartDate > 0 ? new Date(i.StartDate * 1000) : 'N/A'
       let enddate = i.EndDate > 0 ? new Date(i.EndDate * 1000) : 'N/A'
       if (i.TypeEvent !== null && i.EventRegions[0] !== undefined) {
+
         ar.push(
           <EventCard
             key={i.EventId}
             eid={i.EventId}
-            region={i.EventRegions[0].Region}
+            region={ regions.filter(r => r.id == i.EventRegions[0].RegionId)[0] }  //{i.EventRegions[0].Region}
             startdate={startdate === 'N/A' ? 'N/A' : startdate.toDateString()}
             enddate={enddate === 'N/A' ? 'N/A' : enddate.toDateString()}
             hazardtype={i.TypeEvent.TypeEventName}
@@ -227,7 +231,7 @@ class EventList extends React.Component {
       let top = eventListSize - events.length
       top = top > 0 ? top : 0
 
-      let fetchURL = `${ apiBaseURL }Events/Extensions.Filter?$skip=${ skip }&$top=${ top }&$expand=eventRegions($expand=Region),TypeEvent`
+      let fetchURL = `${ apiBaseURL }Events/Extensions.Filter?$skip=${ skip }&$top=${ top }&$expand=eventRegions,TypeEvent`
       let postBody = {
         region: _regionFilter,
         hazard: _hazardFilter,
@@ -247,6 +251,8 @@ class EventList extends React.Component {
         body: JSON.stringify(postBody)
       })
       const res_1 = await res.json()
+
+      console.log('EVENTS', res_1)
 
       if (res_1 && res_1.value && res_1.value.length > 0) {
         events.push(...res_1.value) //add additional events

@@ -4,8 +4,8 @@ import React from 'react'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from '../../constants/action-types'
-import { UILookup } from '../../constants/ui_config.js'
+import * as ACTION_TYPES from '../../config/action-types'
+import { UILookup } from '../../config/ui_config.js'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { editMode } } = state

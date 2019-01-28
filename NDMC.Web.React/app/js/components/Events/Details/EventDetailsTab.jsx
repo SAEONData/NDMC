@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import TextComponent from '../../Shared/TextComponent.jsx'
 import RangeComponent from '../../Shared/RangeComponent.jsx'
 import OData from 'react-odata'
-import { apiBaseURL } from '../../../config/serviceURLs.cfg'
+import { apiBaseURL } from '../../../config/serviceURLs.js'
 
 const mapStateToProps = (state, props) => {
   return {}

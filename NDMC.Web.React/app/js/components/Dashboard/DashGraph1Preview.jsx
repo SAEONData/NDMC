@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import popout from '../../../images/popout.png'
 import OData from 'react-odata'
-import { apiBaseURL } from '../../config/serviceURLs.cfg'
+import { apiBaseURL } from '../../config/serviceURLs.js'
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import buildQuery from 'odata-query'
 

@@ -10,7 +10,7 @@ import popout from '../../../images/popout.png'
 import popin from '../../../images/popin.png'
 import { MapConfig } from '../../../data/mapConfig'
 import loader from '../../../images/loader.gif'
-import { vmsBaseURL, mapServerBaseURL } from '../../config/serviceURLs.cfg'
+import { vmsBaseURL, mapServerBaseURL } from '../../config/serviceURLs.js'
 import moment from 'moment';
 
 const mapStateToProps = (state, props) => {

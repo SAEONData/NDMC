@@ -5,12 +5,12 @@
  */
 import React from 'react'
 import { connect } from 'react-redux'
-import * as ACTION_TYPES from '../../../constants/action-types'
+import * as ACTION_TYPES from '../../../config/action-types'
 import TreeSelect from 'antd/lib/tree-select'
 import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
 import '../../../../css/antd.select.css' //Overrides default antd.select css
 import OData from 'react-odata'
-import { vmsBaseURL } from '../../../config/serviceURLs.cfg'
+import { vmsBaseURL } from '../../../config/serviceURLs.js'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter, regions } } = state

@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHead } from 'mdbreact'
 import OData from 'react-odata'
-import { apiBaseURL } from '../../../config/serviceURLs.cfg'
+import { apiBaseURL } from '../../../config/serviceURLs.js'
 
 const mapStateToProps = (state, props) => {
   return {}
