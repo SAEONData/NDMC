@@ -25,25 +25,7 @@ namespace APIv2.Database.Contexts
                 .Page() // Allow for the $top and $skip Commands
                 .Select();// Allow for the $select Command; 
 
-            builder.EntitySet<Region>("Regions")
-                .EntityType
-                .Filter()
-                .Count()
-                .Expand(maxExpandDepth)
-                .OrderBy()
-                .Page()
-                .Select();
-
             builder.EntitySet<EventRegion>("EventRegions")
-                .EntityType
-                .Filter()
-                .Count()
-                .Expand(maxExpandDepth)
-                .OrderBy()
-                .Page()
-                .Select();
-
-            builder.EntitySet<RegionType>("RegionTypes")
                 .EntityType
                 .Filter()
                 .Count()
