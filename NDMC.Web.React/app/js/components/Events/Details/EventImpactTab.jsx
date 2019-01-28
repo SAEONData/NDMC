@@ -32,13 +32,6 @@ class EventResponseTab extends React.Component {
         EventId: parseInt(eventId),
       },
       expand: ['EventRegions/EventImpacts/TypeImpact',
-        {
-          EventRegions:
-          {
-            filter: { Region: { RegionTypeId: { ne: 5 } } },
-            expand: ['Region']
-          }
-        },
       ]
     }
 
@@ -66,7 +59,7 @@ class EventResponseTab extends React.Component {
           <OData baseUrl={apiBaseURL + 'Events'} query={impactQuery}>
             {({ loading, error, data }) => {
               if (loading) { return <div>Loading...</div> }
-              if (error) { return <div>Error Loading Data From Server</div> }
+              if (error) { console.log(error); return <div>Error Loading Data From Server</div> }
               if (data && data.value) {
                 data.value[0].EventRegions[0].EventImpacts.map(impact => {
                   let amountMeasure = ''
