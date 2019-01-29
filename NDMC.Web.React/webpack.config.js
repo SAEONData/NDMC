@@ -22,13 +22,13 @@ module.exports = {
   entry: {
     app: ["babel-polyfill", './js/index.jsx'],
     react: [
-      'react', 
-      'react-dom', 
-      'react-router-dom', 
-      'react-router', 
-      'redux', 
-      'react-redux', 
-      'react-router-redux', 
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'react-router',
+      'redux',
+      'react-redux',
+      'react-router-redux',
       'history'
     ],
   },
@@ -100,20 +100,11 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       CONSTANTS: {
-        CONSTANTS: {
-          PROD: true,
-          TEST: false,
-          DEV: false
-        }
+        PROD: true,
+        TEST: false,
+        DEV: false
       }
     }),
-    new webpack.IgnorePlugin(/^(fs|ipc|cfg)$/),
-    new CopyWebpackPlugin([
-      {
-        from: 'js/constants/ui_config.cfg',
-        to: 'ui_config.cfg',
-        toType: 'file'
-      }
-    ])
+    new webpack.IgnorePlugin(/^(fs|ipc|cfg)$/)
   ]
 }

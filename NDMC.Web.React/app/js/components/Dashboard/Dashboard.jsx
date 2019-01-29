@@ -121,7 +121,7 @@ class Dashboard extends React.Component {
               <Row>
                 {/* map */}
                 <Col md="12">
-                  {/* <MapViewCore /> */}
+                  <MapViewCore />
                 </Col>
               </Row>
               <br />
