@@ -90,6 +90,8 @@ class CustomNavbar extends React.Component {
         style={{
           boxShadow: "0px 15px 10px -15px gainsboro",
           borderTop: "1px solid #E8E8E8",
+          paddingTop: 2,
+          paddingBottom: 2
         }}
       >
         {!this.state.isWideEnough && <NavbarToggler style={{ backgroundColor: "#2BBBAD" }} onClick={this.onClick} />}

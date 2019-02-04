@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class EventCard extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.togleFavorite = this.togleFavorite.bind(this)
     this.state = {
@@ -39,7 +39,7 @@ class EventCard extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     let { eid } = this.props
     let favs = this.GetFavorites()
     this.setState({ favorite: favs.includes(eid) })
@@ -48,7 +48,7 @@ class EventCard extends React.Component {
   /**
    * Handle toggling favorite events
    */
-  togleFavorite () {
+  togleFavorite() {
     let { favorite } = this.state
     let { eid } = this.props
 
@@ -77,7 +77,7 @@ class EventCard extends React.Component {
   /**
    * Handle fetching favorite events
    */
-  GetFavorites () {
+  GetFavorites() {
     let strFavs = _gf.ReadCookie("NDMC_Event_Favorites")
 
     if (strFavs !== null && strFavs.length > 0) {
@@ -93,7 +93,7 @@ class EventCard extends React.Component {
    * Handle setting favorite events
    * @param {array} favs The array of favorite events to set
    */
-  SetFavorites (favs) {
+  SetFavorites(favs) {
     favs = favs.filter(f => !isNaN(f))
     let strFavs = ""
     if (favs.length > 0) {
@@ -109,7 +109,7 @@ class EventCard extends React.Component {
   /**
    * Handle touch tap event
    */
-  onTouchTap () {
+  onTouchTap() {
     if (this.props.showDetailsInParent) {
       let payload = {}
       payload.action = "showDetails"
@@ -132,23 +132,25 @@ class EventCard extends React.Component {
     }
   }
 
-  render () {
+  render() {
     //const { region: { RegionName }, startdate, enddate, hazardtype } = this.props
     const { region, startdate, enddate, hazardtype } = this.props
     let { favorite } = this.state
 
     let RegionName = "UNKNOWN"
-    if(typeof region !== 'undefined' && region !== null){
+    if (typeof region !== 'undefined' && region !== null) {
       RegionName = region.value
     }
 
     return (
       <>
         <CardBody>
-          <CardTitle>Disaster at {RegionName} ({hazardtype} - {startdate}) </CardTitle>
-          <CardText>
-            {startdate !== 'N/A' ? `Date: ${ startdate } until ${ enddate }` : 'No Dates Recorded'} <br />
-            {hazardtype ? `Type: ${ hazardtype }` : ' '}
+          <CardTitle style={{ fontSize: 18, fontWeight: 400 }}>
+            Disaster at {RegionName} ({hazardtype} - {startdate})
+          </CardTitle>
+          <CardText style={{ wordWrap: "break-word", minHeight: 65, fontSize: 16 }}>
+            {startdate !== 'N/A' ? `Date: ${startdate} until ${enddate}` : 'No Dates Recorded'} <br />
+            {hazardtype ? `Type: ${hazardtype}` : ' '}
           </CardText>
           {
             this.props.showListViewOption === true &&

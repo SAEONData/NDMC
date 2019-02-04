@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class Dashboard extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleScroll = this.handleScroll.bind(this)
     this.state = {
@@ -45,19 +45,19 @@ class Dashboard extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.setEventsFullView(false)
     window.addEventListener('scroll', this.handleScroll)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
   /**
    * Handle user page scrolling
    */
-  handleScroll () {
+  handleScroll() {
     let { showBackToTop } = this.state
     //Toggle BackToTop button
     if (window.pageYOffset > 1450 && showBackToTop === false) {
@@ -68,7 +68,7 @@ class Dashboard extends React.Component {
     }
   }
 
-  render () {
+  render() {
     let { showBackToTop } = this.state
     return (
       <div style={{ padding: "15px 0px 15px 0px" }}>
@@ -109,46 +109,47 @@ class Dashboard extends React.Component {
           <Col md={showBackToTop ? "12" : "7"}>
             <EventList />
           </Col>
-          {
-            !showBackToTop &&
-            <Col md="5">
-              <Row>
-                <Col md="12">
-                  <EventFilters />
-                </Col>
-              </Row>
-              <br />
-              <Row>
-                {/* map */}
-                <Col md="12">
-                  <MapViewCore />
-                </Col>
-              </Row>
-              <br />
-              <Row>
-                {/* graphs */}
-                <Col md="12">
-                  <Row>
-                    <Col md="6">
-                      <DashGraph1Preview />
-                    </Col>
-                    <Col md="6">
-                      <DashGraph2Preview />
-                    </Col>
-                  </Row>
-                  <br />
-                  <Row>
-                    <Col md="6">
-                      <DashGraph3Preview />
-                    </Col>
-                    <Col md="6">
-                      <DashGraph4Preview />
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-          }
+
+          <Col md="5" style={{ position: (showBackToTop ? "absolute" : "relative"), top: (showBackToTop ? 285 : 0), right: 0 }}>
+            <Row>
+              <Col md="12">
+                <EventFilters />
+              </Col>
+            </Row>
+
+            <br />
+
+            <Row>
+              {/* map */}
+              <Col md="12">
+                <MapViewCore />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              {/* graphs */}
+              <Col md="12">
+                <Row>
+                  <Col md="6">
+                    <DashGraph1Preview />
+                  </Col>
+                  <Col md="6">
+                    <DashGraph2Preview />
+                  </Col>
+                </Row>
+                <br />
+                <Row>
+                  <Col md="6">
+                    <DashGraph3Preview />
+                  </Col>
+                  <Col md="6">
+                    <DashGraph4Preview />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Col>
+
         </Row>
       </div>
     )
