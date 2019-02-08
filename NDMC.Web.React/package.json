@@ -11,7 +11,7 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "antd": "3.8.1",
+    "antd": "^3.8.1",
     "bootstrap": "^4.1.3",
     "font-awesome": "^4.7.0",
     "mdbreact": "git+https://oauth2:TrvzhasQo5h8aod8YSLE@git.mdbootstrap.com/mdb/react/re-pro.git",
@@ -46,6 +46,7 @@
     "@babel/preset-react": "^7.0.0-rc.1",
     "babel-loader": "^8.0.0-beta.4",
     "babel-plugin-emotion": "^9.2.6",
+    "babel-plugin-import": "^1.11.0",
     "babel-polyfill": "^6.26.0",
     "clean-webpack-plugin": "^1.0.1",
     "copy-webpack-plugin": "^4.6.0",

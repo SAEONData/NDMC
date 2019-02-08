@@ -11,6 +11,7 @@
   "plugins": [
     "@babel/plugin-proposal-object-rest-spread",
     "emotion",
-    "react-hot-loader/babel"
+    "react-hot-loader/babel",
+    ["import", { "libraryName": "antd", "libraryDirectory": "lib", "style": "css" }] // `style: true` for less
   ]
 }
