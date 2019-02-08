@@ -1,17 +1,14 @@
 'use strict'
-/**
- * @ignore
- * Imports
- */
+
 import React from 'react'
+import { apiBaseURL, vmsBaseURL } from '../../../config/serviceURLs.js'
 import { connect } from 'react-redux'
 import { Button, Fa, ListGroup, ListGroupItem } from 'mdbreact'
 import OData from 'react-odata'
 import popout from '../../../../images/popout.png'
 import popin from '../../../../images/popin.png'
 import EventCard from './EventCard.jsx'
-import { DEAGreen } from '../../../config/colours.cfg'
-import { apiBaseURL } from '../../../config/serviceURLs.cfg'
+import { DEAGreen } from '../../../config/colours.js'
 import Modal from 'antd/lib/modal'
 import Form from 'antd/lib/form'
 import Col from 'antd/lib/col'
@@ -36,12 +33,12 @@ import 'antd/lib/list/style/index.css'
 const _gf = require('../../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } } = state
+  let { filterData: { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter, regions } } = state
   let { globalData: { addFormVisible, showListExpandCollapse, showFavoritesOption } } = state
   let { eventData: { events, listScrollPos } } = state
   return {
     hazardFilter, regionFilter, dateFilter, impactFilter, addFormVisible, events, favoritesFilter, listScrollPos,
-    showListExpandCollapse, showFavoritesOption
+    showListExpandCollapse, showFavoritesOption, regions
   }
 }
 
@@ -93,7 +90,7 @@ const defaultState = {
  * @class
  */
 class EventList extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       _hazardFilter: null,
@@ -140,7 +137,6 @@ class EventList extends React.Component {
   }
 
   componentDidMount() {
-    //this.getEvents()
     this.Init()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
@@ -169,11 +165,11 @@ class EventList extends React.Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
-  handleScroll () {
+  handleScroll() {
     let { showBackToTop } = this.state
     //Toggle BackToTop button
     if (window.pageYOffset > 1450 && showBackToTop === false) {
@@ -189,17 +185,21 @@ class EventList extends React.Component {
    * @param {object} events An object containing the array of events to render
    * @returns {Array} An array of cards containing events
    */
-  buildList (events) {
+  buildList(events) {
+
+    let { regions } = this.props
+
     let ar = []
     events.map(i => {
       let startdate = i.StartDate > 0 ? new Date(i.StartDate * 1000) : 'N/A'
       let enddate = i.EndDate > 0 ? new Date(i.EndDate * 1000) : 'N/A'
       if (i.TypeEvent !== null && i.EventRegions[0] !== undefined) {
+
         ar.push(
           <EventCard
             key={i.EventId}
             eid={i.EventId}
-            region={i.EventRegions[0].Region}
+            region={regions.filter(r => r.id == i.EventRegions[0].RegionId)[0]}  //{i.EventRegions[0].Region}
             startdate={startdate === 'N/A' ? 'N/A' : startdate.toDateString()}
             enddate={enddate === 'N/A' ? 'N/A' : enddate.toDateString()}
             hazardtype={i.TypeEvent.TypeEventName}
@@ -213,7 +213,7 @@ class EventList extends React.Component {
   /**
    * Query events from API with any filter's selected
    */
-  getEvents () {
+  getEvents() {
     //Set loading true
     this.setState({ eventsLoading: true }, async () => {
       //Get Events
@@ -226,7 +226,7 @@ class EventList extends React.Component {
       let top = eventListSize - events.length
       top = top > 0 ? top : 0
 
-      let fetchURL = `${ apiBaseURL }Events/Extensions.Filter?$skip=${ skip }&$top=${ top }&$expand=eventRegions($expand=Region),TypeEvent`
+      let fetchURL = `${apiBaseURL}Events/Extensions.Filter?$skip=${skip}&$top=${top}&$expand=eventRegions,TypeEvent`
       let postBody = {
         region: _regionFilter,
         hazard: _hazardFilter,
@@ -261,7 +261,7 @@ class EventList extends React.Component {
   /**
    * Handle closing the input form
    */
-  onClose () {
+  onClose() {
     this.props.toggleAddForm(false)
     this.setState({
       ...defaultState
@@ -299,7 +299,7 @@ class EventList extends React.Component {
   /**
   * Handle submitting a new event from the input form
   */
-  async onSubmit () {
+  async onSubmit() {
     //this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
       return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
@@ -332,7 +332,7 @@ class EventList extends React.Component {
       }]
     }
 
-    if(formattedResponses && formattedResponses.length > 0){
+    if (formattedResponses && formattedResponses.length > 0) {
       fetchBody.Mitigations = formattedResponses
     }
 
@@ -372,7 +372,7 @@ class EventList extends React.Component {
   /**
   * Handle scrolling to top of page
   */
-  backToTop () {
+  backToTop() {
     window.scroll({
       top: 0,
       left: 0,
@@ -381,34 +381,19 @@ class EventList extends React.Component {
   }
 
   /**
-   * Transform a flat array of regions from API into a tree for tree select inputs
-   * @param {*} filteredRegions
-   */
-  transformDataTree (filteredRegions) {
-    let regions = filteredRegions.map(i => {
-      return {
-        ParentRegionId: i.ParentRegionId, RegionId: i.RegionId, children: [], title: i.RegionName, value: `${ i.RegionId }`, key: i.RegionId
-      }
-    })
-    regions.forEach(f => { f.children = regions.filter(g => g.ParentRegionId === f.RegionId) })
-    var resultArray = regions.filter(f => f.ParentRegionId == null)
-    return resultArray
-  }
-
-  /**
    * Handle selecting region in input form
    * @param {string} value The value of the region selected node
    * @param {object} node An object containing all data for selected region node
    */
-  onRegionSelect (value, node) {
-    this.setState({ region: value, regionTreeValue: node.props.title })
+  onRegionSelect(value, node) {
+    this.setState({ region: node.props.id, regionTreeValue: node.props.title })
   }
 
   /**
    * Handle selecting hazard in input form
    * @param {string} value The value of the hazard selected node
    */
-  onHazardSelect (value) {
+  onHazardSelect(value) {
     this.setState({ hazard: value })
   }
 
@@ -416,7 +401,7 @@ class EventList extends React.Component {
    * Handle selecting a declared date
    * @param {string} dateString The date string of the chosen declared date
    */
-  onDeclaredDateSelect (dateString) {
+  onDeclaredDateSelect(dateString) {
     this.setState({ declaredDate: Date.parse(dateString) / 1000 })
   }
 
@@ -424,21 +409,21 @@ class EventList extends React.Component {
    * Handle selecting a hazard date range
    * @param {string} dateString The date string of the chosen date range
    */
-  onDateRangeSelect (dateString) {
+  onDateRangeSelect(dateString) {
     this.setState({ startDate: Date.parse(dateString[0]) / 1000, endDate: Date.parse(dateString[1]) / 1000 })
   }
 
   /**
    * Handle opening the impact input dialog
    */
-  onImpactOpen () {
+  onImpactOpen() {
     this.setState({ impactModalVisible: true })
   }
 
   /**
    * Handle closing the impact input dialog
    */
-  onImpactClose () {
+  onImpactClose() {
     if (!isNaN(this.state.impactAmountTemp && this.state.impactAmountTemp)) {
       this.setState({ impactModalVisible: false })
       this.setState({
@@ -453,7 +438,7 @@ class EventList extends React.Component {
   /**
    * Handle adding a new impact to the impact array for the event
    */
-  onImpactAdd () {
+  onImpactAdd() {
     let newimpact = {
       impactType: this.state.impactTypeTemp,
       impactTypeName: this.state.impactTypeNameTemp,
@@ -487,7 +472,7 @@ class EventList extends React.Component {
    * @param {string} value The impact string of the selected impact node
    * @param {object} next The node object containing details of the selected node
    */
-  onImpactSelect (value, next) {
+  onImpactSelect(value, next) {
     this.setState({ impactTypeTemp: value, impactTypeNameTemp: next.props.children })
   }
 
@@ -495,7 +480,7 @@ class EventList extends React.Component {
    * Handle impact amount/value input for a given impact
    * @param {string} value The string value of the amount inputted
    */
-  onImpactAmount (value) {
+  onImpactAmount(value) {
     this.setState({ impactAmountTemp: value })
   }
 
@@ -503,14 +488,14 @@ class EventList extends React.Component {
    * Handle impact Unit of Measure selecting for a given impact
    * @param {string} value The string of the unit of measure selected
    */
-  onImpactUnitMeasure (value) {
+  onImpactUnitMeasure(value) {
     this.setState({ impactUnitMeasureTemp: value })
   }
 
   /**
    * Handle removing the last impact added in input form
    */
-  onImpactUndo () {
+  onImpactUndo() {
     let arr = this.state.impacts
     arr.pop()
     this.setState({
@@ -521,21 +506,21 @@ class EventList extends React.Component {
   /**
    * Handle opening the response input dialog
    */
-  onResponseOpen () {
+  onResponseOpen() {
     this.setState({ responseModalVisible: true })
   }
 
   /**
    * Handle closing the response input dialog
    */
-  onResponseClose () {
+  onResponseClose() {
     this.setState({ responseModalVisible: false })
   }
 
   /**
    * Handle adding a new response to the array of responses for the event
    */
-  onResponseAdd () {
+  onResponseAdd() {
     let newResponse = {
       responseType: this.state.responseTypeTemp,
       responseTypeName: this.state.responseTypeNameTemp,
@@ -570,22 +555,22 @@ class EventList extends React.Component {
    * @param {string} value The string value of the selected response
    * @param {object} next The object containing details of the selected node
    */
-  onResponseSelect (value, next) {
-    this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.children })
+  onResponseSelect(value, next) {
+    this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.title })
   }
 
   /**
    * Handle inputting value for a response
    * @param {string} value The string value of the inputted response value
    */
-  onResponseValue (value) {
+  onResponseValue(value) {
     this.setState({ responseValueTemp: value })
   }
 
   /**
    * Handle removing the last response added in input form
    */
-  onResponseUndo () {
+  onResponseUndo() {
     let arr = this.state.responses
     arr.pop()
     this.setState({
@@ -597,7 +582,7 @@ class EventList extends React.Component {
    * Handle measure input for a response
    * @param {string} value The string value of the amount inputted
    */
-  onMeasureSelect (value) {
+  onMeasureSelect(value) {
     this.setState({
       measureTemp: value
     })
@@ -607,19 +592,29 @@ class EventList extends React.Component {
    * Handle date selection for a response
    * @param {string} dateString The string value of the selected date chosen for the response
    */
-  onResponseDateSelect (dateString) {
+  onResponseDateSelect(dateString) {
     this.setState({
       responseDateTemp: Date.parse(dateString) / 1000
     })
   }
 
-  render () {
+  transformDataTree(responseData) {
+    let responses = responseData.map(i => {
+      return {
+        ParentTypeMitigationId: i.ParentTypeMitigationId, TypeMitigationId: i.TypeMitigationId, children: [], title: i.TypeMitigationName, value: `${i.TypeMitigationId}`, key: i.TypeMitigationId
+      }
+    })
+    responses.forEach(f => { f.children = responses.filter(g => g.ParentTypeMitigationId === f.TypeMitigationId) })
+    var resultArray = responses.filter(f => f.ParentTypeMitigationId == null)
+    return resultArray
+  }
+
+  render() {
     const { impacts, responses } = this.state
     let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
 
     const regionQuery = {
-      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId'],
-      filter: { RegionTypeId: { ne: 5 } }
+      select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId']
     }
     const hazardQuery = {
       select: ['TypeEventId', 'TypeEventName']
@@ -628,7 +623,7 @@ class EventList extends React.Component {
       select: ['TypeImpactId', 'TypeImpactName']
     }
     const responseQuery = {
-      select: ['TypeMitigationId', 'TypeMitigationName', 'UnitOfMeasure']
+      select: ['TypeMitigationId', 'TypeMitigationName', 'UnitOfMeasure', 'ParentTypeMitigationId']
     }
 
     return (
@@ -637,7 +632,6 @@ class EventList extends React.Component {
           <b>Events</b>
         </h4>
         <div style={{ float: "right" }}>
-
           {
             this.props.showListExpandCollapse &&
             <img
@@ -661,7 +655,6 @@ class EventList extends React.Component {
               }}
             />
           }
-
           {
             this.props.showFavoritesOption === true &&
             <Popover
@@ -723,11 +716,8 @@ class EventList extends React.Component {
               />
             </Popover>
           }
-
         </div>
-
         <hr />
-
         <div>
           {this.buildList(this.props.events)}
           <br />
@@ -761,7 +751,6 @@ class EventList extends React.Component {
             </Button>
           }
         </div>
-
         {/* ### ADD FORM ### */}
         <div>
           <Drawer
@@ -782,18 +771,28 @@ class EventList extends React.Component {
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="Select the region in which  the event ocurred">
-                    <OData baseUrl={apiBaseURL + 'regions'} query={regionQuery}>
+                    <OData baseUrl={vmsBaseURL + 'regions'} query={regionQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
-                          let regionTree = this.transformDataTree(data.value)
+                          let regionsFormatted = data.items.map(region => {
+                            return {
+                              ...region, title: region.value, children: region.children.map(subRegion => {
+                                return {
+                                  ...subRegion, title: subRegion.value, children: subRegion.children.map(subSubRegion => {
+                                    return { ...subSubRegion, title: subSubRegion.value }
+                                  })
+                                }
+                              })
+                            }
+                          })
                           return <TreeSelect
                             key={new Date().valueOf()}
                             style={{ width: "100%" }}
                             value={this.state.regionTreeValue}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                            treeData={regionTree}
+                            treeData={regionsFormatted}
                             placeholder="Region"
                             onSelect={this.onRegionSelect}
                           >
@@ -938,6 +937,7 @@ class EventList extends React.Component {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
+                          let responses = this.transformDataTree(data.value)
                           const responseUnique = [...new Set(data.value.map(response => response.UnitOfMeasure))]
                           const responseMeasures = responseUnique.filter(item => {
                             if (item !== '' || item !== null) {
@@ -953,18 +953,16 @@ class EventList extends React.Component {
                             destroyOnClose={true}
                           >
                             <div className='row'>
-                              <Select
-                                showSearch
-                                style={{ width: 400 }}
-                                placeholder="Select a Response"
-                                optionFilterProp="children"
-                                onChange={this.onResponseSelect}
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                              <TreeSelect
+                                key={new Date().valueOf()}
+                                style={{ width: "100%" }}
+                                value={this.state.responseTypeNameTemp}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                treeData={responses}
+                                placeholder="Select Response"
+                                onSelect={this.onResponseSelect}
                               >
-                                {data.value.map(item => {
-                                  return <Option key={item.TypeMitigationId} value={item.TypeMitigationId}>{item.TypeMitigationName}</Option>
-                                })}
-                              </Select>
+                              </TreeSelect>
                             </div>
                             <div className='row'>
                               <div style={{ paddingTop: 10 }}>

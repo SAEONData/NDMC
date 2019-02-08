@@ -121,10 +121,12 @@ namespace APIv2.Controllers
             var regionEventIds = new List<int>();
             if (regionFilter > 0)
             {
-                var allRegionIds = GetChildRegions(regionFilter, _context.Regions.ToList()).Select(region => region.RegionId).Distinct().ToList();
-                allRegionIds.Add(regionFilter);
+                //Get all RegionIds (including children)
+                var allRegionIDs = GetChildren(regionFilter, GetVMSData("regions/flat").Result).Select(r => r).Distinct().ToList();
+                allRegionIDs.Add(regionFilter);
 
-                regionEventIds = _context.EventRegions.Where(p => allRegionIds.Contains(p.RegionId)).Select(p => p.EventId).Distinct().ToList();
+                //Get all ProjectIds assigned to these Regions and/or Typology
+                regionEventIds = _context.EventRegions.Where(p => allRegionIDs.Contains(p.RegionId)).Select(p => p.EventId).Distinct().ToList();
             }
 
             var impactEventIds = new List<int>();
@@ -161,23 +163,22 @@ namespace APIv2.Controllers
         public JsonResult GeoJson()
         {
             var eventImpacts = _context.EventImpacts.ToArray();
-            var regions = _context.Regions.ToArray();
             var vmsRegions = GetVMSData("regions/flat").Result;
 
             var geoJSON = _context.Events
-                .Include(e => e.EventRegions).ThenInclude(er => er.Region)
+                .Include(e => e.EventRegions)
                 .Select(e => new
                 {
                     type = "Feature",
                     geometry = new
                     {
                         type = "Polygon",
-                        coordinates = GetCoordinates(e.EventRegions, regions, vmsRegions)
+                        coordinates = GetCoordinates(e.EventRegions, vmsRegions)
                     },
                     properties = new
                     {
                         id = e.EventId,
-                        regions = GetGeoProps(e.EventRegions.Select(er => er.RegionId).ToArray(), regions), 
+                        regions = GetGeoProps(e.EventRegions.Select(er => er.RegionId).ToArray(), vmsRegions),
                         hazard = e.TypeEventId,
                         hazardName = e.TypeEvent.TypeEventName,
                         startDate = ConvertToDateString(e.StartDate),
@@ -194,45 +195,39 @@ namespace APIv2.Controllers
         }
 
 
-        private object[] GetCoordinates(ICollection<EventRegion> evenRegions, Region[] regions, List<StandardVocabItem> vmsRegions)
+        private object[] GetCoordinates(ICollection<EventRegion> eventRegions, List<StandardVocabItem> vmsRegions)
         {
             var result = new List<object>();
 
-            foreach (var er in evenRegions)
+            foreach (var er in eventRegions)
             {
-                var region = regions.FirstOrDefault(r => r.RegionId == er.RegionId);
+                var polygon = new List<object>();
 
-                if (region != null)
+                var vmsRegion = vmsRegions.FirstOrDefault(v => v.Id == er.RegionId.ToString());
+                if (vmsRegion != null)
                 {
-                    var polygon = new List<object>();
-
-                    var vmsRegion = vmsRegions.FirstOrDefault(v => v.Value.Replace("-", " ").StartsWith(region.RegionName.Replace("-", " ")));
-                    if (vmsRegion != null)
+                    var simpleWKT = vmsRegion.AdditionalData.FirstOrDefault(ad => ad.Key == "SimpleWKT");
+                    if (!string.IsNullOrEmpty(simpleWKT.Value))
                     {
-                        var simpleWKT = vmsRegion.AdditionalData.FirstOrDefault(ad => ad.Key == "SimpleWKT");
-                        if (!string.IsNullOrEmpty(simpleWKT.Value))
-                        {
-                            var parsedWKT = simpleWKT.Value.Replace("POLYGON((", "").Replace("))", "");
+                        var parsedWKT = simpleWKT.Value.Replace("POLYGON((", "").Replace("))", "");
 
-                            foreach (var point in parsedWKT.Split(","))
+                        foreach (var point in parsedWKT.Split(","))
+                        {
+                            var pointValues = point.Trim().Split(" ");
+                            if (pointValues.Length == 2)
                             {
-                                var pointValues = point.Trim().Split(" ");
-                                if (pointValues.Length == 2)
+                                if (double.TryParse(pointValues[0].Trim(), out double pointLat) &&
+                                    double.TryParse(pointValues[1].Trim(), out double pointLon))
                                 {
-                                    if (double.TryParse(pointValues[0].Trim(), out double pointLat) &&
-                                        double.TryParse(pointValues[1].Trim(), out double pointLon))
-                                    {
-                                        var polyPoint = new double[] { pointLat, pointLon };
-                                        polygon.Add(polyPoint);
-                                    }
+                                    var polyPoint = new double[] { pointLat, pointLon };
+                                    polygon.Add(polyPoint);
                                 }
                             }
                         }
-
                     }
-
-                    result.Add(polygon);
                 }
+
+                result.Add(polygon);
             }
 
             return result.ToArray();
@@ -263,20 +258,6 @@ namespace APIv2.Controllers
             return DateTimeOffset.FromUnixTimeSeconds(_unixTime).Date.ToString("yyyy-MM-dd");
         }
 
-        private List<Region> GetChildRegions(int regionId, List<Region> regionList)
-        {
-            var regions = regionList.Where(x => x.ParentRegionId == regionId).ToList();
-
-            var childRegions = new List<Region>();
-            foreach (var region in regions)
-            {
-                childRegions.AddRange(GetChildRegions(region.RegionId, regionList));
-            }
-            regions.AddRange(childRegions);
-
-            return regions;
-        }
-
         private async Task<List<StandardVocabItem>> GetVMSData(string relativeURL)
         {
             var result = new StandardVocabOutput();
@@ -298,23 +279,47 @@ namespace APIv2.Controllers
             return result.Items;
         }
 
-
-        private List<int> GetParents(int filterID, Region[] data)
+        private List<int> GetChildren(int filterID, List<StandardVocabItem> data)
         {
-            int? parentId = 0;
+            var children = data
+                .Where(x =>
+                    x.AdditionalData.Any(y => y.Key == "ParentId" && y.Value == filterID.ToString())
+                )
+                .Select(x => int.Parse(x.Id))
+                .ToList();
+
+            var addChildren = new List<int>();
+            foreach (var child in children)
+            {
+                //Add to temp list so as to not modify 'children' during iteration
+                addChildren.AddRange(GetChildren(child, data));
+            }
+            //Transfer to actual list
+            children.AddRange(addChildren);
+
+            return children;
+        }
+
+        private List<int> GetParents(int filterID, List<StandardVocabItem> data)
+        {
+            var parentId = "";
 
             //Get ParentId
-            var vmsItem = data.FirstOrDefault(x => x.RegionId == filterID);
-            if (vmsItem != null && vmsItem.ParentRegionId != null)
+            var vmsItem = data.FirstOrDefault(x => x.Id == filterID.ToString());
+            if (vmsItem != null)
             {
-                parentId = vmsItem.ParentRegionId;
+                var addItem = vmsItem.AdditionalData.FirstOrDefault(x => x.Key == "ParentId");
+                if (!string.IsNullOrEmpty(addItem.Value))
+                {
+                    parentId = addItem.Value;
+                }
             }
 
             var parents = data
                 .Where(x =>
-                    x.RegionId == parentId
+                    x.Id == parentId
                 )
-                .Select(x => x.RegionId)
+                .Select(x => int.Parse(x.Id))
                 .ToList();
 
             var addParents = new List<int>();
@@ -329,7 +334,7 @@ namespace APIv2.Controllers
             return parents;
         }
 
-        private List<List<int>> GetGeoProps(int[] items, Region[] vmsItems)
+        private List<List<int>> GetGeoProps(int[] items, List<StandardVocabItem> vmsItems)
         {
             var geoItems = new List<List<int>>();
 

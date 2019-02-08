@@ -5,8 +5,6 @@ namespace APIv2.Database.Contexts
 {
     public class SQLDBContext : DbContext
     {
-        public DbSet<Region> Regions { get; set; }
-        public DbSet<RegionType> RegionTypes { get; set; }
         public DbSet<DeclaredEvent> DeclaredEvents { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<EventRegion> EventRegions { get; set; }

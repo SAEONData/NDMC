@@ -84,7 +84,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class App extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = { navbar: true }
     if (location.toString().includes('navbar=hidden')) {
@@ -93,12 +93,12 @@ class App extends React.Component {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     //this.genTestConfig()
     this.processURLConfig()
   }
 
-  genTestConfig () {
+  genTestConfig() {
     // TEST //
     let config = {
       header: true, // true/false  >>>  toggle header on/off
@@ -128,7 +128,7 @@ class App extends React.Component {
     // TEST //
   }
 
-  processURLConfig () {
+  processURLConfig() {
     try {
       const parsedHash = queryString.parse(location.hash.substring(location.hash.indexOf("?")))
       if (parsedHash.config) {
@@ -234,16 +234,19 @@ class App extends React.Component {
     }
   }
 
-  render () {
-    let { navbar } = this.state
-    let { showSideNav } = this.props
+  render() {
+    let { showSideNav, showHeader, showNavbar, showFooter } = this.props
 
     return (
       <div style={{ margin: "0px 15px 0px 15px", backgroundColor: "white" }}>
         <Router>
           <div>
-            {this.props.showHeader === true && <Header />}
-            {this.props.showNavbar && <CustomNavbar />}
+
+            <div style={{ marginLeft: -15, marginRight: -15 }}>
+              {(showHeader === true) && <Header />}
+              {(showNavbar !== false) && <CustomNavbar />}
+            </div>
+
             {
               this.props.showSideNavButton === true &&
               <SideNav data={NavData} isOpen={showSideNav} />
@@ -266,13 +269,15 @@ class App extends React.Component {
                 </Switch>
               </div>
             </div>
+
             {
-              (this.props.showFooter === true) &&
-              <div>
+              (showFooter === true) &&
+              <div style={{ marginLeft: -15, marginRight: -15 }}>
                 <div style={{ height: "15px", backgroundColor: "whitesmoke" }} />
                 <Footer />
               </div>
             }
+
           </div>
         </Router>
       </div>

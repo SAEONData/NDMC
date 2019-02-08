@@ -6,8 +6,8 @@
 import React from 'react'
 import { Button, Chip, Fa } from 'mdbreact'
 import { connect } from 'react-redux'
-import { DEAGreen } from '../../../config/colours.cfg'
-import * as ACTION_TYPES from '../../../constants/action-types'
+import { DEAGreen } from '../../../config/colours.js'
+import * as ACTION_TYPES from '../../../config/action-types'
 
 const moment = require('moment')
 
@@ -96,9 +96,9 @@ class EventFilters extends React.Component {
       }
 
       if (regionFilter > 0) {
-        let searchRegions = regions.filter(r => r.RegionId == regionFilter)
+        let searchRegions = regions.filter(r => r.id == regionFilter)
         if (searchRegions.length > 0) {
-          let regionName = searchRegions[0].RegionName
+          let regionName = searchRegions[0].value
           taglist.push(
             <Chip
               key="fcRegion"

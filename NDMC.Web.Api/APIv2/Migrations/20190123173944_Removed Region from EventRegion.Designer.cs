@@ -4,14 +4,16 @@ using APIv2.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace APIv2.Migrations
 {
     [DbContext(typeof(SQLDBContext))]
-    partial class SQLDBContextModelSnapshot : ModelSnapshot
+    [Migration("20190123173944_Removed Region from EventRegion")]
+    partial class RemovedRegionfromEventRegion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,6 +124,41 @@ namespace APIv2.Migrations
                     b.HasIndex("TypeMitigationId");
 
                     b.ToTable("Mitigations");
+                });
+
+            modelBuilder.Entity("APIv2.Database.Models.Region", b =>
+                {
+                    b.Property<int>("RegionId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ParentRegionId");
+
+                    b.Property<string>("RegionName")
+                        .IsRequired();
+
+                    b.Property<int?>("RegionTypeId");
+
+                    b.HasKey("RegionId");
+
+                    b.HasIndex("ParentRegionId");
+
+                    b.HasIndex("RegionTypeId");
+
+                    b.ToTable("Regions");
+                });
+
+            modelBuilder.Entity("APIv2.Database.Models.RegionType", b =>
+                {
+                    b.Property<int>("RegionTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("RegionTypeName");
+
+                    b.HasKey("RegionTypeId");
+
+                    b.ToTable("RegionTypes");
                 });
 
             modelBuilder.Entity("APIv2.Database.Models.TypeEvent", b =>
@@ -245,6 +282,17 @@ namespace APIv2.Migrations
                         .WithMany("Mitigations")
                         .HasForeignKey("TypeMitigationId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("APIv2.Database.Models.Region", b =>
+                {
+                    b.HasOne("APIv2.Database.Models.Region", "ParentRegion")
+                        .WithMany()
+                        .HasForeignKey("ParentRegionId");
+
+                    b.HasOne("APIv2.Database.Models.RegionType", "RegionType")
+                        .WithMany()
+                        .HasForeignKey("RegionTypeId");
                 });
 
             modelBuilder.Entity("APIv2.Database.Models.TypeImpact", b =>

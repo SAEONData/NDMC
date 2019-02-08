@@ -5,7 +5,7 @@
  */
 import React from 'react'
 import { Col, Row, Modal, ModalBody, ModalHeader } from 'mdbreact';
-import { DEAGreen } from '../../config/colours.cfg'
+import { DEAGreen } from '../../config/colours.js'
 import { footerContent } from '../../../data/footerConfig'
 
 /**
