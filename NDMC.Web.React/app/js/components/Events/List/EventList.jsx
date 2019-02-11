@@ -692,10 +692,9 @@ class EventList extends React.Component {
    * @returns The final object keymapped to new values
    */
   transformTreeData (hazards) {
-    if (typeof hazards !== 'undefined') {
+    if (typeof hazards === 'Object') {
       return hazards.map(item => {
-        console.log(item)
-        return { id: item.id, title: item.value, children: this.transformTreeData(item.children) }
+        return { ...item, title: item.value, children: this.transformTreeData(item.children) }
       })
     }
   }

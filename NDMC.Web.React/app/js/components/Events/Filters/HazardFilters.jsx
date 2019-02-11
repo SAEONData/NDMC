@@ -88,10 +88,9 @@ class HazardFilters extends React.Component {
    * @returns The final object keymapped to new values
    */
   transformTreeData (hazards) {
-    if (typeof hazards !== 'undefined') {
+    if (typeof hazards === 'object') {
       return hazards.map(item => {
-        console.log(item)
-        return { id: item.id, title: item.value, children: this.transformTreeData(item.children) }
+        return { ...item, title: item.value, children: this.transformTreeData(item.children) }
       })
     }
   }
@@ -123,30 +122,7 @@ class HazardFilters extends React.Component {
             if (error) { return <div>Error Loading Data From Server</div> }
             if (data && data.items) {
               let hazards = data.items
-              let converted = this.transformTreeData(hazards)
-
-              // let renamedHazards = Object.keys(data.items).reduce((acc, key) => ({
-              //   ...acc,
-              //   ...{ [keyMap[key] || key]: data.items[key] }
-              // }), {})
-
-              console.log(converted)
-
-              // let hazardsFormatted = data.items.map(Hazard => {
-              //   return {
-              //     ...Hazard, title: Hazard.value, children: Hazard.children.map(subHazard => {
-              //       return {
-              //         ...subHazard, title: subHazard.value, children: subHazard.children.map(subSubHazard => {
-              //           return {
-              //             ...subSubHazard, title: subSubHazard.value, children: subSubHazard.children.map(subSubSubHazard => {
-              //               return { ...subSubSubHazard, title: subSubSubHazard.value, }
-              //             })
-              //           }
-              //         })
-              //       }
-              //     })
-              //   }
-              // })
+              let convertedHazards = this.transformTreeData(hazards)
 
               return (
                 <TreeSelect
@@ -154,7 +130,7 @@ class HazardFilters extends React.Component {
                   value={this.state.value}
                   dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                   dropdownMatchSelectWidth={false}
-                  treeData={converted}
+                  treeData={convertedHazards}
                   placeholder="Select..."
                   onSelect={this.onHazardSelect}
                 >
