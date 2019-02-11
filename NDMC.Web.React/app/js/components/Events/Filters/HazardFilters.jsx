@@ -8,11 +8,8 @@ import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../config/action-types'
 import OData from 'react-odata'
 import { apiBaseURL, vmsBaseURL } from '../../../config/serviceURLs.js'
-import Select from 'antd/lib/select'
-import '../../../../css/antd.select.css' //Overrides default antd.select css
 import TreeSelect from 'antd/lib/tree-select'
 import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
-const Option = Select.Option
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, hazards } } = state
@@ -51,6 +48,11 @@ class HazardFilters extends React.Component {
     this.Init()
   }
 
+  /**
+   * Initialize the Hazard Filter class with default values
+   *
+   * @function
+   */
   Init () {
     let { hazardFilter, hazards } = this.props
 
@@ -63,23 +65,6 @@ class HazardFilters extends React.Component {
     // if (hazardName !== this.state.value) {
     //   this.setState({ value: hazardName })
     // }
-  }
-
-  /**
-   * Set render options
-   * @param {object} data The data object
-   */
-  renderOptions (data) {
-    let options = []
-    data.items.sort((a, b) => (a.TypeEventName > b.TypeEventName) ? 1 : ((b.TypeEventName > a.TypeEventName) ? -1 : 0))
-    data.items.map(item => {
-      options.push(
-        <Option key={item.TypeEventId} value={item.TypeEventName}>
-          {item.TypeEventName}
-        </Option>
-      )
-    })
-    return options
   }
 
   /**
