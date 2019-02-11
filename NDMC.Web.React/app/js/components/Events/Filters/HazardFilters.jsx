@@ -7,9 +7,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../config/action-types'
 import OData from 'react-odata'
-import { apiBaseURL } from '../../../config/serviceURLs.js'
+import { apiBaseURL, vmsBaseURL } from '../../../config/serviceURLs.js'
 import Select from 'antd/lib/select'
 import '../../../../css/antd.select.css' //Overrides default antd.select css
+import TreeSelect from 'antd/lib/tree-select'
+import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
 const Option = Select.Option
 
 const mapStateToProps = (state, props) => {
@@ -38,18 +40,18 @@ class HazardFilters extends React.Component {
     this.state = {
       value: "Select..."
     }
-    this.optionClick = this.optionClick.bind(this)
+    this.onHazardSelect = this.onHazardSelect.bind(this)
   }
 
-  componentDidMount(){
+  componentDidMount () {
     this.Init()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     this.Init()
   }
 
-  Init(){
+  Init () {
     let { hazardFilter, hazards } = this.props
 
     let searchHazards = hazards.filter(h => h.TypeEventId == hazardFilter)
@@ -58,38 +60,19 @@ class HazardFilters extends React.Component {
       hazardName = searchHazards[0].TypeEventName
     }
 
-    if (hazardName !== this.state.value) {
-      this.setState({ value: hazardName })
-    }
+    // if (hazardName !== this.state.value) {
+    //   this.setState({ value: hazardName })
+    // }
   }
 
-  /**
-   * Handle selecting a hazard from list
-   * @param {string} value The string value of the selected node
-   */
-  optionClick (value) {
-    let { loadHazardFilter, hazards } = this.props
-    let id = 0
-    let filteredData
-    if (hazards) {
-      filteredData = hazards.filter(x => x.TypeEventName === value)
-    }
-    if (filteredData) {
-      filteredData[0].TypeEventId ? id = filteredData[0].TypeEventId : ''
-    }
-    if (value[0] !== this.state.value && value !== "Select...") {
-      this.setState({ value: value })
-      loadHazardFilter(id)
-    }
-  }
   /**
    * Set render options
    * @param {object} data The data object
    */
   renderOptions (data) {
     let options = []
-    data.value.sort((a, b) => (a.TypeEventName > b.TypeEventName) ? 1 : ((b.TypeEventName > a.TypeEventName) ? -1 : 0))
-    data.value.map(item => {
+    data.items.sort((a, b) => (a.TypeEventName > b.TypeEventName) ? 1 : ((b.TypeEventName > a.TypeEventName) ? -1 : 0))
+    data.items.map(item => {
       options.push(
         <Option key={item.TypeEventId} value={item.TypeEventName}>
           {item.TypeEventName}
@@ -99,36 +82,68 @@ class HazardFilters extends React.Component {
     return options
   }
 
+  /**
+  * Handle selection of hazard filter
+  * @function
+  * @param {string} value String value of the selected node
+  * @param {object} node Object of selected node contatining details of node
+  */
+  onHazardSelect (value, node) {
+    let { loadHazardFilter } = this.props
+    loadHazardFilter(parseInt(node.props.id))
+    this.setState({ value: value })
+  }
+
   render () {
     const hazardsQuery = {
       select: ['TypeEventId', 'TypeEventName']
     }
     return (
       <>
-        <OData baseUrl={apiBaseURL + 'TypeEvents'} query={hazardsQuery}>
+        <OData baseUrl={vmsBaseURL + 'hazards/flat'} query={hazardsQuery}>
           {({ loading, error, data }) => {
-            if (loading) {
-              return <div>Loading...</div>
-            }
-            if (error) {
-              return <div>Error Loading Data From Server</div>
-            }
-            if (data && data.value) {
+            if (loading) { return <div>Loading...</div> }
+            if (error) { return <div>Error Loading Data From Server</div> }
+            if (data) {
               //Dispatch data to store
               setTimeout(() => {
-                if (!_.isEqual(data.value, this.props.hazards)) {
-                  this.props.loadHazards(data.value)
+                if (!_.isEqual(data.items, this.props.hazards)) {
+                  this.props.loadHazards(data.items)
                 }
               }, 100)
+            }
+          }
+          }
+        </OData>
+        <OData baseUrl={vmsBaseURL + 'hazards'} query={hazardsQuery}>
+          {({ loading, error, data }) => {
+            if (loading) { return <div>Loading...</div> }
+            if (error) { return <div>Error Loading Data From Server</div> }
+            if (data && data.items) {
+              let hazardsFormatted = data.items.map(Hazard => {
+                return {
+                  ...Hazard, title: Hazard.value, children: Hazard.children.map(subHazard => {
+                    return {
+                      ...subHazard, title: subHazard.value, children: subHazard.children.map(subSubHazard => {
+                        return { ...subSubHazard, title: subSubHazard.value }
+                      })
+                    }
+                  })
+                }
+              })
+              data.items.sort((a, b) => a.value.localeCompare(b.value))
+
               return (
-                <Select
+                <TreeSelect
                   style={{ width: "100%" }}
-                  onChange={this.optionClick}
                   value={this.state.value}
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                   dropdownMatchSelectWidth={false}
+                  treeData={hazardsFormatted}
+                  placeholder="Select..."
+                  onSelect={this.onHazardSelect}
                 >
-                  {this.renderOptions(data)}
-                </Select>
+                </TreeSelect>
               )
             }
           }}

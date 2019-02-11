@@ -78,9 +78,9 @@ class EventFilters extends React.Component {
       favoritesFilter === true) {
 
       if (hazardFilter > 0) {
-        let searchHazards = hazards.filter(h => h.TypeEventId == hazardFilter)
+        let searchHazards = hazards.filter(h => h.id == hazardFilter)
         if (searchHazards.length > 0) {
-          let hazardName = searchHazards[0].TypeEventName
+          let hazardName = searchHazards[0].value
           taglist.push(
             <Chip
               key="fcHazard"
@@ -142,7 +142,7 @@ class EventFilters extends React.Component {
             handleClose={() => {
               this.props.clearDateFilter()
             }}>
-            {`${ startdate } - ${ endDate }`}
+            {`${startdate} - ${endDate}`}
           </Chip>
         )
       }
