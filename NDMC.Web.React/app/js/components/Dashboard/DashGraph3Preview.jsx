@@ -51,6 +51,7 @@ class DashGraph3Preview extends React.Component {
 
   componentDidMount() {
     this.getChartData()
+    this.getHazards()
     this.getFilteredEventIDs()
   }
 
@@ -63,16 +64,11 @@ class DashGraph3Preview extends React.Component {
     if (this.props.chart3.length === 0) {
 
       const query = buildQuery({
-        select: ["EventId", "StartDate", "EndDate"],
+        select: ["EventId", "StartDate", "EndDate", "TypeEventId"],
         filter: {
           StartDate: { ne: null },
           EndDate: { ne: null },
           TypeEventId: { ne: null }
-        },
-        expand: {
-          TypeEvent: {
-            select: ["TypeEventName"]
-          }
         }
       })
 
@@ -91,6 +87,28 @@ class DashGraph3Preview extends React.Component {
       catch (ex) {
         console.error(ex)
       }
+    }
+  }
+
+  async getHazards() {
+
+    //Get Hazards list/details
+    try {
+
+      let res = await fetch(vmsBaseURL + "hazards/flat")
+
+      //Get response body
+      let resBody = await res.json()
+
+      if (res.ok) {
+        this.setState({ hazards: resBody.items })
+      }
+      else {
+        throw new Error(resBody.error.message)
+      }
+
+    } catch (ex) {
+      console.error(ex)
     }
   }
 
@@ -164,10 +182,10 @@ class DashGraph3Preview extends React.Component {
     //Get unique hazards
     let uniqueHazards = []
     data.forEach(h => {
-      if (uniqueHazards.filter(x => x.Hazard === h.TypeEvent.TypeEventName).length === 0) {
+      if (uniqueHazards.filter(x => x.Hazard === h.TypeEventId).length === 0) {
         uniqueHazards.push({
-          Hazard: h.TypeEvent.TypeEventName,
-          Count: data.filter(d => d.TypeEvent.TypeEventName === h.TypeEvent.TypeEventName).length
+          Hazard: h.TypeEventId,
+          Count: data.filter(d => d.TypeEventId === h.TypeEventId).length
         })
       }
     })
@@ -185,9 +203,16 @@ class DashGraph3Preview extends React.Component {
       let tItem = { Year: i }
       uniqueHazards.forEach(haz => {
 
+        //Get Hazard Name
+        let hazName = "Unknown"
+        let searchHaz = hazards.filter(x => x.id == haz.Hazard)
+        if (searchHaz.length > 0) {
+          hazName = searchHaz[0].value.trim()
+        }
+
         //Get relevant hazards
-        let filteredHazards = data.filter(d => moment.unix(d.StartDate).year() <= i && moment.unix(d.EndDate).year() >= i && d.TypeEvent.TypeEventName === haz.Hazard)
-        tItem[haz.Hazard] = filteredHazards.length
+        let filteredHazards = data.filter(d => moment.unix(d.StartDate).year() <= i && moment.unix(d.EndDate).year() >= i && d.TypeEventId === haz.Hazard)
+        tItem[hazName] = filteredHazards.length
       })
 
       tData.push(tItem)
@@ -228,7 +253,7 @@ class DashGraph3Preview extends React.Component {
     )
   }
 
-  renderAreas(transformedData) {
+  renderAreas(transformedData, hazards) {
 
     let areas = []
     let index = 0;
@@ -238,7 +263,10 @@ class DashGraph3Preview extends React.Component {
 
         //Get Hazard color
         let color = "lightgrey"
-        color = chartColours[index]
+        let searchHaz = hazards.filter(h => h.value.trim() === key)
+        if (searchHaz.length > 0) {
+          color = chartColours[index] //searchHaz[0].color
+        }
 
         areas.push(
           <Area
@@ -259,11 +287,8 @@ class DashGraph3Preview extends React.Component {
 
   render() {
 
-    let { filterIDs } = this.state
+    let { filterIDs, hazards } = this.state
     let { chart3 } = this.props
-
-    let hazards = []
-    if(chart3) hazards = Array.from(new Set(chart3.map(e => e.TypeEvent.TypeEventName))) 
 
     let filteredData = chart3.filter(p => filterIDs.includes(p.EventId))
     let transformedData = this.transformData(filteredData, hazards)
@@ -316,7 +341,7 @@ class DashGraph3Preview extends React.Component {
                 <XAxis hide dataKey="Year" />
                 <YAxis hide tickFormatter={this.toPercent} />
                 <Tooltip content={this.renderTooltipContent} />
-                {this.renderAreas(transformedData)}
+                {this.renderAreas(transformedData, hazards)}
               </AreaChart>
             </ResponsiveContainer>
           }
