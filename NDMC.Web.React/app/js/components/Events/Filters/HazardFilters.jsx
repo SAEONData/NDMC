@@ -38,6 +38,7 @@ class HazardFilters extends React.Component {
       value: "Select..."
     }
     this.onHazardSelect = this.onHazardSelect.bind(this)
+    this.transformTreeData = this.transformTreeData.bind(this)
   }
 
   componentDidMount () {
@@ -79,6 +80,22 @@ class HazardFilters extends React.Component {
     this.setState({ value: value })
   }
 
+  /**
+   * Recursive function that takes a hazard array object and maps each key to a new value for ant.d's treeselect.
+   *
+   * @function
+   * @param {object} hazards
+   * @returns The final object keymapped to new values
+   */
+  transformTreeData (hazards) {
+    if (typeof hazards !== 'undefined') {
+      return hazards.map(item => {
+        console.log(item)
+        return { id: item.id, title: item.value, children: this.transformTreeData(item.children) }
+      })
+    }
+  }
+
   render () {
     const hazardsQuery = {
       select: ['TypeEventId', 'TypeEventName']
@@ -105,18 +122,31 @@ class HazardFilters extends React.Component {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }
             if (data && data.items) {
-              data.items.sort((a, b) => a.value.localeCompare(b.value))
-              let hazardsFormatted = data.items.map(Hazard => {
-                return {
-                  ...Hazard, title: Hazard.value, children: Hazard.children.map(subHazard => {
-                    return {
-                      ...subHazard, title: subHazard.value, children: subHazard.children.map(subSubHazard => {
-                        return { ...subSubHazard, title: subSubHazard.value }
-                      })
-                    }
-                  })
-                }
-              })
+              let hazards = data.items
+              let converted = this.transformTreeData(hazards)
+
+              // let renamedHazards = Object.keys(data.items).reduce((acc, key) => ({
+              //   ...acc,
+              //   ...{ [keyMap[key] || key]: data.items[key] }
+              // }), {})
+
+              console.log(converted)
+
+              // let hazardsFormatted = data.items.map(Hazard => {
+              //   return {
+              //     ...Hazard, title: Hazard.value, children: Hazard.children.map(subHazard => {
+              //       return {
+              //         ...subHazard, title: subHazard.value, children: subHazard.children.map(subSubHazard => {
+              //           return {
+              //             ...subSubHazard, title: subSubHazard.value, children: subSubHazard.children.map(subSubSubHazard => {
+              //               return { ...subSubSubHazard, title: subSubSubHazard.value, }
+              //             })
+              //           }
+              //         })
+              //       }
+              //     })
+              //   }
+              // })
 
               return (
                 <TreeSelect
@@ -124,7 +154,7 @@ class HazardFilters extends React.Component {
                   value={this.state.value}
                   dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                   dropdownMatchSelectWidth={false}
-                  treeData={hazardsFormatted}
+                  treeData={converted}
                   placeholder="Select..."
                   onSelect={this.onHazardSelect}
                 >

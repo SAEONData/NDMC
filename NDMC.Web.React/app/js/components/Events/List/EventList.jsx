@@ -135,6 +135,7 @@ class EventList extends React.Component {
     this.onMeasureSelect = this.onMeasureSelect.bind(this)
     this.onResponseDateSelect = this.onResponseDateSelect.bind(this)
     this.onImpactUnitMeasure = this.onImpactUnitMeasure.bind(this)
+    this.transformTreeData = this.transformTreeData.bind(this)
   }
 
   componentDidMount () {
@@ -683,6 +684,22 @@ class EventList extends React.Component {
     return resultArray
   }
 
+  /**
+   * Recursive function that takes a hazard array object and maps each key to a new value for ant.d's treeselect.
+   *
+   * @function
+   * @param {object} hazards
+   * @returns The final object keymapped to new values
+   */
+  transformTreeData (hazards) {
+    if (typeof hazards !== 'undefined') {
+      return hazards.map(item => {
+        console.log(item)
+        return { id: item.id, title: item.value, children: this.transformTreeData(item.children) }
+      })
+    }
+  }
+
   render () {
     const { impacts, responses } = this.state
     let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
@@ -883,19 +900,11 @@ class EventList extends React.Component {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
-                          data.items.sort((a, b) => a.value.localeCompare(b.value))
+                          let hazards = data.items
+                          //data.items.sort((a, b) => a.value.localeCompare(b.value))
 
-                          let hazardsFormatted = data.items.map(Hazard => {
-                            return {
-                              ...Hazard, title: Hazard.value, children: Hazard.children.map(subHazard => {
-                                return {
-                                  ...subHazard, title: subHazard.value, children: subHazard.children.map(subSubHazard => {
-                                    return { ...subSubHazard, title: subSubHazard.value }
-                                  })
-                                }
-                              })
-                            }
-                          })
+                          let hazardsFormatted = this.transformTreeData(hazards)
+
                           return <TreeSelect
                             style={{ width: "100%" }}
                             value={this.state.hazardTreeValue}
