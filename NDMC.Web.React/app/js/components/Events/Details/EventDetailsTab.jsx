@@ -76,7 +76,7 @@ class EventDetailsTab extends React.Component {
   render () {
     const { eventId } = this.props
     let eventQuery = {
-      select: ['StartDate', 'EndDate'],
+      select: ['StartDate', 'EndDate', 'TypeEventId'],
       filter: {
         EventId: parseInt(eventId),
       },
@@ -86,6 +86,10 @@ class EventDetailsTab extends React.Component {
 
     if (!this.state.regionName) {
       this.getRegion()
+    }
+
+    if (!this.state.hazardName) {
+      this.getHazard()
     }
 
     return (
@@ -126,7 +130,7 @@ class EventDetailsTab extends React.Component {
                       col='col-md-6'
                       label='Hazard Type'
                       id='txtHazardType'
-                      value={event.TypeEvent.TypeEventName || ''}
+                      value={this.state.hazardName}
                       allowEdit={false}
                     />
                   </div>
