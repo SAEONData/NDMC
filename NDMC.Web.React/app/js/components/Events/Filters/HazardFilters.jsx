@@ -105,6 +105,7 @@ class HazardFilters extends React.Component {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }
             if (data && data.items) {
+              data.items.sort((a, b) => a.value.localeCompare(b.value))
               let hazardsFormatted = data.items.map(Hazard => {
                 return {
                   ...Hazard, title: Hazard.value, children: Hazard.children.map(subHazard => {
@@ -116,7 +117,6 @@ class HazardFilters extends React.Component {
                   })
                 }
               })
-              data.items.sort((a, b) => a.value.localeCompare(b.value))
 
               return (
                 <TreeSelect
