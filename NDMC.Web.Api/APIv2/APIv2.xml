@@ -68,12 +68,6 @@
             <param name="id">MitigationId</param>
             <returns>Specific Mitigation by id</returns>
         </member>
-        <member name="M:APIv2.Controllers.TypeEventsController.Get">
-            <summary>
-            Get a list of TypeEvent
-            </summary>
-            <returns>List of TypeEvent</returns>
-        </member>
         <member name="M:APIv2.Controllers.TypeImpactsController.Get">
             <summary>
             Get a list of TypeImpact

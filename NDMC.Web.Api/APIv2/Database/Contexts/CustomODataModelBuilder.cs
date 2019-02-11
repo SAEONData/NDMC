@@ -52,15 +52,6 @@ namespace APIv2.Database.Contexts
                 .Page()
                 .Select();
 
-            builder.EntitySet<TypeEvent>("TypeEvents")
-                .EntityType
-                .Filter()
-                .Count()
-                .Expand(maxExpandDepth)
-                .OrderBy()
-                .Page()
-                .Select();
-
             builder.EntitySet<TypeImpact>("TypeImpacts")
                 .EntityType
                 .Filter()

@@ -18,7 +18,6 @@ namespace APIv2.Database.Models
 
         //FK - TypeEvent
         public int? TypeEventId { get; set; }
-        public TypeEvent TypeEvent { get; set; }
 
         //FK - TypeSource
         public int? TypeSourceId { get; set; }

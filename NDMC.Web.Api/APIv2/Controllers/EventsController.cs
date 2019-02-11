@@ -141,7 +141,6 @@ namespace APIv2.Controllers
 
             var events = _context
                 .Events
-                .Include(x => x.TypeEvent)
                 .Where(e =>
                     (regionFilter == 0 || regionEventIds.Contains(e.EventId)) &&
                     (hazardFilter == 0 || e.TypeEventId == hazardFilter) &&
@@ -164,6 +163,7 @@ namespace APIv2.Controllers
         {
             var eventImpacts = _context.EventImpacts.ToArray();
             var vmsRegions = GetVMSData("regions/flat").Result;
+            var vmsHazards = GetVMSData("hazards/flat").Result;
 
             var geoJSON = _context.Events
                 .Include(e => e.EventRegions)
@@ -180,7 +180,7 @@ namespace APIv2.Controllers
                         id = e.EventId,
                         regions = GetGeoProps(e.EventRegions.Select(er => er.RegionId).ToArray(), vmsRegions),
                         hazard = e.TypeEventId,
-                        hazardName = e.TypeEvent.TypeEventName,
+                        hazardName = vmsHazards.FirstOrDefault(x => int.Parse(x.Id) == e.TypeEventId).Value,
                         startDate = ConvertToDateString(e.StartDate),
                         endDate = ConvertToDateString(e.EndDate),
                         declaredDates = e.DeclaredEvents.Select(de => ConvertToDateString(de.DeclaredDate)).ToArray(),

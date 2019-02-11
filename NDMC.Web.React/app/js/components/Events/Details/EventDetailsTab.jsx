@@ -21,44 +21,75 @@ const mapStateToProps = (state, props) => {
  * @class
  */
 class EventDetailsTab extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       eventData: {},
       regionId: '',
       regionName: '',
+      hazardId: '',
+      hazardName: ''
     }
 
     this.getRegion = this.getRegion.bind(this)
+    this.getHazard = this.getHazard.bind(this)
   }
 
-  async getRegion() {
+  /**
+   * Get's the details of a single region for display purposes
+   *
+   * @async
+   * @function
+   */
+  async getRegion () {
     let fetchURL = `${vmsBaseURL}/regions/${this.state.regionId}`
     fetch(fetchURL)
-    .then(res => {
-      return res.json()
-    })
-    .then(json => {
-      this.setState({
-        regionName: json.value
+      .then(res => {
+        return res.json()
       })
-    })
+      .then(json => {
+        this.setState({
+          regionName: json.value
+        })
+      })
   }
 
-  render() {
+  /**
+   * Get's the details of a single hazard for display purposes
+   *
+   * @async
+   * @function
+   */
+  async getHazard () {
+    let fetchURL = `${vmsBaseURL}/hazards/${this.state.hazardId}`
+    fetch(fetchURL)
+      .then(res => {
+        return res.json()
+      })
+      .then(json => {
+        this.setState({
+          hazardName: json.value
+        })
+      })
+  }
+
+  render () {
     const { eventId } = this.props
     let eventQuery = {
-      select: ['StartDate', 'EndDate'],
+      select: ['StartDate', 'EndDate', 'TypeEventId'],
       filter: {
         EventId: parseInt(eventId),
       },
       expand: ['EventRegions/EventImpacts/TypeImpact',
-        'DeclaredEvents',
-        'TypeEvent']
+        'DeclaredEvents']
     }
 
-    if(!this.state.regionName){
+    if (!this.state.regionName) {
       this.getRegion()
+    }
+
+    if (!this.state.hazardName) {
+      this.getHazard()
     }
 
     return (
@@ -81,6 +112,9 @@ class EventDetailsTab extends React.Component {
                 let regionId = data.value[0].EventRegions[0].RegionId
                 this.state.regionId = regionId
 
+                let hazardId = data.value[0].TypeEventId
+                this.state.hazardId = hazardId
+
                 const event = data.value[0]
                 let startdate = event.StartDate > 0 ? new Date(event.StartDate * 1000) : 'N/A'
                 let enddate = event.EndDate > 0 ? new Date(event.EndDate * 1000) : 'N/A'
@@ -96,7 +130,7 @@ class EventDetailsTab extends React.Component {
                       col='col-md-6'
                       label='Hazard Type'
                       id='txtHazardType'
-                      value={event.TypeEvent.TypeEventName || ''}
+                      value={this.state.hazardName}
                       allowEdit={false}
                     />
                   </div>
