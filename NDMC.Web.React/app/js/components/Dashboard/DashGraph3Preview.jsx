@@ -41,7 +41,8 @@ class DashGraph3Preview extends React.Component {
     super(props);
 
     this.state = {
-      filterIDs: []
+      filterIDs: [],
+      hazards: []
     }
 
     this.renderTooltipContent = this.renderTooltipContent.bind(this)
