@@ -10,7 +10,6 @@ namespace APIv2.Database.Contexts
         public DbSet<EventRegion> EventRegions { get; set; }
         public DbSet<EventImpact> EventImpacts { get; set; }
         public DbSet<Mitigation> Mitigations { get; set; }
-        public DbSet<TypeEvent> TypeEvents { get; set; }
         public DbSet<TypeImpact> TypeImpacts { get; set; }
         public DbSet<TypeMitigation> TypeMitigations { get; set; }
         public DbSet<TypeSource> TypeSources { get; set; }
