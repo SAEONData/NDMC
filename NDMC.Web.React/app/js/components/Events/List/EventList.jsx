@@ -135,7 +135,8 @@ class EventList extends React.Component {
     this.onMeasureSelect = this.onMeasureSelect.bind(this)
     this.onResponseDateSelect = this.onResponseDateSelect.bind(this)
     this.onImpactUnitMeasure = this.onImpactUnitMeasure.bind(this)
-    this.transformTreeData = this.transformTreeData.bind(this)
+    this.transformDataTree = this.transformDataTree.bind(this)
+    this.transformTreeDataHazards = this.transformTreeDataHazards.bind(this)
   }
 
   componentDidMount () {
@@ -691,10 +692,10 @@ class EventList extends React.Component {
    * @param {object} hazards
    * @returns The final object keymapped to new values
    */
-  transformTreeData (hazards) {
-    if (typeof hazards === 'Object') {
+  transformTreeDataHazards (hazards) {
+    if (typeof hazards === 'object') {
       return hazards.map(item => {
-        return { ...item, title: item.value, children: this.transformTreeData(item.children) }
+        return { ...item, title: item.value, children: this.transformTreeDataHazards(item.children) }
       })
     }
   }
@@ -902,7 +903,7 @@ class EventList extends React.Component {
                           let hazards = data.items
                           //data.items.sort((a, b) => a.value.localeCompare(b.value))
 
-                          let hazardsFormatted = this.transformTreeData(hazards)
+                          let hazardsFormatted = this.transformTreeDataHazards(hazards)
 
                           return <TreeSelect
                             style={{ width: "100%" }}
