@@ -71,6 +71,7 @@ const defaultState = {
   impacts: [],
   responses: [],
   hazard: 0,
+  hazardTreeValue: '',
   startDate: null,
   endDate: null,
   declaredDate: null,
@@ -423,9 +424,10 @@ class EventList extends React.Component {
    *
    * @function
    * @param {string} value The value of the hazard selected node
+   * @param {object} node An object containing all data for selected hazard node
    */
-  onHazardSelect (value) {
-    this.setState({ hazard: value })
+  onHazardSelect (value, node) {
+    this.setState({ hazard: node.props.id, hazardTreeValue: node.props.title })
   }
 
   /**
@@ -876,24 +878,34 @@ class EventList extends React.Component {
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Select the type of event that ocurred">
-                    <OData baseUrl={apiBaseURL + 'TypeEvents'} query={hazardQuery}>
+                    <OData baseUrl={vmsBaseURL + 'hazards'} query={hazardQuery}>
                       {({ loading, error, data }) => {
                         if (loading) { return <div>Loading...</div> }
                         if (error) { return <div>Error Loading Data From Server</div> }
                         if (data) {
-                          data.value.sort((prev, next) => prev.TypeEventName.localeCompare(next.TypeEventName))
-                          return <Select
-                            showSearch
-                            style={{ width: 400 }}
-                            placeholder="Hazard"
-                            optionFilterProp="children"
-                            onChange={this.onHazardSelect}
-                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          data.items.sort((a, b) => a.value.localeCompare(b.value))
+
+                          let hazardsFormatted = data.items.map(Hazard => {
+                            return {
+                              ...Hazard, title: Hazard.value, children: Hazard.children.map(subHazard => {
+                                return {
+                                  ...subHazard, title: subHazard.value, children: subHazard.children.map(subSubHazard => {
+                                    return { ...subSubHazard, title: subSubHazard.value }
+                                  })
+                                }
+                              })
+                            }
+                          })
+                          return <TreeSelect
+                            style={{ width: "100%" }}
+                            value={this.state.hazardTreeValue}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                            dropdownMatchSelectWidth={false}
+                            treeData={hazardsFormatted}
+                            placeholder="Select..."
+                            onSelect={this.onHazardSelect}
                           >
-                            {data.value.map(item => {
-                              return <Option key={item.TypeEventId} value={item.TypeEventId}>{item.TypeEventName}</Option>
-                            })}
-                          </Select>
+                          </TreeSelect>
                         }
                       }}
                     </OData>
@@ -962,7 +974,7 @@ class EventList extends React.Component {
                               </div>
                               <div style={{ paddingTop: 1, className: 'col-sm-1', paddingLeft: 10 }}>
                                 <br></br>
-                                <h6>Enter Unit Of Measure for impact </h6>
+                                <h6>Select Unit Of Measure for impact </h6>
                                 <Select
                                   showSearch
                                   style={{ width: 200 }}
@@ -1036,13 +1048,19 @@ class EventList extends React.Component {
                               >
                               </TreeSelect>
                             </div>
-                            <div className='row'>
-                              <div style={{ paddingTop: 10 }}>
-                                <InputNumber style={{ height: 35, width: 120 }} onChange={this.onResponseValue}></InputNumber>
+                            <div className="row">
+                              <div style={{ paddingTop: 1, className: 'col-sm-1', paddingRight: 10 }}>
+                                <br></br>
+                                <h6>Enter Amount as number </h6>
+                                <InputNumber style={{ height: 35, width: 170 }} onChange={this.onResponseValue}></InputNumber>
                               </div>
-                              <DatePicker
-                                style={{ width: 150, paddingTop: 10, paddingLeft: 10 }}
-                                onChange={this.onResponseDateSelect} />
+                              <div style={{ paddingTop: 1, className: 'col-sm-1', paddingRight: 10, paddingLeft: 10 }}>
+                                <br></br>
+                                <h6>Select date of response</h6>
+                                <DatePicker
+                                  style={{ width: 150 }}
+                                  onChange={this.onResponseDateSelect} />
+                              </div>
                             </div>
                           </Modal>
                         }
