@@ -5,11 +5,12 @@
  */
 import React from 'react'
 import { connect } from 'react-redux'
-import { Navbar, NavbarNav, NavbarToggler, Collapse, Button, Fa } from 'mdbreact'
+import { ssoBaseURL } from '../../config/serviceURLs.js'
+import { Navbar, NavbarNav, NavbarToggler, NavItem, Collapse, Button, Fa } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
-  let { globalData: { forceNavRender, toggleSideNav, showSideNav, showSideNavButton } } = state
-  return { forceNavRender, toggleSideNav, showSideNav, showSideNavButton }
+  let { globalData: { forceNavRender, toggleSideNav, showSideNav, showSideNavButton, showNavbar } } = state
+  return { forceNavRender, toggleSideNav, showSideNav, showSideNavButton, showNavbar }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -80,7 +81,7 @@ class CustomNavbar extends React.Component {
   }
 
   render () {
-    let { toggleSideNav, showSideNav } = this.props
+    let { user, toggleSideNav, showSideNav, showNavbar } = this.props
     return (
       <Navbar
         size="sm"
@@ -118,6 +119,63 @@ class CustomNavbar extends React.Component {
             {/* INVISIBLE HEIGHT SPACER */}
             <div style={{ height: "32px", margin: "6px" }} />
           </NavbarNav>
+              {/* RIGHT */}
+              {
+            showNavbar !== "addOnly" &&
+            <NavbarNav right>
+
+              {/* Username */}
+              {(user && !user.expired) &&
+
+                <table>
+                  <tbody>
+                    <tr style={{ height: "40px" }}>
+                      <td valign="middle">
+                        <div style={{ marginRight: "7px", color: "grey" }} >
+                          <Fa size="2x" icon="user-circle-o" />
+                        </div>
+                      </td>
+                      <td valign="middle">
+                        <div style={{ fontSize: "17px" }} >
+                          <b>{`${user.profile.FirstName} ${user.profile.Surname}`}</b>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              }
+
+              {/* Login / Logout */}
+              <NavItem style={{ marginLeft: "15px" }}>
+                {(!user || user.expired) &&
+                  <a className="nav-link" onClick={this.LoginLogoutClicked} href="#/login">
+                    <b style={{ color: "black" }}>
+                      Login
+                  </b>
+                  </a>
+                }
+                {(user && !user.expired) &&
+                  <a className="nav-link" onClick={this.LoginLogoutClicked} href="#/logout">
+                    <b style={{ color: "black" }}>
+                      Logout
+                  </b>
+                  </a>
+                }
+              </NavItem>
+
+              {/* Register */}
+              {(!user || user.expired) &&
+                <NavItem style={{ marginLeft: "15px" }}>
+                  <a key="lnkRegister" className="nav-link" href={ssoBaseURL + "Account/Register"} target="_blank">
+                    <b style={{ color: "black" }}>
+                      Register
+                  </b>
+                  </a>
+                </NavItem>
+              }
+
+            </NavbarNav>
+          }
         </Collapse>
       </Navbar>
     )

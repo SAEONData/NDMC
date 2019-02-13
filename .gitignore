@@ -310,3 +310,9 @@ __pycache__/
 *.pyc
 /NDMC.Web.Api/APIv2/secrets.json
 NDMC.Web.Api/APIv2/Properties/PublishProfiles/FolderProfile.pubxml
+
+# Custom
+/NDMC.Services.DataV2/secrets.json
+/NDMC_API/NDMC.Services.DataV2/secrets.json
+NDMC.Web.React/app/js/secrets.js
+NDMC.Web.React/App/js/secrets.js

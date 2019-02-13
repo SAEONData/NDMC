@@ -13,9 +13,12 @@ import { connect } from 'react-redux'
 import Dashboard from './components/Dashboard/Dashboard.jsx'
 import Events from './components/Events/List/Events.jsx'
 import EventDetails from './components/Events/Details/EventDetails.jsx'
+import CallbackPage from '../js/components/Authentication/callback.jsx'
 import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 import Header from './components/Base/Header.jsx'
+import Login from './components/Authentication/Login.jsx'
+import Logout from './components/Authentication/Logout.jsx'
 import Footer from './components/Base/Footer.jsx'
 import SideNav from './components/Base/SideNav.jsx'
 import MapView from './components/Map/MapView.jsx'
@@ -262,6 +265,9 @@ class App extends React.Component {
                   <Route path='/events' component={Events} exact />
                   <Route path='/events/:id' component={EventDetails} exact />
                   <Route path="/map" component={MapView} exact />
+                  <Route path="/login" component={Login} exact />
+                  <Route path="/logout" component={Logout} exact />
+                  <Route path="/callback" component={CallbackPage} />
                   <Route path="/chart1" component={DashGraph1FullView} exact />
                   <Route path="/chart2" component={DashGraph2FullView} exact />
                   <Route path="/chart3" component={DashGraph3FullView} exact />
