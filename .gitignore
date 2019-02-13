@@ -310,3 +310,6 @@ __pycache__/
 *.pyc
 /NDMC.Web.Api/APIv2/secrets.json
 NDMC.Web.Api/APIv2/Properties/PublishProfiles/FolderProfile.pubxml
+
+# ignore jest test snapshots
+__snapshots__
