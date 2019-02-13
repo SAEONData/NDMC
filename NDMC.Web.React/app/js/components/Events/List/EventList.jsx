@@ -61,6 +61,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     setForceNavRender: payload => {
       dispatch({ type: "FORCE_NAV_RENDER", payload })
+    },
+    loadRegions: payload => {
+      dispatch({ type: "LOAD_REGIONS", payload })
+    },
+    loadHazards: payload => {
+      dispatch({ type: "LOAD_HAZARDS", payload })
     }
   }
 }
@@ -217,8 +223,8 @@ class EventList extends React.Component {
         }
 
         //Get Region
-        let region = {}
-        if(regions && region.length > 0){
+        let region = null
+        if(regions && regions.length > 0){
           let filteredRegions = regions.filter(r => r.id == regionId)
           if(filteredRegions.length > 0){
             region = filteredRegions[0]
@@ -740,9 +746,47 @@ class EventList extends React.Component {
     const responseQuery = {
       select: ['TypeMitigationId', 'TypeMitigationName', 'UnitOfMeasure', 'ParentTypeMitigationId']
     }
+    const hazardsQuery = {
+      select: ['TypeEventId', 'TypeEventName']
+    }
 
     return (
       <div style={{ backgroundColor: "white", padding: "10px", borderRadius: "10px", border: "1px solid gainsboro" }}>
+
+        {/* Load Hazards from VMS */}
+        <OData baseUrl={vmsBaseURL + 'hazards/flat'} query={hazardsQuery}>
+          {({ loading, error, data }) => {
+            if (loading) { return <div></div> }
+            if (error) { return <div>Error Loading Data From Server</div> }
+            if (data) {
+              //Dispatch data to store
+              setTimeout(() => {
+                if (!_.isEqual(data.items, this.props.hazards)) {
+                  this.props.loadHazards(data.items)
+                }
+              }, 100)
+            }
+          }
+          }
+        </OData>
+
+        {/* Load Regions from VMS */}
+        <OData baseUrl={vmsBaseURL + 'regions/flat'} query={regionQuery}>
+          {({ loading, error, data }) => {
+            if (loading) { return <div></div> }
+            if (error) { return <div>Error Loading Data From Server</div> }
+            if (data) {
+              //Dispatch data to store
+              setTimeout(() => {
+                if (!_.isEqual(data.items, this.props.regions)) {
+                  this.props.loadRegions(data.items)
+                }
+              }, 100)
+            }
+          }
+          }
+        </OData>
+
         <h4 style={{ margin: "5px 5px 5px 19px", display: "inline-block" }}>
           <b>Events</b>
         </h4>
@@ -758,7 +802,6 @@ class EventList extends React.Component {
               }}
               onClick={() => {
                 this.props.setScrollPos(0)
-                //location.hash = (location.hash.includes("events") ? "" : "/events")
                 let navTo = ""
                 if (location.hash.includes("events")) {
                   navTo = location.hash.replace("#/events", "")

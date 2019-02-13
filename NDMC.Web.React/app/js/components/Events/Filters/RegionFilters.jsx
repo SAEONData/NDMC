@@ -81,7 +81,7 @@ class RegionFilters extends React.Component {
     return (
       <>
         <br />
-        <OData baseUrl={vmsBaseURL + 'regions/flat'} query={regionQuery}>
+        {/* <OData baseUrl={vmsBaseURL + 'regions/flat'} query={regionQuery}>
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }
@@ -95,7 +95,7 @@ class RegionFilters extends React.Component {
             }
           }
           }
-        </OData>
+        </OData> */}
         <OData baseUrl={vmsBaseURL + 'regions'} query={regionQuery}>
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
