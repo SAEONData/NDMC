@@ -210,14 +210,38 @@ class EventList extends React.Component {
       let enddate = i.EndDate > 0 ? new Date(i.EndDate * 1000) : 'N/A'
       if (i.TypeEventId !== null && i.EventRegions[0] !== undefined) {
 
+        //Get RegionId if any
+        let regionId = 0
+        if(i.EventRegions && i.EventRegions.length > 0){
+          regionId = i.EventRegions[0].RegionId
+        }
+
+        //Get Region
+        let region = {}
+        if(regions && region.length > 0){
+          let filteredRegions = regions.filter(r => r.id == regionId)
+          if(filteredRegions.length > 0){
+            region = filteredRegions[0]
+          }
+        }
+
+        //Get HazardType
+        let hazardType = {}
+        if(hazards && hazards.length > 0){
+          let filteredHazards = hazards.filter(hazard => hazard.id == i.TypeEventId)
+          if(filteredHazards.length > 0){
+            hazardType = filteredHazards[0]
+          }
+        }
+
         ar.push(
           <EventCard
             key={i.EventId}
             eid={i.EventId}
-            region={regions.filter(r => r.id == i.EventRegions[0].RegionId)[0]}  //{i.EventRegions[0].Region}
+            region={region}
             startdate={startdate === 'N/A' ? 'N/A' : startdate.toDateString()}
             enddate={enddate === 'N/A' ? 'N/A' : enddate.toDateString()}
-            hazardtype={hazards.filter(hazard => hazard.id == i.TypeEventId)[0].value}
+            hazardtype={hazardType.value}
           />
         )
       }
