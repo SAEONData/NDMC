@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "./app/index.ejs",
   "scripts": {
+    "test": "jest",
     "app-dev": "webpack-dev-server --hot --watch-poll --progress=true --open --config ./webpack.dev.config.js",
     "build-test": "webpack --optimize-minimize --progress --config ./webpack.test.config.js",
     "build-prod": "webpack --optimize-minimize --progress"
@@ -40,17 +41,17 @@
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-rc.1",
+    "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-rc.1",
-    "@babel/preset-env": "^7.0.0-rc.1",
-    "@babel/preset-react": "^7.0.0-rc.1",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
     "babel-jest": "^24.1.0",
     "babel-loader": "^8.0.0-beta.4",
     "babel-plugin-emotion": "^9.2.6",
     "babel-plugin-import": "^1.11.0",
     "babel-polyfill": "^6.26.0",
     "clean-webpack-plugin": "^1.0.1",
-    "copy-webpack-plugin": "^4.6.0",
+    "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^0.28.11",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.9.1",
@@ -58,18 +59,26 @@
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.1.0",
+    "jest-transform-stub": "^2.0.0",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
     "react-hot-loader": "^4.3.4",
+    "react-test-renderer": "^16.8.1",
     "style-loader": "^0.20.3",
     "terser-webpack-plugin": "^1.2.2",
-    "webpack": "4.19.1",
+    "webpack": "^4.16.5",
     "webpack-cli": "^2.1.5",
     "webpack-dev-server": "^3.1.14"
   },
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
-    ]
+    ],
+    "setupFiles": [
+      "./app/setupTests.js"
+    ],
+    "moduleNameMapper": {
+      ".+\\.(css|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
+    }
   }
 }
