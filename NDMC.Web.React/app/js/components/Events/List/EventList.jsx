@@ -9,6 +9,8 @@ import popout from '../../../../images/popout.png'
 import popin from '../../../../images/popin.png'
 import EventCard from './EventCard.jsx'
 import { DEAGreen } from '../../../config/colours.js'
+
+import { Button as ABtn } from 'antd'
 import Modal from 'antd/lib/modal'
 import Form from 'antd/lib/form'
 import Col from 'antd/lib/col'
@@ -97,7 +99,7 @@ const defaultState = {
  * @class
  */
 class EventList extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       _hazardFilter: null,
@@ -115,7 +117,9 @@ class EventList extends React.Component {
       responseModalVisible: false,
       regionTreeValue: '',
       ...defaultState,
-      showBackToTop: false
+      showBackToTop: false,
+      excludeDatelessEvents: true,
+      excludeDatelessEventsChanged: true
     }
 
     this.handleScroll = this.handleScroll.bind(this)
@@ -145,13 +149,13 @@ class EventList extends React.Component {
     this.transformTreeDataHazards = this.transformTreeDataHazards.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.Init()
     window.addEventListener('scroll', this.handleScroll)
     window.scrollTo(0, this.props.listScrollPos)
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.Init()
   }
 
@@ -160,26 +164,33 @@ class EventList extends React.Component {
    *
    * @function
    */
-  Init () {
+  Init() {
     let { hazardFilter, regionFilter, dateFilter, impactFilter, favoritesFilter } = this.props
-    let { _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter } = this.state
+    let {
+      _hazardFilter, _regionFilter, _dateFilter, _impactFilter, _favoritesFilter,
+      excludeDatelessEventsChanged
+    } = this.state
+
     if (hazardFilter !== _hazardFilter || regionFilter !== _regionFilter || impactFilter !== _impactFilter ||
       dateFilter.startDate !== _dateFilter.startDate || dateFilter.endDate !== _dateFilter.endDate ||
-      favoritesFilter !== _favoritesFilter) {
+      favoritesFilter !== _favoritesFilter || excludeDatelessEventsChanged === true) {
+
       this.setState({
         _hazardFilter: hazardFilter,
         _regionFilter: regionFilter,
         _impactFilter: impactFilter,
         _dateFilter: dateFilter,
-        _favoritesFilter: favoritesFilter
+        _favoritesFilter: favoritesFilter,
+        excludeDatelessEventsChanged: false
       }, async () => {
         await this.props.resetEvents()
         this.getEvents()
       })
+
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
@@ -188,7 +199,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  handleScroll () {
+  handleScroll() {
     let { showBackToTop } = this.state
     //Toggle BackToTop button
     if (window.pageYOffset > 1450 && showBackToTop === false) {
@@ -206,7 +217,7 @@ class EventList extends React.Component {
    * @param {object} events An object containing the array of events to render
    * @returns {Array} An array of cards containing events
    */
-  buildList (events) {
+  buildList(events) {
 
     let { regions, hazards } = this.props
 
@@ -218,24 +229,24 @@ class EventList extends React.Component {
 
         //Get RegionId if any
         let regionId = 0
-        if(i.EventRegions && i.EventRegions.length > 0){
+        if (i.EventRegions && i.EventRegions.length > 0) {
           regionId = i.EventRegions[0].RegionId
         }
 
         //Get Region
         let region = null
-        if(regions && regions.length > 0){
+        if (regions && regions.length > 0) {
           let filteredRegions = regions.filter(r => r.id == regionId)
-          if(filteredRegions.length > 0){
+          if (filteredRegions.length > 0) {
             region = filteredRegions[0]
           }
         }
 
         //Get HazardType
         let hazardType = {}
-        if(hazards && hazards.length > 0){
+        if (hazards && hazards.length > 0) {
           let filteredHazards = hazards.filter(hazard => hazard.id == i.TypeEventId)
-          if(filteredHazards.length > 0){
+          if (filteredHazards.length > 0) {
             hazardType = filteredHazards[0]
           }
         }
@@ -260,11 +271,11 @@ class EventList extends React.Component {
    *
    * @function
    */
-  getEvents () {
+  getEvents() {
     //Set loading true
     this.setState({ eventsLoading: true }, async () => {
       //Get Events
-      let { eventListSize, _hazardFilter, _regionFilter, _impactFilter, _dateFilter, _favoritesFilter } = this.state
+      let { eventListSize, _hazardFilter, _regionFilter, _impactFilter, _dateFilter, _favoritesFilter, excludeDatelessEvents } = this.state
       let { events } = this.props
 
       let skip = events.length
@@ -274,6 +285,9 @@ class EventList extends React.Component {
       top = top > 0 ? top : 0
 
       let fetchURL = `${apiBaseURL}Events/Extensions.Filter?$skip=${skip}&$top=${top}&$expand=eventRegions`
+
+      fetchURL += excludeDatelessEvents === true ? "&$filter=StartDate ne null" : ""
+
       let postBody = {
         region: _regionFilter,
         hazard: _hazardFilter,
@@ -292,6 +306,7 @@ class EventList extends React.Component {
         },
         body: JSON.stringify(postBody)
       })
+
       const res_1 = await res.json()
 
       if (res_1 && res_1.value && res_1.value.length > 0) {
@@ -310,7 +325,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onClose () {
+  onClose() {
     this.props.toggleAddForm(false)
     this.setState({
       ...defaultState
@@ -323,7 +338,7 @@ class EventList extends React.Component {
    * @function
    * @returns {boolean} Whether the user input is valid
    */
-  ValidateInput () {
+  ValidateInput() {
 
     let { startDate, endDate, region, hazard } = this.state
     let validationMessage = ''
@@ -357,7 +372,7 @@ class EventList extends React.Component {
   * @async
   * @function
   */
-  async onSubmit () {
+  async onSubmit() {
     //this.props.toggleAddForm(false)
     const formattedImpacts = this.state.impacts.map(impact => {
       return { EventImpactId: 0, Measure: impact.impactAmount, TypeImpactId: impact.impactType, UnitOfMeasure: impact.impactUnitMeasure }
@@ -393,8 +408,6 @@ class EventList extends React.Component {
     if (formattedResponses && formattedResponses.length > 0) {
       fetchBody.Mitigations = formattedResponses
     }
-
-    console.log("post-data", fetchBody)
 
     if (this.ValidateInput()) {
       try {
@@ -432,7 +445,7 @@ class EventList extends React.Component {
   *
   * @function
   */
-  backToTop () {
+  backToTop() {
     window.scroll({
       top: 0,
       left: 0,
@@ -447,7 +460,7 @@ class EventList extends React.Component {
    * @param {string} value The value of the region selected node
    * @param {object} node An object containing all data for selected region node
    */
-  onRegionSelect (value, node) {
+  onRegionSelect(value, node) {
     this.setState({ region: node.props.id, regionTreeValue: node.props.title })
   }
 
@@ -458,7 +471,7 @@ class EventList extends React.Component {
    * @param {string} value The value of the hazard selected node
    * @param {object} node An object containing all data for selected hazard node
    */
-  onHazardSelect (value, node) {
+  onHazardSelect(value, node) {
     this.setState({ hazard: node.props.id, hazardTreeValue: node.props.title })
   }
 
@@ -468,7 +481,7 @@ class EventList extends React.Component {
    * @function
    * @param {string} dateString The date string of the chosen declared date
    */
-  onDeclaredDateSelect (dateString) {
+  onDeclaredDateSelect(dateString) {
     this.setState({ declaredDate: Date.parse(dateString) / 1000 })
   }
 
@@ -478,7 +491,7 @@ class EventList extends React.Component {
    * @function
    * @param {string} dateString The date string of the chosen date range
    */
-  onDateRangeSelect (dateString) {
+  onDateRangeSelect(dateString) {
     this.setState({ startDate: Date.parse(dateString[0]) / 1000, endDate: Date.parse(dateString[1]) / 1000 })
   }
 
@@ -487,7 +500,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onImpactOpen () {
+  onImpactOpen() {
     this.setState({ impactModalVisible: true })
   }
 
@@ -496,7 +509,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onImpactClose () {
+  onImpactClose() {
     if (!isNaN(this.state.impactAmountTemp && this.state.impactAmountTemp)) {
       this.setState({ impactModalVisible: false })
       this.setState({
@@ -513,7 +526,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onImpactAdd () {
+  onImpactAdd() {
     let newimpact = {
       impactType: this.state.impactTypeTemp,
       impactTypeName: this.state.impactTypeNameTemp,
@@ -549,7 +562,7 @@ class EventList extends React.Component {
    * @param {string} value The impact string of the selected impact node
    * @param {object} next The node object containing details of the selected node
    */
-  onImpactSelect (value, next) {
+  onImpactSelect(value, next) {
     this.setState({ impactTypeTemp: value, impactTypeNameTemp: next.props.children })
   }
 
@@ -559,7 +572,7 @@ class EventList extends React.Component {
    * @function
    * @param {string} value The string value of the amount inputted
    */
-  onImpactAmount (value) {
+  onImpactAmount(value) {
     this.setState({ impactAmountTemp: value })
   }
 
@@ -569,7 +582,7 @@ class EventList extends React.Component {
    * @function
    * @param {string} value The string of the unit of measure selected
    */
-  onImpactUnitMeasure (value) {
+  onImpactUnitMeasure(value) {
     this.setState({ impactUnitMeasureTemp: value })
   }
 
@@ -578,7 +591,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onImpactUndo () {
+  onImpactUndo() {
     let arr = this.state.impacts
     arr.pop()
     this.setState({
@@ -591,7 +604,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onResponseOpen () {
+  onResponseOpen() {
     this.setState({ responseModalVisible: true })
   }
 
@@ -600,7 +613,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onResponseClose () {
+  onResponseClose() {
     this.setState({ responseModalVisible: false })
   }
 
@@ -609,7 +622,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onResponseAdd () {
+  onResponseAdd() {
     let newResponse = {
       responseType: this.state.responseTypeTemp,
       responseTypeName: this.state.responseTypeNameTemp,
@@ -646,7 +659,7 @@ class EventList extends React.Component {
    * @param {string} value The string value of the selected response
    * @param {object} next The object containing details of the selected node
    */
-  onResponseSelect (value, next) {
+  onResponseSelect(value, next) {
     this.setState({ responseTypeTemp: value, responseTypeNameTemp: next.props.title })
   }
 
@@ -656,7 +669,7 @@ class EventList extends React.Component {
    * @function
    * @param {string} value The string value of the inputted response value
    */
-  onResponseValue (value) {
+  onResponseValue(value) {
     this.setState({ responseValueTemp: value })
   }
 
@@ -665,7 +678,7 @@ class EventList extends React.Component {
    *
    * @function
    */
-  onResponseUndo () {
+  onResponseUndo() {
     let arr = this.state.responses
     arr.pop()
     this.setState({
@@ -679,7 +692,7 @@ class EventList extends React.Component {
    * @function
    * @param {string} value The string value of the amount inputted
    */
-  onMeasureSelect (value) {
+  onMeasureSelect(value) {
     this.setState({
       measureTemp: value
     })
@@ -691,7 +704,7 @@ class EventList extends React.Component {
    * @function
    * @param {string} dateString The string value of the selected date chosen for the response
    */
-  onResponseDateSelect (dateString) {
+  onResponseDateSelect(dateString) {
     this.setState({
       responseDateTemp: Date.parse(dateString) / 1000
     })
@@ -704,7 +717,7 @@ class EventList extends React.Component {
    * @param {object} responseData Object array of data to transform
    * @returns {object} The new transformed tree data
    */
-  transformDataTree (responseData) {
+  transformDataTree(responseData) {
     let responses = responseData.map(i => {
       return {
         ParentTypeMitigationId: i.ParentTypeMitigationId, TypeMitigationId: i.TypeMitigationId, children: [], title: i.TypeMitigationName, value: `${i.TypeMitigationId}`, key: i.TypeMitigationId
@@ -722,7 +735,7 @@ class EventList extends React.Component {
    * @param {object} hazards
    * @returns The final object keymapped to new values
    */
-  transformTreeDataHazards (hazards) {
+  transformTreeDataHazards(hazards) {
     if (typeof hazards === 'object') {
       return hazards.map(item => {
         return { ...item, title: item.value, children: this.transformTreeDataHazards(item.children) }
@@ -730,9 +743,9 @@ class EventList extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const { impacts, responses } = this.state
-    let { _favoritesFilter, ellipsisMenu, showBackToTop } = this.state
+    let { _favoritesFilter, ellipsisMenu, showBackToTop, excludeDatelessEvents } = this.state
 
     const regionQuery = {
       select: ['RegionId', 'RegionName', 'ParentRegionId', 'RegionTypeId']
@@ -818,44 +831,112 @@ class EventList extends React.Component {
             <Popover
               content={
                 <div>
-                  <p style={{ display: "inline-block", margin: "10px 5px 10px 5px" }}>
-                    Favorites:
-                </p>
-                  <Button
-                    size="sm"
-                    color=""
-                    style={{
-                      padding: "4px 10px 5px 10px",
-                      marginTop: "1px",
-                      marginRight: "-1px",
-                      width: "40px",
-                      backgroundColor: _favoritesFilter ? DEAGreen : "grey"
-                    }}
-                    onClick={() => {
-                      this.props.toggleFavorites(!_favoritesFilter)
-                      this.setState({ ellipsisMenu: false })
-                    }}
-                  >
-                    On
-                </Button>
-                  <Button
-                    size="sm"
-                    color=""
-                    style={{
-                      padding: "4px 10px 5px 10px",
-                      marginTop: "1px",
-                      marginLeft: "-1px",
-                      width: "40px",
-                      backgroundColor: !_favoritesFilter ? DEAGreen : "grey"
-                    }}
-                    onClick={() => {
-                      this.props.toggleFavorites(!_favoritesFilter)
-                      this.setState({ ellipsisMenu: false })
-                    }}
-                  >
-                    Off
-                </Button>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <p style={{ margin: "10px 5px 10px 5px" }}>
+                            Favorites:
+                          </p>
+                        </td>
+                        <td>
+                          <ABtn
+                            size="small"
+                            type="primary"
+                            style={{
+                              marginLeft: 0,
+                              width: "40px",
+                              backgroundColor: _favoritesFilter === true ? DEAGreen : "grey",
+                              border: "none",
+                              borderRadius: 0,
+                              color: "black",
+                              fontWeight: 300
+                            }}
+                            onClick={() => {
+                              this.props.toggleFavorites(!_favoritesFilter)
+                              this.setState({ ellipsisMenu: false })
+                            }}
+                          >
+                            On
+                          </ABtn>
+                          <ABtn
+                            size="small"
+                            type="primary"
+                            style={{
+                              marginLeft: -1,
+                              width: "40px",
+                              backgroundColor: _favoritesFilter === false ? DEAGreen : "grey",
+                              border: "none",
+                              borderRadius: 0,
+                              color: "black",
+                              fontWeight: 300
+                            }}
+                            onClick={() => {
+                              this.props.toggleFavorites(!_favoritesFilter)
+                              this.setState({ ellipsisMenu: false })
+                            }}
+                          >
+                            Off
+                          </ABtn>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p style={{ margin: "10px 15px 10px 5px" }}>
+                            Exclude events<br />without dates:
+                          </p>
+                        </td>
+                        <td>
+                          <ABtn
+                            size="small"
+                            type="primary"
+                            style={{
+                              marginLeft: 0,
+                              width: "40px",
+                              backgroundColor: excludeDatelessEvents === true ? DEAGreen : "grey",
+                              border: "none",
+                              borderRadius: 0,
+                              color: "black",
+                              fontWeight: 300
+                            }}
+                            onClick={() => {
+                              this.setState({
+                                excludeDatelessEvents: true,
+                                excludeDatelessEventsChanged: true,
+                                ellipsisMenu: false
+                              })
+                            }}
+                          >
+                            On
+                          </ABtn>
+                          <ABtn
+                            size="small"
+                            type="primary"
+                            style={{
+                              marginLeft: -1,
+                              width: "40px",
+                              backgroundColor: excludeDatelessEvents === false ? DEAGreen : "grey",
+                              border: "none",
+                              borderRadius: 0,
+                              color: "black",
+                              fontWeight: 300
+                            }}
+                            onClick={() => {
+                              this.setState({
+                                excludeDatelessEvents: false,
+                                excludeDatelessEventsChanged: true,
+                                ellipsisMenu: false
+                              })
+                            }}
+                          >
+                            Off
+                          </ABtn>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
+
               }
               placement="leftTop"
               trigger="click"
@@ -877,7 +958,21 @@ class EventList extends React.Component {
         </div>
         <hr />
         <div>
-          {this.buildList(this.props.events)}
+
+          {
+            this.props.events.length === 0 &&
+            <div>
+              <br/>
+              <h5 style={{ marginLeft: 20 }}>Loading events...</h5>
+              <br/>
+            </div>
+          }
+
+          {
+            this.props.events.length > 0 &&
+            this.buildList(this.props.events)
+          }
+
           <br />
           <Button
             size="sm"
