@@ -4,8 +4,12 @@ let _vmsBaseURL = ''
 let _ssoBaseURL = ''
 let _ccisBaseURL = ''
 let _mapServerBaseURL = ''
+let _ccisSiteBaseURL = ''
+let _nccrdBaseURL = ''
 
 if (CONSTANTS.DEV) {
+  _nccrdBaseURL = 'http://app01.saeon.ac.za/nccrdtestsite'
+  _ccisSiteBaseURL = 'http://app01.saeon.ac.za/ccistestsite'
   _apiBaseURL = 'http://app01.saeon.ac.za/ndmctestapi/odata/' //'https://localhost:44334/odata/'
   _siteBaseURL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/`
   _ccisBaseURL = 'http://app01.saeon.ac.za/ccistestapi/odata/' //'https://localhost:44301/odata/'
@@ -14,6 +18,8 @@ if (CONSTANTS.DEV) {
   _mapServerBaseURL = 'http://app01.saeon.ac.za'
 }
 else if (CONSTANTS.TEST) {
+  _nccrdBaseURL = 'http://app01.saeon.ac.za/nccrdtestsite'
+  _ccisSiteBaseURL = 'http://app01.saeon.ac.za/ccistestsite'
   _apiBaseURL = 'http://app01.saeon.ac.za/ndmctestapi/odata/'
   _siteBaseURL = 'http://app01.saeon.ac.za/ndmctestsite/'
   _ccisBaseURL = 'http://app01.saeon.ac.za/ccistestapi/odata/'
@@ -22,6 +28,8 @@ else if (CONSTANTS.TEST) {
   _mapServerBaseURL = 'http://app01.saeon.ac.za'
 }
 else if (CONSTANTS.PROD) {
+  _nccrdBaseURL = 'http://app01.saeon.ac.za/nccrd'
+  _ccisSiteBaseURL = 'http://app01.saeon.ac.za/ccis'
   _apiBaseURL = 'http://app01.saeon.ac.za/ndmcapi/odata/'
   _siteBaseURL = 'http://app01.saeon.ac.za/ndmcsite/'
   _ccisBaseURL = 'http://app01.saeon.ac.za/ccisapi/odata/'
@@ -30,6 +38,8 @@ else if (CONSTANTS.PROD) {
   _mapServerBaseURL = 'http://app01.saeon.ac.za'
 }
 
+export const nccrdBaseURL = _nccrdBaseURL
+export const ccisSiteBaseURL = _ccisSiteBaseURL
 export const apiBaseURL = _apiBaseURL
 export const siteBaseURL = _siteBaseURL
 export const vmsBaseURL = _vmsBaseURL
