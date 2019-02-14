@@ -8,9 +8,9 @@ import buildQuery from 'odata-query'
 const _gf = require('../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter, hazardFilter, impactFilter } } = state
+  let { filterData: { regionFilter, hazardFilter, impactFilter, dateFilter } } = state
   let { chartData: { chart1 } } = state
-  return { regionFilter, hazardFilter, impactFilter, chart1 }
+  return { regionFilter, hazardFilter, impactFilter, chart1, dateFilter }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -51,7 +51,7 @@ class DashGraph1FullView extends React.Component {
 
   async getFilteredEventIDs() {
 
-    let { regionFilter, hazardFilter, impactFilter } = this.props
+    let { regionFilter, hazardFilter, impactFilter, dateFilter } = this.props
     let filters = {}
 
     //ADD FILTERS//
@@ -68,6 +68,16 @@ class DashGraph1FullView extends React.Component {
     //Impact//
     if (impactFilter != 0) {
       filters.impact = impactFilter
+    }
+
+    //StartDate
+    if (dateFilter.startDate != 0) {
+      filters.startDate = dateFilter.startDate
+    }
+
+    //EndDate
+    if (dateFilter.endDate != 0) {
+      filters.endDate = dateFilter.endDate
     }
 
     //GET EVENTS FILTERED//
@@ -150,7 +160,7 @@ class DashGraph1FullView extends React.Component {
     //Get MinYear
     data.forEach(tm => {
       tm.Mitigations.forEach(m => {
-        if (m.Date < minYear) {
+        if (filterIDs.includes(m.EventId) && m.Date < minYear) {
           minYear = m.Date
         }
       })
@@ -159,7 +169,7 @@ class DashGraph1FullView extends React.Component {
     //Get MaxYear
     data.forEach(tm => {
       tm.Mitigations.forEach(m => {
-        if (m.Date > maxYear && m.Date <= currentYear) {
+        if (filterIDs.includes(m.EventId) && m.Date > maxYear && m.Date <= currentYear) {
           maxYear = m.Date
         }
       })
@@ -202,9 +212,9 @@ class DashGraph1FullView extends React.Component {
     let typeMitigations = data.filter(m => m.ParentTypeMitigationId === id)
     typeMitigations.forEach(tm => {
       tm.Mitigations.filter(m => m.Date === year && filterIDs.includes(m.EventId))
-      .forEach(m => {
-        sum += m.Value + this.recursiveSum(data, tm.TypeMitigationId, year)
-      })
+        .forEach(m => {
+          sum += m.Value + this.recursiveSum(data, tm.TypeMitigationId, year)
+        })
     })
 
     return sum
@@ -218,7 +228,7 @@ class DashGraph1FullView extends React.Component {
       <div>
         {
           active &&
-          <div style={{ backgroundColor: "white", padding: "10px", border: "1px solid gainsboro",  width: "110%" }}>
+          <div style={{ backgroundColor: "white", padding: "10px", border: "1px solid gainsboro", width: "110%" }}>
             <p className="total" style={{ marginBottom: "5px" }}>{`${label} (Total: ${total})`}</p>
             {
               payload.map((entry, index) => {
@@ -245,9 +255,9 @@ class DashGraph1FullView extends React.Component {
 
     let { chart1 } = this.props
     let { filterIDs } = this.state
-    
+
     //let filteredData = chart1.filter(p => filterIDs.includes(p.ProjectId))
-    
+
     let transformedData = this.transformData(chart1, filterIDs)
 
     return (
@@ -261,7 +271,7 @@ class DashGraph1FullView extends React.Component {
         }}
       >
 
-         <div
+        <div
           style={{
             width: "95%",
             textAlign: "center",
@@ -286,7 +296,7 @@ class DashGraph1FullView extends React.Component {
             float: "right",
             display: "inline"
           }}
-          onClick={() => { 
+          onClick={() => {
             location.hash = location.hash.replace("#/chart1", "")
           }}
         />
@@ -307,7 +317,7 @@ class DashGraph1FullView extends React.Component {
             <ResponsiveContainer key={new Date().valueOf()} width="96%" height="98%">
               <LineChart data={transformedData} >
                 <XAxis dataKey="Year" />
-                <YAxis />
+                <YAxis width={120} />
                 <Line dot={false} type='monotone' dataKey='Rehab_Reconst' stroke='#82CA9D' strokeWidth={2} />
                 <Line dot={false} type="monotone" dataKey="Emergency" stroke="#8884D8" strokeWidth={2} />
                 <Line dot={false} type="monotone" dataKey="Mitigation" stroke="#FFCF77" strokeWidth={2} />

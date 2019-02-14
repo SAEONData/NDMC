@@ -9,9 +9,9 @@ import buildQuery from 'odata-query'
 const _gf = require('../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter, hazardFilter, impactFilter } } = state
+  let { filterData: { regionFilter, hazardFilter, impactFilter, dateFilter } } = state
   let { chartData: { chart1 } } = state
-  return { regionFilter, hazardFilter, impactFilter, chart1 }
+  return { regionFilter, hazardFilter, impactFilter, chart1, dateFilter }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -46,7 +46,7 @@ class DashGraph1Preview extends React.Component {
 
   async getFilteredEventIDs() {
 
-    let { regionFilter, hazardFilter, impactFilter } = this.props
+    let { regionFilter, hazardFilter, impactFilter, dateFilter } = this.props
     let filters = {}
 
     //ADD FILTERS//
@@ -63,6 +63,16 @@ class DashGraph1Preview extends React.Component {
     //Impact//
     if (impactFilter != 0) {
       filters.impact = impactFilter
+    }
+
+    //StartDate
+    if(dateFilter.startDate != 0){
+      filters.startDate = dateFilter.startDate
+    }
+
+    //EndDate
+    if(dateFilter.endDate != 0){
+      filters.endDate = dateFilter.endDate
     }
 
     //GET EVENTS FILTERED//
@@ -136,6 +146,9 @@ class DashGraph1Preview extends React.Component {
 
   transformData(data, filterIDs) {
 
+    //let filteredData = data.filter(p => filterIDs.includes(p.EventId))
+    console.log("data", data)
+
     let tData = []
 
     if (!data) {
@@ -150,7 +163,7 @@ class DashGraph1Preview extends React.Component {
     data.forEach(tm => {
       if (tm.Mitigations) {
         tm.Mitigations.forEach(m => {
-          if (m.Date < minYear) {
+          if (filterIDs.includes(m.EventId) && m.Date < minYear) {
             minYear = m.Date
           }
         })
@@ -161,12 +174,15 @@ class DashGraph1Preview extends React.Component {
     data.forEach(tm => {
       if (tm.Mitigations) {
         tm.Mitigations.forEach(m => {
-          if (m.Date > maxYear && m.Date <= currentYear) {
+          if (filterIDs.includes(m.EventId) && m.Date > maxYear && m.Date <= currentYear) {
             maxYear = m.Date
           }
         })
       }
     })
+
+    console.log("minYear", minYear)
+    console.log("maxYear", maxYear)
 
     for (let i = minYear; i <= maxYear; i++) {
 

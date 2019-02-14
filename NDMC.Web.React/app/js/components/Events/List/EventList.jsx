@@ -960,7 +960,7 @@ class EventList extends React.Component {
         <div>
 
           {
-            this.props.events.length === 0 &&
+            this.state.eventsLoading === true &&
             <div>
               <br/>
               <h5 style={{ marginLeft: 20 }}>Loading events...</h5>
@@ -969,7 +969,7 @@ class EventList extends React.Component {
           }
 
           {
-            this.props.events.length > 0 &&
+            this.state.eventsLoading === false &&
             this.buildList(this.props.events)
           }
 

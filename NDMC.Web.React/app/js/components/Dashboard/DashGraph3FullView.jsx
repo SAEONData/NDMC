@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import popin from '../../../images/popin.png'
-import { apiBaseURL } from '../../config/serviceURLs.js'
+import { apiBaseURL, vmsBaseURL } from '../../config/serviceURLs.js'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import buildQuery from 'odata-query'
 import moment from 'moment';
@@ -9,9 +9,9 @@ import moment from 'moment';
 const _gf = require('../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter, hazardFilter, impactFilter } } = state
+  let { filterData: { regionFilter, hazardFilter, impactFilter, dateFilter } } = state
   let { chartData: { chart3 } } = state
-  return { regionFilter, hazardFilter, impactFilter, chart3 }
+  return { regionFilter, hazardFilter, impactFilter, chart3, dateFilter }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -39,7 +39,8 @@ class DashGraph3FullView extends React.Component {
     super(props);
 
     this.state = {
-      filterIDs: []
+      filterIDs: [],
+      hazards: []
     }
 
     this.renderTooltipContent = this.renderTooltipContent.bind(this)
@@ -55,6 +56,7 @@ class DashGraph3FullView extends React.Component {
     });
 
     this.getChartData()
+    this.getHazards()
     this.getFilteredEventIDs()
   }
 
@@ -67,16 +69,11 @@ class DashGraph3FullView extends React.Component {
     if (this.props.chart3.length === 0) {
 
       const query = buildQuery({
-        select: ["EventId", "StartDate", "EndDate"],
+        select: ["EventId", "StartDate", "EndDate", "TypeEventId"],
         filter: {
           StartDate: { ne: null },
           EndDate: { ne: null },
           TypeEventId: { ne: null }
-        },
-        expand: {
-          TypeEvent: {
-            select: ["TypeEventName"]
-          }
         }
       })
 
@@ -98,9 +95,31 @@ class DashGraph3FullView extends React.Component {
     }
   }
 
+  async getHazards() {
+
+    //Get Hazards list/details
+    try {
+
+      let res = await fetch(vmsBaseURL + "hazards/flat")
+
+      //Get response body
+      let resBody = await res.json()
+
+      if (res.ok) {
+        this.setState({ hazards: resBody.items })
+      }
+      else {
+        throw new Error(resBody.error.message)
+      }
+
+    } catch (ex) {
+      console.error(ex)
+    }
+  }
+
   async getFilteredEventIDs() {
 
-    let { regionFilter, hazardFilter, impactFilter } = this.props
+    let { regionFilter, hazardFilter, impactFilter, dateFilter } = this.props
     let filters = {}
 
     //ADD FILTERS//
@@ -117,6 +136,16 @@ class DashGraph3FullView extends React.Component {
     //Impact//
     if (impactFilter != 0) {
       filters.impact = impactFilter
+    }
+
+    //StartDate
+    if(dateFilter.startDate != 0){
+      filters.startDate = dateFilter.startDate
+    }
+
+    //EndDate
+    if(dateFilter.endDate != 0){
+      filters.endDate = dateFilter.endDate
     }
 
     //GET EVENTS FILTERED//
@@ -168,10 +197,10 @@ class DashGraph3FullView extends React.Component {
     //Get unique hazards
     let uniqueHazards = []
     data.forEach(h => {
-      if (uniqueHazards.filter(x => x.Hazard === h.TypeEvent.TypeEventName).length === 0) {
+      if (uniqueHazards.filter(x => x.Hazard === h.TypeEventId).length === 0) {
         uniqueHazards.push({
-          Hazard: h.TypeEvent.TypeEventName,
-          Count: data.filter(d => d.TypeEvent.TypeEventName === h.TypeEvent.TypeEventName).length
+          Hazard: h.TypeEventId,
+          Count: data.filter(d => d.TypeEventId === h.TypeEventId).length
         })
       }
     })
@@ -189,9 +218,16 @@ class DashGraph3FullView extends React.Component {
       let tItem = { Year: i }
       uniqueHazards.forEach(haz => {
 
+        //Get Hazard Name
+        let hazName = "Unknown"
+        let searchHaz = hazards.filter(x => x.id == haz.Hazard)
+        if (searchHaz.length > 0) {
+          hazName = searchHaz[0].value.trim()
+        }
+
         //Get relevant hazards
-        let filteredHazards = data.filter(d => moment.unix(d.StartDate).year() <= i && moment.unix(d.EndDate).year() >= i && d.TypeEvent.TypeEventName === haz.Hazard)
-        tItem[haz.Hazard] = filteredHazards.length
+        let filteredHazards = data.filter(d => moment.unix(d.StartDate).year() <= i && moment.unix(d.EndDate).year() >= i && d.TypeEventId === haz.Hazard)
+        tItem[hazName] = filteredHazards.length
       })
 
       tData.push(tItem)
@@ -199,6 +235,7 @@ class DashGraph3FullView extends React.Component {
 
     return tData
   }
+
 
   getPercent(value, total) {
     const ratio = total > 0 ? value / total : 0;
@@ -263,11 +300,8 @@ class DashGraph3FullView extends React.Component {
 
   render() {
 
-    let { filterIDs } = this.state
+    let { filterIDs, hazards } = this.state
     let { chart3 } = this.props
-
-    let hazards = []
-    if(chart3) hazards = Array.from(new Set(chart3.map(e => e.TypeEvent.TypeEventName))) 
 
     let filteredData = chart3.filter(p => filterIDs.includes(p.EventId))
     let transformedData = this.transformData(filteredData, hazards)
