@@ -6,7 +6,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { ssoBaseURL } from '../../config/serviceURLs.js'
-import { Navbar, NavbarNav, NavbarToggler, NavItem, Collapse, Button, Fa } from 'mdbreact'
+import { 
+  Dropdown, 
+  DropdownItem, 
+  DropdownToggle, 
+  DropdownMenu,
+  Navbar, 
+  NavbarNav, 
+  NavbarToggler, 
+  NavItem, 
+  Collapse, 
+  Button, 
+  Fa 
+} from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let { globalData: { forceNavRender, toggleSideNav, showSideNav, showSideNavButton, showNavbar } } = state
@@ -113,9 +125,48 @@ class CustomNavbar extends React.Component {
                 style={{ marginLeft: "0px" }}
                 onClick={() => { this.props.toggleAddForm(true) }}
               >
-                Add New Event
+                Submit Hazardous Event
               </Button>
             }
+
+            {/* Adaptation */}
+            <NavItem>
+                <Dropdown>
+                  <DropdownToggle nav caret style={{ color: "black" }}><b>Adaptation and Response</b></DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem header style={{ marginLeft: "-16px", fontSize:"16px", color: "black" }}>
+                      <b>
+                        Climate Change Adaptation&nbsp;
+                        <br className="d-block d-md-none" />
+                        Monitoring and Evaluation
+                      </b>
+                    </DropdownItem>
+                    <DropdownItem divider />
+                    {/* <DropdownItem header style={{ marginLeft: "-16px", fontWeight: "400", fontSize: "16px", color: "black" }}>
+                      Impacts:
+                    </DropdownItem> */}
+                    <DropdownItem href="http://app01.saeon.ac.za/ccissite" style={{ marginLeft: "7px" }}>
+                      <b style={{ color: "grey" }}>View Information</b>
+                    </DropdownItem>
+                    <DropdownItem href="http://app01.saeon.ac.za/ccissite/#/ame/contribute"  style={{ marginLeft: "7px" }}>
+                      <b style={{ color: "grey" }}>Submit evaluation on Progress</b>
+                    </DropdownItem>
+                    <DropdownItem header style={{ marginLeft: "-16px", fontWeight: "400", fontSize: "16px", color: "black" }}>
+                    National Climate Change Response Database
+                    </DropdownItem>
+                    <DropdownItem divider />
+
+                    <DropdownItem href="http://app01.saeon.ac.za/nccrdsite/#/"  style={{ marginLeft: "7px" }}>
+                      <b style={{ color: "grey" }}>View projects</b>
+                    </DropdownItem>
+                    <DropdownItem href="http://app01.saeon.ac.za/nccrdsite"  style={{ marginLeft: "7px" }}>
+                      <b style={{ color: "grey" }}>Submit Project</b>
+                    </DropdownItem>
+                   
+                  </DropdownMenu>
+                </Dropdown>
+              </NavItem>
+
             {/* INVISIBLE HEIGHT SPACER */}
             <div style={{ height: "32px", margin: "6px" }} />
           </NavbarNav>

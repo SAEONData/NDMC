@@ -18,6 +18,7 @@
     "luxon": "^1.11.2",
     "mdbreact": "git+https://oauth2:TrvzhasQo5h8aod8YSLE@git.mdbootstrap.com/mdb/react/re-pro.git",
     "moment": "^2.24.0",
+    "odata": "^1.0.0",
     "odata-query": "^5.4.4",
     "oidc-client": "^1.5.2",
     "query-string": "^5.1.1",
