@@ -145,10 +145,10 @@ class CustomNavbar extends React.Component {
                     {/* <DropdownItem header style={{ marginLeft: "-16px", fontWeight: "400", fontSize: "16px", color: "black" }}>
                       Impacts:
                     </DropdownItem> */}
-                    <DropdownItem href="http://app01.saeon.ac.za/ccissite" style={{ marginLeft: "7px" }}>
+                    <DropdownItem href="http://app01.saeon.ac.za/ccistestsite" style={{ marginLeft: "7px" }}>
                       <b style={{ color: "grey" }}>View Information</b>
                     </DropdownItem>
-                    <DropdownItem href="http://app01.saeon.ac.za/ccissite/#/ame/contribute"  style={{ marginLeft: "7px" }}>
+                    <DropdownItem href="http://app01.saeon.ac.za/ccistestsite/#/ame/contribute"  style={{ marginLeft: "7px" }}>
                       <b style={{ color: "grey" }}>Submit evaluation on Progress</b>
                     </DropdownItem>
                     <DropdownItem header style={{ marginLeft: "-16px", fontWeight: "400", fontSize: "16px", color: "black" }}>
@@ -156,10 +156,10 @@ class CustomNavbar extends React.Component {
                     </DropdownItem>
                     <DropdownItem divider />
 
-                    <DropdownItem href="http://app01.saeon.ac.za/nccrdsite/#/"  style={{ marginLeft: "7px" }}>
+                    <DropdownItem href="http://app01.saeon.ac.za/nccrdtestsite/#/"  style={{ marginLeft: "7px" }}>
                       <b style={{ color: "grey" }}>View projects</b>
                     </DropdownItem>
-                    <DropdownItem href="http://app01.saeon.ac.za/nccrdsite"  style={{ marginLeft: "7px" }}>
+                    <DropdownItem href="http://app01.saeon.ac.za/nccrdtestsite"  style={{ marginLeft: "7px" }}>
                       <b style={{ color: "grey" }}>Submit Project</b>
                     </DropdownItem>
                    
