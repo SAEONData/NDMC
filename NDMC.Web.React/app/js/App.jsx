@@ -13,11 +13,17 @@ import { connect } from 'react-redux'
 import Dashboard from './components/Dashboard/Dashboard.jsx'
 import Events from './components/Events/List/Events.jsx'
 import EventDetails from './components/Events/Details/EventDetails.jsx'
+import CallbackPage from '../js/components/Authentication/callback.jsx'
 import CustomNavbar from './components/Base/CustomNavbar.jsx'
 import { stripURLParam } from './globalFunctions.js'
 import Header from './components/Base/Header.jsx'
+import Login from './components/Authentication/Login.jsx'
+import Logout from './components/Authentication/Logout.jsx'
 import Footer from './components/Base/Footer.jsx'
+import ReactTooltip from 'react-tooltip'
 import SideNav from './components/Base/SideNav.jsx'
+import { Spinner, Container } from 'mdbreact/'
+import userManager from './components/Authentication/userManager'
 import MapView from './components/Map/MapView.jsx'
 import DashGraph1FullView from './components/Dashboard/DashGraph1FullView.jsx'
 import DashGraph2FullView from './components/Dashboard/DashGraph2FullView.jsx'
@@ -25,11 +31,15 @@ import DashGraph3FullView from './components/Dashboard/DashGraph3FullView.jsx'
 import DashGraph4FullView from './components/Dashboard/DashGraph4FullView.jsx'
 import moment from 'moment';
 import { data as NavData } from '../data/sideNavConfig'
+
+
 const queryString = require('query-string')
+const Oidc = require("oidc-client")
 
 const mapStateToProps = (state, props) => {
-  let { globalData: { forceNavRender, showSideNav, showSideNavButton, showHeader, showNavbar, showFooter } } = state
-  return { forceNavRender, showSideNav, showSideNavButton, showHeader, showNavbar, showFooter }
+  let { globalData: { loading, forceNavRender, showSideNav, showSideNavButton, showHeader, showNavbar, showFooter } } = state
+  let user = state.oidc.user
+  return { loading, user, forceNavRender, showSideNav, showSideNavButton, showHeader, showNavbar, showFooter }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -48,6 +58,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     toggleListView: payload => {
       dispatch({ type: "TOGGLE_LIST_VIEW", payload })
+    },
+    toggleReadOnly: payload => {
+      dispatch({ type: "TOGGLE_READONLY", payload })
     },
     toggleListFavorites: payload => {
       dispatch({ type: "TOGGLE_LIST_FAVORITES", payload })
@@ -76,8 +89,15 @@ const mapDispatchToProps = (dispatch) => {
     loadImpactFilter: payload => {
       dispatch({ type: "LOAD_IMPACT_FILTER", payload })
     },
+    setDAOID: async payload => {
+      dispatch({ type: "SET_DAOID", payload })
+    },
   }
 }
+
+//Enable OIDC Logging
+Oidc.Log.logger = console
+Oidc.Log.level = Oidc.Log.INFO
 
 /**
  * Root level App class
@@ -96,6 +116,20 @@ class App extends React.Component {
   componentWillMount() {
     //this.genTestConfig()
     this.processURLConfig()
+  }
+
+  componentDidMount() {
+    window.onhashchange = this.saveCurrentURL
+    this.processSilentSignIn()
+  }
+
+  async processSilentSignIn() {
+    try {
+      await userManager.signinSilent()
+    }
+    catch (ex) {
+      console.warn("Sign-in-silent failed!", ex)
+    }
   }
 
   genTestConfig() {
@@ -135,6 +169,11 @@ class App extends React.Component {
 
         let config = JSON.parse(parsedHash.config)
 
+        //daoid
+        if (typeof config.daoid !== 'undefined' && config.daoid !== null) {
+          this.props.setDAOID(config.daoid)
+        }
+
         //header
         if (typeof config.header === 'boolean') {
           this.props.toggleHeader(config.header)
@@ -153,6 +192,11 @@ class App extends React.Component {
         //footer
         if (typeof config.footer === 'boolean') {
           this.props.toggleFooter(config.footer)
+        }
+
+        //readOnly
+        if (typeof config.readOnly === 'boolean') {
+          this.props.toggleReadOnly(config.readOnly)
         }
 
         //backToList
@@ -234,7 +278,29 @@ class App extends React.Component {
     }
   }
 
+  componentDidUpdate() {
+    let { user } = this.props
+
+    let headers = []
+    headers.push({ name: "Accept", value: "application/json" })
+
+    if (user && !user.expired) {
+      //Add auth token to headers
+      headers.push({ name: "Authorization", value: "Bearer " + (user === null ? "" : user.access_token) })
+    }
+
+    // //Add headers to OData global config
+    // o().config({
+    //   headers: headers
+    // })
+
+  }
+
+
   render() {
+    let loaderWidth = 300
+    let loaderHeight = 165
+
     let { showSideNav, showHeader, showNavbar, showFooter } = this.props
 
     return (
@@ -262,6 +328,9 @@ class App extends React.Component {
                   <Route path='/events' component={Events} exact />
                   <Route path='/events/:id' component={EventDetails} exact />
                   <Route path="/map" component={MapView} exact />
+                  <Route path="/login" component={Login} exact />
+                  <Route path="/logout" component={Logout} exact />
+                  <Route path="/callback" component={CallbackPage} />
                   <Route path="/chart1" component={DashGraph1FullView} exact />
                   <Route path="/chart2" component={DashGraph2FullView} exact />
                   <Route path="/chart3" component={DashGraph3FullView} exact />
@@ -277,6 +346,26 @@ class App extends React.Component {
                 <Footer />
               </div>
             }
+
+            <div className="container-fluid">
+              <div className="row">
+                <div
+                  hidden={!this.props.loading}
+                  className="card"
+                  style={{ height: (loaderHeight + "px"), width: (loaderWidth + 'px'), position: "fixed", left: ((window.innerWidth / 2) - (loaderWidth / 2)), top: ((window.innerHeight / 2) - (loaderHeight / 2)), zIndex: "99" }}>
+
+                  <div className="card-body">
+                    <label style={{ width: "100%", textAlign: "center", fontSize: "x-large", fontWeight: "bold", color: "#2BBBAD" }}>LOADING</label>
+                    <br />
+                    <span style={{ width: "100px", paddingLeft: ((loaderWidth / 2) - 50) }}>
+                      <Spinner big multicolor />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ReactTooltip delayShow={700} />
 
           </div>
         </Router>

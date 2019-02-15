@@ -39,11 +39,11 @@ export function arraysEqual(a, b) {
 //-------------------------//
 
 export function SaveCurrentUrl() {
-  CreateCookie("nccrd_last_url", document.URL, 1);
+  CreateCookie("ndmc_last_url", document.URL, 1);
 }
 
 export function ReadLastUrl() {
-  return ReadCookie("nccrd_last_url")
+  return ReadCookie("ndmc_last_url")
 }
 
 export function CreateCookie(name, value, days) {
