@@ -146,9 +146,6 @@ class DashGraph1Preview extends React.Component {
 
   transformData(data, filterIDs) {
 
-    //let filteredData = data.filter(p => filterIDs.includes(p.EventId))
-    console.log("data", data)
-
     let tData = []
 
     if (!data) {
@@ -180,9 +177,6 @@ class DashGraph1Preview extends React.Component {
         })
       }
     })
-
-    console.log("minYear", minYear)
-    console.log("maxYear", maxYear)
 
     for (let i = minYear; i <= maxYear; i++) {
 

@@ -1,3 +1,14 @@
+/*
+When filtered on Gautenf these are the Regions for Events that I get (18 events in total)
+7 - Gauteng
+58 - West Rand District Municipality (DC48)
+81 - City of Johannesburg Met…itan Municipality (JHB)
+84 - City of Tshwane Metropolitan Municipality (TSH)
+97 - Ekurhuleni Metropolitan Municipality (EKU)
+104 - Emfuleni Local Municipality (GT421)
+178 - Midvaal Local Municipality (GT422)
+*/
+
 'use strict'
 
 import React from 'react'
@@ -310,6 +321,9 @@ class EventList extends React.Component {
       const res_1 = await res.json()
 
       if (res_1 && res_1.value && res_1.value.length > 0) {
+
+        console.log("events", res_1.value.map(e => e.EventRegions.map(er => er.RegionId)))
+
         events.push(...res_1.value) //add additional events
         this.props.loadEvents(events)
       }
