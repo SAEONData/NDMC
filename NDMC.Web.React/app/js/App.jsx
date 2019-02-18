@@ -289,7 +289,7 @@ class App extends React.Component {
       headers.push({ name: "Authorization", value: "Bearer " + (user === null ? "" : user.access_token) })
     }
 
-    // //Add headers to OData global config
+    //Add headers to OData global config
     // o().config({
     //   headers: headers
     // })

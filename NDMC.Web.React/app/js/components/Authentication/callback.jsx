@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { CallbackComponent } from "redux-oidc";
 import userManager from '../Authentication/userManager'
+import { siteBaseURL } from "../../config/serviceURLs";
 
 const _gf = require("../../globalFunctions")
 
@@ -32,13 +33,15 @@ class CallbackPage extends React.Component {
 
   componentDidMount(){
     this.props.updateNav(location.hash)
+    
   }
 
   successCallbackHandler(user) {
-
     //Redirect
-    let locHash = "#"
+    let locHash = siteBaseURL
     let lastUrl = _gf.ReadLastUrl()
+    
+
     if (!lastUrl.endsWith("logout")) {
       locHash = lastUrl
     }

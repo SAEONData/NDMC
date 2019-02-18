@@ -418,8 +418,8 @@ class EventList extends React.Component {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
-            // "Authorization": "Bearer " + (user === null ? "" : user.access_token)
+            'Accept': 'application/json',
+            "Authorization": "Bearer " + (user === null ? "" : user.access_token)
           },
           body: JSON.stringify(fetchBody)
         })
