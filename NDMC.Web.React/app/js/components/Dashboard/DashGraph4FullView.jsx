@@ -10,9 +10,9 @@ import moment from 'moment';
 const _gf = require('../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
-  let { filterData: { regionFilter, hazardFilter, impactFilter } } = state
+  let { filterData: { regionFilter, hazardFilter, impactFilter, dateFilter } } = state
   let { chartData: { chart4 } } = state
-  return { regionFilter, hazardFilter, impactFilter, chart4 }
+  return { regionFilter, hazardFilter, impactFilter, chart4, dateFilter }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -53,7 +53,7 @@ class DashGraph4FullView extends React.Component {
 
   async getFilteredEventIDs() {
 
-    let { regionFilter, hazardFilter, impactFilter } = this.props
+    let { regionFilter, hazardFilter, impactFilter, dateFilter } = this.props
     let filters = {}
 
     //ADD FILTERS//
@@ -70,6 +70,16 @@ class DashGraph4FullView extends React.Component {
     //Impact//
     if (impactFilter != 0) {
       filters.impact = impactFilter
+    }
+
+    //StartDate
+    if(dateFilter.startDate != 0){
+      filters.startDate = dateFilter.startDate
+    }
+
+    //EndDate
+    if(dateFilter.endDate != 0){
+      filters.endDate = dateFilter.endDate
     }
 
     //GET EVENTS FILTERED//

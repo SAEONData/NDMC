@@ -129,6 +129,18 @@ namespace APIv2.Controllers
                 regionEventIds = _context.EventRegions.Where(p => allRegionIDs.Contains(p.RegionId)).Select(p => p.EventId).Distinct().ToList();
             }
 
+            // Hazard
+            var hazardEventIds = new List<int>();
+            if (hazardFilter > 0)
+            {
+                //Get all HazardIds (including children)
+                var allHazardIDs = GetChildren(hazardFilter, GetVMSData("hazards/flat").Result).Select(r => r).Distinct().ToList();
+                allHazardIDs.Add(hazardFilter);
+
+                //Get all ProjectIds assigned to these Hazards and/or Typology
+                hazardEventIds = _context.Events.Where(e => allHazardIDs.Contains(e.TypeEventId == null ? 0 : (int)e.TypeEventId)).Select(e => e.EventId).Distinct().ToList(); 
+            }
+
             var impactEventIds = new List<int>();
             if (impactFilter > 0)
             {
@@ -143,7 +155,7 @@ namespace APIv2.Controllers
                 .Events
                 .Where(e =>
                     (regionFilter == 0 || regionEventIds.Contains(e.EventId)) &&
-                    (hazardFilter == 0 || e.TypeEventId == hazardFilter) &&
+                    (hazardFilter == 0 || hazardEventIds.Contains(e.EventId)) && //e.TypeEventId == hazardFilter) &&
                     (impactFilter == 0 || impactEventIds.Contains(e.EventId)) &&
                     (startDateFilter == 0 || e.StartDate >= startDateFilter) &&
                     (endDateFIlter == 0 || e.EndDate <= endDateFIlter)

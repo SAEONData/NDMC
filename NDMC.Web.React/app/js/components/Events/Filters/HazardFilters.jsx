@@ -101,7 +101,7 @@ class HazardFilters extends React.Component {
     }
     return (
       <>
-        <OData baseUrl={vmsBaseURL + 'hazards/flat'} query={hazardsQuery}>
+        {/* <OData baseUrl={vmsBaseURL + 'hazards/flat'} query={hazardsQuery}>
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
             if (error) { return <div>Error Loading Data From Server</div> }
@@ -115,7 +115,7 @@ class HazardFilters extends React.Component {
             }
           }
           }
-        </OData>
+        </OData> */}
         <OData baseUrl={vmsBaseURL + 'hazards'} query={hazardsQuery}>
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }
