@@ -182,46 +182,34 @@ class CustomNavbar extends React.Component {
             {/* INVISIBLE HEIGHT SPACER */}
             <div style={{ height: "32px", margin: "6px" }} />
           </NavbarNav>
-              {/* RIGHT */}
-              {
+          {/* RIGHT */}
+          {
             showNavbar !== "addOnly" &&
             <NavbarNav right>
 
               {/* Username */}
               {(user && !user.expired) &&
-                <NavItem style={{ marginRight: "15px" }}>
-                  <NavLink to ="" disabled>
-                    <b style={{ color: DEAGreen }}>
-                    { "Hello, " + user.profile.email }
-                    </b>
-                  </NavLink>
-                </NavItem>
 
-              //   <table>
-              //     <tbody>
-              //       <tr style={{ height: "40px" }}>
-              //         <td valign="middle">
-              //           <div style={{ marginRight: "7px", color: "grey" }} >
-              //             <Fa size="2x" icon="user-circle-o" />
-              //           </div>
-              //         </td>
-              //         <td valign="middle">
-              //           <div style={{ fontSize: "17px" }} >
-              //             <b>{`${user.profile.FirstName} ${user.profile.Surname}`}</b>
-              //           </div>
-              //         </td>
-              //       </tr>
-              //     </tbody>
-              //   </table>
+              <table>
+                <tbody>
+                  <tr style={{ height: "40px" }}>
+                    <td valign="middle">
+                      <div style={{ marginRight: "7px", color: "grey" }} >
+                        <Fa size="2x" icon="user-circle-o" />
+                      </div>
+                    </td>
+                    <td valign="middle">
+                      <div style={{ fontSize: "17px", color: DEAGreen }} >
+                        <b>{`${user.profile.FirstName} ${user.profile.Surname}`}</b>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
               }
 
-              {/* Contact */}
-              {/* <NavItem style={{ marginRight: "15px", borderBottom: (locationHash === "#/contact" ? "4px solid dimgrey" : "0px solid white") }}>
-                <NavLink  to="contact"><b>Contact</b></NavLink>
-              </NavItem> */}
-
               {/* Login / Logout */}
-              <NavItem style={{ marginLeft: "15px" }}>
+                <NavItem style={{ marginLeft: "15px" }}>
                 {(!user || user.expired) &&
                   <a className="nav-link" onClick={this.LoginLogoutClicked} href="#/login">
                     <b style={{ color: "black" }}>
@@ -236,9 +224,9 @@ class CustomNavbar extends React.Component {
                   </b>
                   </a>
                 }
-              </NavItem>
+                </NavItem>
 
-
+          
               {/* Register */}
               {(!user || user.expired) &&
                 <NavItem style={{ marginLeft: "15px" }}>
@@ -250,7 +238,7 @@ class CustomNavbar extends React.Component {
                 </NavItem>
               }
 
-            </NavbarNav>
+          </NavbarNav>
           }
         </Collapse>
       </Navbar>
