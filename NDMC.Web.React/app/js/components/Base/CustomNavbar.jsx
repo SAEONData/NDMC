@@ -225,10 +225,9 @@ class CustomNavbar extends React.Component {
                   </a>
                 }
                 </NavItem>
-
-          
+        
               {/* Register */}
-              {/* {(!user || user.expired) &&
+              {(!user || user.expired) &&
                 <NavItem style={{ marginLeft: "15px" }}>
                   <a key="lnkRegister" className="nav-link" href={ssoBaseURL + "Account/Register"} target="_blank">
                     <b style={{ color: "black" }}>
@@ -236,7 +235,7 @@ class CustomNavbar extends React.Component {
                   </b>
                   </a>
                 </NavItem>
-              } */}
+              }
 
           </NavbarNav>
           }
