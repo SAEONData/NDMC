@@ -171,7 +171,7 @@ class CustomNavbar extends React.Component {
                     <DropdownItem href={ nccrdBaseURL + '/#/'} style={{ marginLeft: "7px" }}>
                       <b style={{ color: "grey" }}>View projects</b>
                     </DropdownItem>
-                    <DropdownItem href={ nccrdBaseURL }  style={{ marginLeft: "7px" }}>
+                    <DropdownItem href={ nccrdBaseURL  + '/#/projects/add' }  style={{ marginLeft: "7px" }}>
                       <b style={{ color: "grey" }}>Submit Project</b>
                     </DropdownItem>
                    
