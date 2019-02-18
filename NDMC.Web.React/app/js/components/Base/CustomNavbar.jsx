@@ -221,7 +221,7 @@ class CustomNavbar extends React.Component {
               </NavItem> */}
 
               {/* Login / Logout */}
-              {/* <NavItem style={{ marginLeft: "15px" }}>
+              <NavItem style={{ marginLeft: "15px" }}>
                 {(!user || user.expired) &&
                   <a className="nav-link" onClick={this.LoginLogoutClicked} href="#/login">
                     <b style={{ color: "black" }}>
@@ -236,17 +236,8 @@ class CustomNavbar extends React.Component {
                   </b>
                   </a>
                 }
-              </NavItem> */}
+              </NavItem>
 
-              {/* Login / Logout */}
-                <NavItem style={{ marginRight: "15px" }}>
-                  {(!user || user.expired) &&
-                    <NavLink to="/login"><b>Login</b></NavLink>
-                  }
-                  {(user && !user.expired) &&
-                    <NavLink to="/logout"><b>Logout</b></NavLink>
-                  }
-                </NavItem>
 
               {/* Register */}
               {(!user || user.expired) &&

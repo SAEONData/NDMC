@@ -1,8 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import userManager from '../Authentication/userManager'
+import { ssoBaseURL } from '../../config/serviceURLs';
+
 
 const _gf = require("../../globalFunctions")
+
 
 const mapStateToProps = (state, props) => {
   let user = state.oidc.user
@@ -28,8 +31,11 @@ class Logout extends React.Component {
   userSignedOut() {
 
     //Back to last page
-    let locHash = "#"
-    let lastUrl = _gf.ReadLastUrl()
+
+    let locHash = '#'
+    let saveUrl = _gf.SaveCurrentUrl()
+    let lastUrl = _gf.ReadLastUrl(saveUrl)
+    
     if (!lastUrl.endsWith("logout")) {
       locHash = lastUrl
     }
