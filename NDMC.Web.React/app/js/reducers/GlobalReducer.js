@@ -8,6 +8,22 @@ export default function GlobalReducer(state = {}, action) {
 
   switch (type) {
 
+    case "SET_LOADING": {
+      return { ...state, loading: payload }
+    }
+
+    case "SET_EDIT_MODE": {
+      return { ...state, editMode: payload }
+    }
+
+    case "SET_DAOID": {
+      return { ...state, daoid: payload }
+    }
+
+    case "TOGGLE_HEADER": {
+      return { ...state, showHeader: payload }
+    }
+
     case "TOGGLE_ADD_FORM": {
       return { ...state, addFormVisible: payload }
     }

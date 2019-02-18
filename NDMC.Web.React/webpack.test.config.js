@@ -51,7 +51,7 @@ module.exports = {
 
   entry: {
     app: ["babel-polyfill", './js/index.jsx'],
-    // silentRenew: ["./silent_renew/silent_renew.js"],
+    silentRenew: ["./silent_renew/silent_renew.js"],
   },
 
   output: {
@@ -120,11 +120,11 @@ module.exports = {
       template: './index.ejs',
       excludeChunks: ["silentRenew"],
     }),
-    // new HtmlWebpackPlugin({
-    //   template: "./silent_renew/silent_renew.html",
-    //   chunks: ["silentRenew",],
-    //   filename: "silent_renew.html"
-    // }),
+    new HtmlWebpackPlugin({
+      template: "./silent_renew/silent_renew.html",
+      chunks: ["silentRenew",],
+      filename: "silent_renew.html"
+    }),
     new webpack.DefinePlugin({
       CONSTANTS: {
         PROD: false,

@@ -19,6 +19,7 @@ module.exports = {
   },
   entry: {
     app: ["babel-polyfill", './js/index.jsx'],
+    silentRenew: ["./silent_renew/silent_renew.js"],
     react: [
       'react', 
       'react-dom', 
@@ -103,11 +104,11 @@ module.exports = {
       chunks: ["app"],
       filename: "index.html"
     }),
-    // new HtmlWebpackPlugin({
-    //   template: "./silent_renew/silent_renew.html",
-    //   chunks: ["silentRenew"],
-    //   filename: "silent_renew.html"
-    // }),
+    new HtmlWebpackPlugin({
+      template: "./silent_renew/silent_renew.html",
+      chunks: ["silentRenew"],
+      filename: "silent_renew.html"
+    }),
     new webpack.DefinePlugin({
       CONSTANTS: {
         PROD: false,

@@ -47,13 +47,13 @@ class MapViewCore extends React.Component {
     }
   }
 
-  // componentDidMount() {
-  //   window.addEventListener("message", this.onMessage.bind(this));
-  // }
+  componentDidMount() {
+    window.addEventListener("message", this.onMessage.bind(this));
+  }
 
-  // componentWillUnmount() {
-  //   window.removeEventListener("message", this.onMessage)
-  // }
+  componentWillUnmount() {
+    window.removeEventListener("message", this.onMessage)
+  }
 
   componentDidUpdate () {
 
@@ -76,27 +76,27 @@ class MapViewCore extends React.Component {
 
   }
 
-  // onMessage(event) {
+  onMessage(event) {
 
-  //   if (event.origin === mapServerBaseURL) {
-  //     try {
-  //       var message = JSON.parse(event.data)
-  //       if (message.cmd == 'featureClick' && !location.hash.includes("projects")) {
-  //         let navTo = ""
-  //         if (location.hash.includes("map")) {
-  //           navTo = location.hash.replace("#/map", "#/projects/" + message.id)
-  //         }
-  //         else {
-  //           navTo = location.hash.replace("#/", "#/projects/" + message.id)
-  //         }
-  //         location.hash = navTo
-  //       }
-  //     }
-  //     catch (ex) {
-  //       console.error(ex)
-  //     }
-  //   }
-  // }
+    if (event.origin === mapServerBaseURL) {
+      try {
+        var message = JSON.parse(event.data)
+        if (message.cmd == 'featureClick' && !location.hash.includes("projects")) {
+          let navTo = ""
+          if (location.hash.includes("map")) {
+            navTo = location.hash.replace("#/map", "#/projects/" + message.id)
+          }
+          else {
+            navTo = location.hash.replace("#/", "#/projects/" + message.id)
+          }
+          location.hash = navTo
+        }
+      }
+      catch (ex) {
+        console.error(ex)
+      }
+    }
+  }
 
   buildMapConfig () {
 
