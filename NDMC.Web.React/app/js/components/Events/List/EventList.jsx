@@ -1,14 +1,3 @@
-/*
-When filtered on Gautenf these are the Regions for Events that I get (18 events in total)
-7 - Gauteng
-58 - West Rand District Municipality (DC48)
-81 - City of Johannesburg Met…itan Municipality (JHB)
-84 - City of Tshwane Metropolitan Municipality (TSH)
-97 - Ekurhuleni Metropolitan Municipality (EKU)
-104 - Emfuleni Local Municipality (GT421)
-178 - Midvaal Local Municipality (GT422)
-*/
-
 'use strict'
 
 import React from 'react'
