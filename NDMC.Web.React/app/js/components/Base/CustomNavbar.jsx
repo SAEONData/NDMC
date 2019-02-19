@@ -6,6 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { ssoBaseURL, ccisSiteBaseURL, nccrdBaseURL } from '../../config/serviceURLs.js'
+import { DEAGreen } from './../../config/colours'
 import { 
   Dropdown, 
   DropdownItem, 
@@ -13,6 +14,7 @@ import {
   DropdownMenu,
   Navbar, 
   NavbarNav, 
+  NavLink,
   NavbarToggler, 
   NavItem, 
   Collapse, 
@@ -21,8 +23,18 @@ import {
 } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
+  let user = state.oidc.user
   let { globalData: { forceNavRender, toggleSideNav, showSideNav, showSideNavButton, showNavbar } } = state
-  return { forceNavRender, toggleSideNav, showSideNav, showSideNavButton, showNavbar }
+  let { navigation: { locationHash } } = state
+  return { 
+    forceNavRender, 
+    toggleSideNav, 
+    showSideNav, 
+    showSideNavButton, 
+    showNavbar,
+    user, 
+    locationHash 
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -170,34 +182,34 @@ class CustomNavbar extends React.Component {
             {/* INVISIBLE HEIGHT SPACER */}
             <div style={{ height: "32px", margin: "6px" }} />
           </NavbarNav>
-              {/* RIGHT */}
-              {
+          {/* RIGHT */}
+          {
             showNavbar !== "addOnly" &&
             <NavbarNav right>
 
               {/* Username */}
               {(user && !user.expired) &&
 
-                <table>
-                  <tbody>
-                    <tr style={{ height: "40px" }}>
-                      <td valign="middle">
-                        <div style={{ marginRight: "7px", color: "grey" }} >
-                          <Fa size="2x" icon="user-circle-o" />
-                        </div>
-                      </td>
-                      <td valign="middle">
-                        <div style={{ fontSize: "17px" }} >
-                          <b>{`${user.profile.FirstName} ${user.profile.Surname}`}</b>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <table>
+                <tbody>
+                  <tr style={{ height: "40px" }}>
+                    <td valign="middle">
+                      <div style={{ marginRight: "7px", color: "grey" }} >
+                        <Fa size="2x" icon="user-circle-o" />
+                      </div>
+                    </td>
+                    <td valign="middle">
+                      <div style={{ fontSize: "17px", color: DEAGreen }} >
+                        <b>{`${user.profile.FirstName} ${user.profile.Surname}`}</b>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
               }
 
               {/* Login / Logout */}
-              {/* <NavItem style={{ marginLeft: "15px" }}>
+                <NavItem style={{ marginLeft: "15px" }}>
                 {(!user || user.expired) &&
                   <a className="nav-link" onClick={this.LoginLogoutClicked} href="#/login">
                     <b style={{ color: "black" }}>
@@ -212,10 +224,10 @@ class CustomNavbar extends React.Component {
                   </b>
                   </a>
                 }
-              </NavItem> */}
-
+                </NavItem>
+        
               {/* Register */}
-              {/* {(!user || user.expired) &&
+              {(!user || user.expired) &&
                 <NavItem style={{ marginLeft: "15px" }}>
                   <a key="lnkRegister" className="nav-link" href={ssoBaseURL + "Account/Register"} target="_blank">
                     <b style={{ color: "black" }}>
@@ -223,9 +235,9 @@ class CustomNavbar extends React.Component {
                   </b>
                   </a>
                 </NavItem>
-              } */}
+              }
 
-            </NavbarNav>
+          </NavbarNav>
           }
         </Collapse>
       </Navbar>

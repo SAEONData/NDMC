@@ -17,6 +17,10 @@ const store = createStore(
     ...applyMiddleware(middleware),
 
     globalData: {
+      loading: false,
+      editMode: false, 
+      readOnly: false,
+      daoid: true,
       addFormVisible: false,
       eventsFullView: false,
       forceNavRender: true,
@@ -33,6 +37,11 @@ const store = createStore(
       showListFilterOptions: true,
       showDetailsInParent: false
     },
+
+    navigation: {
+      locationHash: "#/"
+    },
+
     eventData: {
       events: [],
       listScrollPos: 0
