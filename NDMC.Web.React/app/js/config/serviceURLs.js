@@ -29,7 +29,7 @@ else if (CONSTANTS.TEST) {
 }
 else if (CONSTANTS.PROD) {
   _nccrdBaseURL = 'http://app01.saeon.ac.za/nccrd'
-  _ccisSiteBaseURL = 'http://app01.saeon.ac.za/ccis'
+  _ccisSiteBaseURL = 'http://app01.saeon.ac.za/ccissite'
   _apiBaseURL = 'http://app01.saeon.ac.za/ndmcapi/odata/'
   _siteBaseURL = 'http://app01.saeon.ac.za/ndmcsite/'
   _ccisBaseURL = 'http://app01.saeon.ac.za/ccisapi/odata/'
