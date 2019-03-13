@@ -186,7 +186,7 @@ namespace APIv2.Controllers
                     type = "Feature",
                     geometry = new
                     {
-                        type = GetWKTType(e.EventRegions, vmsRegions), //e.EventRegions.Count() > 1 ? "MultiPolygon" : "Polygon",
+                        type = GetWKTType(e.EventRegions, vmsRegions),
                         coordinates = GetCoordinates(e.EventRegions, vmsRegions)
                     },
                     properties = new
@@ -238,30 +238,12 @@ namespace APIv2.Controllers
 
             foreach (var er in eventRegions)
             {
-                //var polygon = new List<object>();
-
                 var vmsRegion = vmsRegions.FirstOrDefault(v => v.Id == er.RegionId.ToString());
                 if (vmsRegion != null)
                 {
                     var simpleWKT = vmsRegion.AdditionalData.FirstOrDefault(ad => ad.Key == "SimpleWKT");
                     if (!string.IsNullOrEmpty(simpleWKT.Value))
                     {
-                        //var parsedWKT = simpleWKT.Value.Replace("POLYGON((", "").Replace("))", "");
-
-                        //foreach (var point in parsedWKT.Split(","))
-                        //{
-                        //    var pointValues = point.Trim().Split(" ");
-                        //    if (pointValues.Length == 2)
-                        //    {
-                        //        if (double.TryParse(pointValues[0].Trim(), out double pointLat) &&
-                        //            double.TryParse(pointValues[1].Trim(), out double pointLon))
-                        //        {
-                        //            var polyPoint = new double[] { pointLat, pointLon };
-                        //            polygon.Add(polyPoint);
-                        //        }
-                        //    }
-                        //}
-
                         //Extract polygon data
                         var WKTPolygons = WKTConvert.GetPolygons(simpleWKT.Value);
                         foreach (var poly in WKTPolygons)
@@ -283,8 +265,6 @@ namespace APIv2.Controllers
                         }
                     }
                 }
-
-                //result.Add(polygon);
             }
 
             return result.ToArray();
