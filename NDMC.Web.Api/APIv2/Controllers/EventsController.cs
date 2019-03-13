@@ -1,5 +1,6 @@
 ﻿using APIv2.Database.Contexts;
 using APIv2.Database.Models;
+using APIv2.Extensions;
 using APIv2.ViewModels;
 
 using Microsoft.AspNet.OData;
@@ -14,6 +15,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -138,7 +140,7 @@ namespace APIv2.Controllers
                 allHazardIDs.Add(hazardFilter);
 
                 //Get all ProjectIds assigned to these Hazards and/or Typology
-                hazardEventIds = _context.Events.Where(e => allHazardIDs.Contains(e.TypeEventId == null ? 0 : (int)e.TypeEventId)).Select(e => e.EventId).Distinct().ToList(); 
+                hazardEventIds = _context.Events.Where(e => allHazardIDs.Contains(e.TypeEventId == null ? 0 : (int)e.TypeEventId)).Select(e => e.EventId).Distinct().ToList();
             }
 
             var impactEventIds = new List<int>();
@@ -184,7 +186,7 @@ namespace APIv2.Controllers
                     type = "Feature",
                     geometry = new
                     {
-                        type = "Polygon",
+                        type = GetWKTType(e.EventRegions, vmsRegions), //e.EventRegions.Count() > 1 ? "MultiPolygon" : "Polygon",
                         coordinates = GetCoordinates(e.EventRegions, vmsRegions)
                     },
                     properties = new
@@ -200,12 +202,35 @@ namespace APIv2.Controllers
                     }
                 })
                 .Distinct()
-                .Where(x => x.properties.impacts.Length > 0)
+                //.Where(x => x.properties.impacts.Length > 0)
                 .ToList();
 
             return new JsonResult(geoJSON);
         }
 
+        private string GetWKTType(ICollection<EventRegion> eventRegions, List<StandardVocabItem> vmsRegions)
+        {
+            string type = "Polygon";
+
+            if (eventRegions.Count() == 1)
+            {
+                var vmsRegion = vmsRegions.FirstOrDefault(v => v.Id == eventRegions.First().RegionId.ToString());
+                if (vmsRegion != null)
+                {
+                    var simpleWKT = vmsRegion.AdditionalData.FirstOrDefault(ad => ad.Key == "SimpleWKT");
+                    if (!string.IsNullOrEmpty(simpleWKT.Value))
+                    {
+                        type = WKTConvert.GetWKTType(simpleWKT.Value).ToString();
+                    }
+                }
+            }
+            else if (eventRegions.Count() > 1)
+            {
+                type = "MultiPolygon";
+            }
+
+            return type;
+        }
 
         private object[] GetCoordinates(ICollection<EventRegion> eventRegions, List<StandardVocabItem> vmsRegions)
         {
@@ -213,7 +238,7 @@ namespace APIv2.Controllers
 
             foreach (var er in eventRegions)
             {
-                var polygon = new List<object>();
+                //var polygon = new List<object>();
 
                 var vmsRegion = vmsRegions.FirstOrDefault(v => v.Id == er.RegionId.ToString());
                 if (vmsRegion != null)
@@ -221,25 +246,45 @@ namespace APIv2.Controllers
                     var simpleWKT = vmsRegion.AdditionalData.FirstOrDefault(ad => ad.Key == "SimpleWKT");
                     if (!string.IsNullOrEmpty(simpleWKT.Value))
                     {
-                        var parsedWKT = simpleWKT.Value.Replace("POLYGON((", "").Replace("))", "");
+                        //var parsedWKT = simpleWKT.Value.Replace("POLYGON((", "").Replace("))", "");
 
-                        foreach (var point in parsedWKT.Split(","))
+                        //foreach (var point in parsedWKT.Split(","))
+                        //{
+                        //    var pointValues = point.Trim().Split(" ");
+                        //    if (pointValues.Length == 2)
+                        //    {
+                        //        if (double.TryParse(pointValues[0].Trim(), out double pointLat) &&
+                        //            double.TryParse(pointValues[1].Trim(), out double pointLon))
+                        //        {
+                        //            var polyPoint = new double[] { pointLat, pointLon };
+                        //            polygon.Add(polyPoint);
+                        //        }
+                        //    }
+                        //}
+
+                        //Extract polygon data
+                        var WKTPolygons = WKTConvert.GetPolygons(simpleWKT.Value);
+                        foreach (var poly in WKTPolygons)
                         {
-                            var pointValues = point.Trim().Split(" ");
-                            if (pointValues.Length == 2)
+                            var polygon = new List<object>();
+
+                            //Convert points
+                            foreach (var point in poly.WKTPoints)
                             {
-                                if (double.TryParse(pointValues[0].Trim(), out double pointLat) &&
-                                    double.TryParse(pointValues[1].Trim(), out double pointLon))
-                                {
-                                    var polyPoint = new double[] { pointLat, pointLon };
-                                    polygon.Add(polyPoint);
-                                }
+                                var polyPoint = new double[] { point.Lat, point.Lng };
+                                polygon.Add(polyPoint);
+                            }
+
+                            //Add result if relevant
+                            if (polygon.Count > 0)
+                            {
+                                result.Add(polygon);
                             }
                         }
                     }
                 }
 
-                result.Add(polygon);
+                //result.Add(polygon);
             }
 
             return result.ToArray();
