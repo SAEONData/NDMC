@@ -1,0 +1,13 @@
+.nav-cat-head {
+  padding-top: 7px;
+  font-size: 15px;
+}
+
+.nav-close-handle {
+  color: black;
+  box-shadow: none;
+  margin-right: 2px;
+  padding: 10px 3px 10px 2px;
+  border: 1px solid black;
+  border-radius: 3px;
+}

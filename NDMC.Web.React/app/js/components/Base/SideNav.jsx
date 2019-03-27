@@ -1,14 +1,14 @@
 'use strict'
-/**
- * @ignore
- * Imports
- */
+
 import React from 'react'
 import { connect } from 'react-redux';
-import {
-  SideNav as MSBSideNav, Fa, SideNavItem, SideNavCat, SideNavNav, Modal, ModalBody, ModalHeader
-} from 'mdbreact'
-import '../../../css/mdbreact-sidenav.css'
+import { Fa, Row, Col, Button } from 'mdbreact'
+import { Drawer, Collapse } from 'antd'
+import { DEAGreen } from '../../config/colours.js'
+
+import './SideNav.css'
+
+const Panel = Collapse.Panel
 
 const mapStateToProps = (state, props) => {
   return {}
@@ -22,125 +22,109 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-/**
- * The SideNav class for displaying a side navigation bar
- * @class
- */
 class SideNav extends React.Component {
-  constructor (props) {
+
+  constructor(props) {
     super(props)
+
     this.renderLinks = this.renderLinks.bind(this)
     this.toggleNav = this.toggleNav.bind(this)
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.showContent = this.showContent.bind(this);
-    this.state = {
-      navOpen: [],
-      width: 0,
-      height: 0,
-      showContent: false,
-      contentLink: "",
-      contentTitle: ""
-    }
+
+    this.state = { navOpen: [], width: 0, height: 0, showContent: false, contentLink: "", contentTitle: "" }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
-  /**
-   * Handle the updating of window dimensions based of window size
-   */
-  updateWindowDimensions () {
+  updateWindowDimensions() {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
 
-  /**
-   * Handle toggling the side navigation bar
-   * @param {string} key String key used to update state of sidebar
-   */
-  toggleNav (key) {
+  toggleNav(key) {
     let { navOpen } = this.state
+
     if (navOpen.includes(key)) {
       navOpen = navOpen.filter(x => x !== key)
     }
     else {
       navOpen.push(key)
     }
+
     this.setState({ navOpen })
   }
 
-  /**
-   * Handle what links to render on sidebar
-   * @param {array} data The array of objects to render
-   * @param {number} level The number level of links to render
-   */
-  renderLinks (data, level = 0) {
+  renderLinks(data, level = 0) {
     let links = []
-    //let indent = (level > 1 ? 26 * (level - 1) : 0) + "px"
+
     data.forEach(x => {
+
       if (typeof x.children !== 'undefined') {
         links.push(
-          <SideNavCat
-            id={"cat_" + x.id}
+          <Panel
             key={"cat_" + x.id}
-            name={x.text + " "}
-            icon="chevron-right"
-            style={{ fontSize: "15px" }}
+            header={
+              <div className="nav-cat-head">
+                {x.text}
+              </div>
+            }
+            style={{
+              border: 0
+            }}
           >
             {this.renderLinks(x.children, level + 1)}
-          </SideNavCat>
+          </Panel>
         )
       }
       else {
         if (typeof x.link !== 'undefined') {
           links.push(
-            <SideNavItem
-              key={"lnk_" + x.id}
-              onClick={() => {
-                this.showContent(x.link, x.text, x.window)
-              }}
-            >
-              <Fa style={{ marginRight: "10px" }} icon="link" />
-              <span style={{ fontSize: "15px" }}>{x.text}</span>
-            </SideNavItem>
+            <div style={{ marginLeft: 20 }}>
+              <a
+                key={"lnk_" + x.id}
+                onClick={() => {
+                  this.showContent(x.link, x.text, x.window)
+                }}
+              >
+                <Fa style={{ marginRight: "10px" }} icon="link" />
+                <span style={{ fontSize: "15px" }}>{x.text}</span>
+              </a>
+            </div>
           )
         }
         else {
           links.push(
-            <SideNavItem
-              key={"lnk_" + x.id}
-              style={{ fontSize: "16px" }}
-            >
-              <Fa style={{ marginRight: "10px" }} icon="unlink" />
-              <span style={{ fontSize: "15px" }}>{x.text}</span>
-            </SideNavItem>
+            <div style={{ marginLeft: 20 }}>
+              <a
+                key={"lnk_" + x.id}
+                onClick={() => {
+                  this.showContent(x.link, x.text, x.window)
+                }}
+              >
+                <Fa style={{ marginRight: "10px" }} icon="unlink" />
+                <span style={{ fontSize: "15px" }}>{x.text}</span>
+              </a>
+            </div>
           )
         }
       }
     })
+
     return links
   }
 
-  /**
-   * Handle closing the sidenav model
-   */
-  closeModal () {
-    this.setState({ showContent: false })
-    //this.props.toggleSideNav(false)
+  closeModal() {
+    this.setState({ showContent: false, contentLink: "" })
   }
 
-  /**
-   * Handle content shown in navbar
-   * @param {string} link The content link string
-   * @param {string} title The string title of conent
-   * @param {string} window The window name on which conent should be displayed
-   */
-  showContent (link, title, window) {
+  showContent(link, title, window) {
     if (window === 'blank') {
       var win = open(link, '_blank');
       win.focus();
@@ -150,63 +134,113 @@ class SideNav extends React.Component {
     }
   }
 
-  render () {
+  render() {
+
     let { isOpen, data } = this.props
-    let { width, height, showContent, contentLink, contentTitle } = this.state
-    //const sideNavWidth = 325
+    let { width, showContent, contentLink, contentTitle } = this.state
+
+    const sideNavWidth = width < 325 ? "100%" : 325
+
     return (
       <>
-        <MSBSideNav hidden triggerOpening={isOpen} className="white side-nav-light">
-          <div className="text-center" style={{ color: "black", marginBottom: "-5px" }}>
-            {data.logoTop &&
-              <img src={data.logoTop.src} style={{ width: data.logoTop.width, marginTop: "15px" }} />
-            }
-            <hr />
-            <h4>{data.title}</h4>
-            <hr />
-          </div>
-          <SideNavNav>
-            {this.renderLinks(data.nav)}
-          </SideNavNav>
-          <hr />
-          <div className="text-center">
-            {data.logoBottom &&
-              <img src={data.logoBottom.src} style={{ width: data.logoBottom.width }} />
-            }
-          </div>
-        </MSBSideNav>
-        <Modal
-          isOpen={showContent}
-          toggle={() => this.closeModal()}
-          //style={{ width: (width - sideNavWidth - 20) + "px" }}
-          //size="fluid"
-          //fullHeight
-          frame
-          position="right"
+        <Drawer
+          placement="left"
+          closable={true}
+          onClose={() => this.props.toggleSideNav(false)}
+          visible={isOpen}
+          width={sideNavWidth}
+          bodyStyle={{ paddingLeft: 0, paddingRight: 0, overflowX: 'hidden' }}
         >
-          <ModalHeader toggle={() => this.closeModal()}>
-            {contentTitle}
-          </ModalHeader>
-          <ModalBody>
+          <Row>
+            <Col>
+              {/* Header image */}
+              <div className="text-center" style={{ color: "black", marginBottom: "-5px" }}>
+                {data.logoTop &&
+                  <img src={data.logoTop.src} style={{ width: data.logoTop.width, marginTop: "15px" }} />
+                }
+              </div>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col>
+              {/* Header text */}
+              <h4 style={{ color: "black", marginBottom: "-5px", textAlign: "center" }}>
+                {data.title}
+              </h4>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col>
+              <table>
+                <tbody>
+                  <tr>
+                    <td width="100%">
+                      {/* Links */}
+                      <Collapse accordion bordered={false} defaultActiveKey={['cat_1']}>
+                        {this.renderLinks(data.nav)}
+                      </Collapse>
+                    </td>
+                    <td>
+                      <Button
+                        className="nav-close-handle"
+                        onClick={() => this.props.toggleSideNav(false)}
+                        color=""
+                        style={{ backgroundColor: DEAGreen }}
+                      >
+                        <Fa
+                          size="2x"
+                          icon="caret-left"
+                        />
+                      </Button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col>
+              {/* Footer image */}
+              <div className="text-center">
+                {data.logoBottom &&
+                  <img src={data.logoBottom.src} style={{ width: data.logoBottom.width }} />
+                }
+              </div>
+            </Col>
+          </Row>
+          <Drawer
+            title={
+              <a style={{ fontSize: 24, fontWeight: 500, color: DEAGreen }} onClick={() => this.closeModal()}>
+                <Fa icon="chevron-circle-left" style={{ marginRight: 10 }} />
+                {contentTitle}
+              </a>
+            }
+            placement="left"
+            width={width < 1250 ? "100vw" : "80vw"}
+            closable={true}
+            onClose={() => this.closeModal()}
+            visible={showContent}
+            bodyStyle={{ padding: 1, overflowX: 'hidden' }}
+          >
             <iframe
+              id="sidenav-content"
               style={{
-                marginLeft: "-15px",
-                marginRight: "-20px",
-                marginTop: "-15px",
-                marginBottom: "-20px",
-                width: width,
-                height: (height - 75) + "px",
-                border: "0px solid black",
-                // backgroundImage: `url(${loader})`,
-                // backgroundRepeat: "no-repeat",
-                // backgroundPosition: "50% 50%"
+                padding: 0,
+                width: "100%",
+                height: "90vh",
+                border: "none",
               }}
               src={contentLink}
             />
-          </ModalBody>
-        </Modal>
+          </Drawer>
+        </Drawer>
       </>
     )
   }
+
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(SideNav)
