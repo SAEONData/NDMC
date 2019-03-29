@@ -8,8 +8,7 @@ import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../config/action-types'
 import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.js'
-import Select from 'antd/lib/select'
-import '../../../../css/antd.select.css' //Overrides default antd.select css
+import { Select } from 'antd'
 const Option = Select.Option
 const _ = require('lodash')
 
@@ -34,7 +33,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class impactFilters extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       value: 'Select...'
@@ -42,7 +41,7 @@ class impactFilters extends React.Component {
     this.optionClick = this.optionClick.bind(this)
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.Init()
   }
 
@@ -50,7 +49,7 @@ class impactFilters extends React.Component {
     this.Init()
   }
 
-  Init(){
+  Init() {
     let { impactFilter, impacts } = this.props
 
     let searchImpacts = impacts.filter(r => r.TypeImpactId == impactFilter)
@@ -68,7 +67,7 @@ class impactFilters extends React.Component {
    * Handle selecting an impact filter
    * @param {string} value String value of the selected impact node
    */
-  optionClick (value) {
+  optionClick(value) {
     let { loadImpactFilter, impacts } = this.props
     let id = 0
     let filteredData
@@ -88,7 +87,7 @@ class impactFilters extends React.Component {
    * list available render options
    * @param {Array} data The data array for render options
    */
-  renderOptions (data) {
+  renderOptions(data) {
     let options = []
     data.value.sort((a, b) => (a.TypeImpactName > b.TypeImpactName) ? 1 : ((b.TypeImpactName > a.TypeImpactName) ? -1 : 0))
     var uniq = {}
@@ -103,7 +102,7 @@ class impactFilters extends React.Component {
     return options
   }
 
-  render () {
+  render() {
     const impactsQuery = {
       select: ['TypeImpactId', 'TypeImpactName']
     }

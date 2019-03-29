@@ -6,11 +6,8 @@ import 'react-select/dist/react-select.css'
 import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../config/action-types'
 import { UILookup } from '../../config/ui_config.js'
+import { TreeSelect } from 'antd'
 
-//AntD Tree-Select
-import TreeSelect from 'antd/lib/tree-select'
-import '../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
-import '../../../css/antd.select.css' //Overrides default antd.select css
 const TreeSelectNode = TreeSelect.TreeNode
 
 const mapStateToProps = (state, props) => {

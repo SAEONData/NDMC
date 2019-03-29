@@ -9,29 +9,9 @@ import popout from '../../../../images/popout.png'
 import popin from '../../../../images/popin.png'
 import EventCard from './EventCard.jsx'
 import { DEAGreen } from '../../../config/colours.js'
+import { Button as ABtn, Modal, Form, Col, Row, InputNumber, Select, DatePicker, Drawer, TreeSelect, Popover } from 'antd'
 
-import { Button as ABtn } from 'antd'
-import Modal from 'antd/lib/modal'
-import Form from 'antd/lib/form'
-import Col from 'antd/lib/col'
-import Row from 'antd/lib/row'
-import InputNumber from 'antd/lib/input-number'
-import Select from 'antd/lib/select'
-import DatePicker from 'antd/lib/date-picker'
-import Drawer from 'antd/lib/drawer'
-import TreeSelect from 'antd/lib/tree-select'
-import Popover from 'antd/lib/popover'
 const { Option } = Select
-import 'antd/lib/modal/style/index.css'
-import 'antd/lib/form/style/index.css'
-import 'antd/lib/input-number/style/index.css'
-import '../../../../css/antd.tree-select.css' // Overrides default antd.tree-select css
-import '../../../../css/antd.select.css' // Overrides default antd.tree-select css
-import '../../../../css/antd.date-picker.css' // Overrides default antd.tree-select css
-import 'antd/lib/popover/style/index.css' //Overrides default antd.tree css
-import 'antd/lib/drawer/style/index.css'
-import 'antd/lib/list/style/index.css'
-
 const _gf = require('../../../globalFunctions')
 
 const mapStateToProps = (state, props) => {
@@ -311,7 +291,7 @@ class EventList extends React.Component {
 
       if (res_1 && res_1.value && res_1.value.length > 0) {
 
-        console.log("events", res_1.value.map(e => e.EventRegions.map(er => er.RegionId)))
+        // console.log("events", res_1.value.map(e => e.EventRegions.map(er => er.RegionId)))
 
         events.push(...res_1.value) //add additional events
         this.props.loadEvents(events)
@@ -965,9 +945,9 @@ class EventList extends React.Component {
           {
             this.state.eventsLoading === true &&
             <div>
-              <br/>
+              <br />
               <h5 style={{ marginLeft: 20 }}>Loading events...</h5>
-              <br/>
+              <br />
             </div>
           }
 
@@ -1007,11 +987,12 @@ class EventList extends React.Component {
             </Button>
           }
         </div>
+
         {/* ### ADD FORM ### */}
         <div>
           <Drawer
-            title="Create"
-            width={720}
+            title="New Hazardous Event"
+            width={600}
             placement="right"
             onClose={this.onClose}
             maskClosable={false}
@@ -1025,7 +1006,7 @@ class EventList extends React.Component {
           >
             <Form layout="vertical" hideRequiredMark>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col span={24}>
                   <Form.Item label="Select the region in which  the event ocurred">
                     <OData baseUrl={vmsBaseURL + 'regions'} query={regionQuery}>
                       {({ loading, error, data }) => {
@@ -1058,7 +1039,9 @@ class EventList extends React.Component {
                     </OData>
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+              </Row>
+              <Row gutter={16}>
+                <Col span={24}>
                   <Form.Item label="Select the type of event that ocurred">
                     <OData baseUrl={vmsBaseURL + 'hazards'} query={hazardQuery}>
                       {({ loading, error, data }) => {
@@ -1087,7 +1070,7 @@ class EventList extends React.Component {
                 </Col>
               </Row>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col span={24}>
                   <Form.Item label="Select the date range in which the event ocurred">
                     <DatePicker.RangePicker
                       style={{ width: '100%' }}
@@ -1098,9 +1081,9 @@ class EventList extends React.Component {
                 </Col>
               </Row>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col span={24}>
                   <Form.Item label="If the event has been declared, please provide date of declaration">
-                    <DatePicker onChange={this.onDeclaredDateSelect} />
+                    <DatePicker style={{ width: '100%' }} onChange={this.onDeclaredDateSelect} />
                   </Form.Item>
                 </Col>
               </Row>
@@ -1263,7 +1246,7 @@ class EventList extends React.Component {
                 borderRadius: '0 0 4px 4px',
               }}
             >
-              <Button size="sm" onClick={this.onSubmit} color="warning" style={{ marginRight: 8 }}>
+              <Button size="sm" onClick={this.onSubmit} color="" style={{ marginRight: 8, backgroundColor: DEAGreen }}>
                 Submit
               </Button>
               <Button size="sm" onClick={this.onClose} color="grey" >

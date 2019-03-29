@@ -86,9 +86,8 @@ class SideNav extends React.Component {
       else {
         if (typeof x.link !== 'undefined') {
           links.push(
-            <div style={{ marginLeft: 20 }}>
+            <div key={"lnk_" + x.id} style={{ marginLeft: 20 }}>
               <a
-                key={"lnk_" + x.id}
                 onClick={() => {
                   this.showContent(x.link, x.text, x.window)
                 }}
@@ -101,9 +100,8 @@ class SideNav extends React.Component {
         }
         else {
           links.push(
-            <div style={{ marginLeft: 20 }}>
+            <div key={"lnk_" + x.id} style={{ marginLeft: 20 }}>
               <a
-                key={"lnk_" + x.id}
                 onClick={() => {
                   this.showContent(x.link, x.text, x.window)
                 }}

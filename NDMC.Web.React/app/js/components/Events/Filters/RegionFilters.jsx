@@ -6,9 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../config/action-types'
-import TreeSelect from 'antd/lib/tree-select'
-import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
-import '../../../../css/antd.select.css' //Overrides default antd.select css
+import { TreeSelect } from 'antd'
 import OData from 'react-odata'
 import { vmsBaseURL } from '../../../config/serviceURLs.js'
 
@@ -57,10 +55,6 @@ class RegionFilters extends React.Component {
     if (searchRegions.length > 0) {
       regionName = searchRegions[0].RegionName
     }
-
-    // if (regionName !== this.state.treeValue) {
-    //   this.setState({ treeValue: regionName })
-    // }
   }
 
   /**
@@ -80,22 +74,6 @@ class RegionFilters extends React.Component {
     }
     return (
       <>
-        <br />
-        {/* <OData baseUrl={vmsBaseURL + 'regions/flat'} query={regionQuery}>
-          {({ loading, error, data }) => {
-            if (loading) { return <div>Loading...</div> }
-            if (error) { return <div>Error Loading Data From Server</div> }
-            if (data) {
-              //Dispatch data to store
-              setTimeout(() => {
-                if (!_.isEqual(data.items, this.props.regions)) {
-                  this.props.loadRegions(data.items)
-                }
-              }, 100)
-            }
-          }
-          }
-        </OData> */}
         <OData baseUrl={vmsBaseURL + 'regions'} query={regionQuery}>
           {({ loading, error, data }) => {
             if (loading) { return <div>Loading...</div> }

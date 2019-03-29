@@ -8,8 +8,7 @@ import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../../config/action-types'
 import OData from 'react-odata'
 import { apiBaseURL, vmsBaseURL } from '../../../config/serviceURLs.js'
-import TreeSelect from 'antd/lib/tree-select'
-import '../../../../css/antd.tree-select.css' //Overrides default antd.tree-select css
+import { TreeSelect } from 'antd'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, hazards } } = state

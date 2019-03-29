@@ -7,33 +7,33 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ssoBaseURL, ccisSiteBaseURL, nccrdBaseURL } from '../../config/serviceURLs.js'
 import { DEAGreen } from './../../config/colours'
-import { 
-  Dropdown, 
-  DropdownItem, 
-  DropdownToggle, 
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
   DropdownMenu,
-  Navbar, 
-  NavbarNav, 
+  Navbar,
+  NavbarNav,
   NavLink,
-  NavbarToggler, 
-  NavItem, 
-  Collapse, 
-  Button, 
-  Fa 
+  NavbarToggler,
+  NavItem,
+  Collapse,
+  Button,
+  Fa
 } from 'mdbreact'
 
 const mapStateToProps = (state, props) => {
   let user = state.oidc.user
   let { globalData: { forceNavRender, toggleSideNav, showSideNav, showSideNavButton, showNavbar } } = state
   let { navigation: { locationHash } } = state
-  return { 
-    forceNavRender, 
-    toggleSideNav, 
-    showSideNav, 
-    showSideNavButton, 
+  return {
+    forceNavRender,
+    toggleSideNav,
+    showSideNav,
+    showSideNavButton,
     showNavbar,
-    user, 
-    locationHash 
+    user,
+    locationHash
   }
 }
 
@@ -56,7 +56,7 @@ const mapDispatchToProps = (dispatch) => {
  * @class
  */
 class CustomNavbar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       collapse: false,
@@ -67,18 +67,18 @@ class CustomNavbar extends React.Component {
     this.toggle = this.toggle.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.checkForceNavRender()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.checkForceNavRender()
   }
 
   /**
    * Handle navigation bar rendering on component updates
    */
-  checkForceNavRender () {
+  checkForceNavRender() {
     if (this.props.forceNavRender === true) {
       this.props.setForceNavRender(false)
       // Force a render without state change...
@@ -89,7 +89,7 @@ class CustomNavbar extends React.Component {
   /**
    * Handle navbar click collapse
    */
-  onClick () {
+  onClick() {
     this.setState({
       collapse: !this.state.collapse,
     })
@@ -98,13 +98,13 @@ class CustomNavbar extends React.Component {
   /**
    * Handle navbar dropdown toggle
    */
-  toggle () {
+  toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
     })
   }
 
-  render () {
+  render() {
     let { user, toggleSideNav, showSideNav, showNavbar } = this.props
     return (
       <Navbar
@@ -132,52 +132,53 @@ class CustomNavbar extends React.Component {
             {
               (!location.hash.includes("events/") /*&& (user && !user.expired)*/) &&
               <Button
-                color="warning"
+                color=""
+                style={{ marginLeft: "0px", backgroundColor: DEAGreen }}
                 size="sm"
-                style={{ marginLeft: "0px" }}
                 onClick={() => { this.props.toggleAddForm(true) }}
               >
+                <Fa icon="plus" style={{ marginRight: 15 }} />
                 Submit Hazardous Event
               </Button>
             }
 
             {/* Adaptation */}
             <NavItem>
-                <Dropdown>
-                  <DropdownToggle nav caret style={{ color: "black" }}><b>Adaptation and Response</b></DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem header style={{ marginLeft: "-16px", fontSize:"16px", color: "black" }}>
-                      <b>
-                        Climate Change Adaptation&nbsp;
+              <Dropdown>
+                <DropdownToggle nav caret style={{ color: "black" }}><b>Adaptation and Response</b></DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem header style={{ marginLeft: "-16px", fontSize: "16px", color: "black" }}>
+                    <b>
+                      Climate Change Adaptation&nbsp;
                         <br className="d-block d-md-none" />
-                        Monitoring and Evaluation
+                      Monitoring and Evaluation
                       </b>
-                    </DropdownItem>
-                    <DropdownItem divider />
-                    {/* <DropdownItem header style={{ marginLeft: "-16px", fontWeight: "400", fontSize: "16px", color: "black" }}>
+                  </DropdownItem>
+                  <DropdownItem divider />
+                  {/* <DropdownItem header style={{ marginLeft: "-16px", fontWeight: "400", fontSize: "16px", color: "black" }}>
                       Impacts:
                     </DropdownItem> */}
-                    <DropdownItem href={ ccisSiteBaseURL } style={{ marginLeft: "7px" }}>
-                      <b style={{ color: "grey" }}>View Information</b>
-                    </DropdownItem>
-                    <DropdownItem href={ ccisSiteBaseURL + '/#/ame/contribute' }  style={{ marginLeft: "7px" }}>
-                      <b style={{ color: "grey" }}>Submit evaluation on Progress</b>
-                    </DropdownItem>
-                    <DropdownItem header style={{ marginLeft: "-16px", fontWeight: "400", fontSize: "16px", color: "black" }}>
+                  <DropdownItem href={ccisSiteBaseURL} style={{ marginLeft: "7px" }}>
+                    <b style={{ color: "grey" }}>View Information</b>
+                  </DropdownItem>
+                  <DropdownItem href={ccisSiteBaseURL + '/#/ame/contribute'} style={{ marginLeft: "7px" }}>
+                    <b style={{ color: "grey" }}>Submit evaluation on Progress</b>
+                  </DropdownItem>
+                  <DropdownItem header style={{ marginLeft: "-16px", fontWeight: "400", fontSize: "16px", color: "black" }}>
                     National Climate Change Response Database
                     </DropdownItem>
-                    <DropdownItem divider />
+                  <DropdownItem divider />
 
-                    <DropdownItem href={ nccrdBaseURL + '/#/'} style={{ marginLeft: "7px" }}>
-                      <b style={{ color: "grey" }}>View projects</b>
-                    </DropdownItem>
-                    <DropdownItem href={ nccrdBaseURL  + '/#/projects/add' }  style={{ marginLeft: "7px" }}>
-                      <b style={{ color: "grey" }}>Submit Project</b>
-                    </DropdownItem>
-                   
-                  </DropdownMenu>
-                </Dropdown>
-              </NavItem>
+                  <DropdownItem href={nccrdBaseURL + '/#/'} style={{ marginLeft: "7px" }}>
+                    <b style={{ color: "grey" }}>View projects</b>
+                  </DropdownItem>
+                  <DropdownItem href={nccrdBaseURL + '/#/projects/add'} style={{ marginLeft: "7px" }}>
+                    <b style={{ color: "grey" }}>Submit Project</b>
+                  </DropdownItem>
+
+                </DropdownMenu>
+              </Dropdown>
+            </NavItem>
 
             {/* INVISIBLE HEIGHT SPACER */}
             <div style={{ height: "32px", margin: "6px" }} />
@@ -190,26 +191,26 @@ class CustomNavbar extends React.Component {
               {/* Username */}
               {(user && !user.expired) &&
 
-              <table>
-                <tbody>
-                  <tr style={{ height: "40px" }}>
-                    <td valign="middle">
-                      <div style={{ marginRight: "7px", color: "grey" }} >
-                        <Fa size="2x" icon="user-circle-o" />
-                      </div>
-                    </td>
-                    <td valign="middle">
-                      <div style={{ fontSize: "17px", color: DEAGreen }} >
-                        <b>{`${user.profile.FirstName} ${user.profile.Surname}`}</b>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                <table>
+                  <tbody>
+                    <tr style={{ height: "40px" }}>
+                      <td valign="middle">
+                        <div style={{ marginRight: "7px", color: "grey" }} >
+                          <Fa size="2x" icon="user-circle-o" />
+                        </div>
+                      </td>
+                      <td valign="middle">
+                        <div style={{ fontSize: "17px", color: DEAGreen }} >
+                          <b>{`${user.profile.FirstName} ${user.profile.Surname}`}</b>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               }
 
               {/* Login / Logout */}
-                <NavItem style={{ marginLeft: "15px" }}>
+              <NavItem style={{ marginLeft: "15px" }}>
                 {(!user || user.expired) &&
                   <a className="nav-link" onClick={this.LoginLogoutClicked} href="#/login">
                     <b style={{ color: "black" }}>
@@ -224,8 +225,8 @@ class CustomNavbar extends React.Component {
                   </b>
                   </a>
                 }
-                </NavItem>
-        
+              </NavItem>
+
               {/* Register */}
               {(!user || user.expired) &&
                 <NavItem style={{ marginLeft: "15px" }}>
@@ -237,7 +238,7 @@ class CustomNavbar extends React.Component {
                 </NavItem>
               }
 
-          </NavbarNav>
+            </NavbarNav>
           }
         </Collapse>
       </Navbar>

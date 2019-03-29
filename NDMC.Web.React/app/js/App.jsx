@@ -3,10 +3,15 @@
  * @ignore
  * Imports
  */
+
+//Styles - Ant.Design (has to be loaded before MDB so that MDB can replace all applicable styles)
 import 'antd/lib/style/index.css'
+
+//Styles - MDB
 import 'font-awesome/css/font-awesome.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdbreact/dist/css/mdb.css'
+
 import React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
