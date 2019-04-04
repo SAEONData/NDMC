@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import * as ACTION_TYPES from '../../config/action-types'
 import { UILookup } from '../../config/ui_config.js'
 import { TreeSelect } from 'antd'
+import '../../../css/antd.tree-select.css'
 
 const TreeSelectNode = TreeSelect.TreeNode
 

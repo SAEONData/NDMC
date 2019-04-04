@@ -9,6 +9,7 @@ import * as ACTION_TYPES from '../../../config/action-types'
 import OData from 'react-odata'
 import { apiBaseURL, vmsBaseURL } from '../../../config/serviceURLs.js'
 import { TreeSelect } from 'antd'
+import '../../../../css/antd.tree-select.css'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { hazardFilter, hazards } } = state

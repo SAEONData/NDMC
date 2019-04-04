@@ -10,6 +10,7 @@ import popin from '../../../../images/popin.png'
 import EventCard from './EventCard.jsx'
 import { DEAGreen } from '../../../config/colours.js'
 import { Button as ABtn, Modal, Form, Col, Row, InputNumber, Select, DatePicker, Drawer, TreeSelect, Popover } from 'antd'
+import '../../../../css/antd.tree-select.css'
 
 const { Option } = Select
 const _gf = require('../../../globalFunctions')

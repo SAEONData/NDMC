@@ -9,6 +9,7 @@ import * as ACTION_TYPES from '../../../config/action-types'
 import { TreeSelect } from 'antd'
 import OData from 'react-odata'
 import { vmsBaseURL } from '../../../config/serviceURLs.js'
+import '../../../../css/antd.tree-select.css'
 
 const mapStateToProps = (state, props) => {
   let { filterData: { regionFilter, regions } } = state
