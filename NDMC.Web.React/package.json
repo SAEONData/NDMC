@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "./app/index.ejs",
   "scripts": {
-    "app-dev": "webpack-dev-server --hot --watch-poll --progress=true --config ./webpack.dev.config.js",
+    "app-dev": "webpack-dev-server --hot --watch-poll --progress=true --open --config ./webpack.dev.config.js",
     "build-test": "webpack --optimize-minimize --progress --config ./webpack.test.config.js",
     "build-prod": "webpack --optimize-minimize --progress"
   },
