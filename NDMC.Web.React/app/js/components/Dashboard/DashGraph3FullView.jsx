@@ -5,6 +5,7 @@ import { apiBaseURL, vmsBaseURL } from '../../config/serviceURLs.js'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import buildQuery from 'odata-query'
 import moment from 'moment';
+import { CustomFetch } from '../../globalFunctions';
 
 const _gf = require('../../globalFunctions')
 
@@ -78,7 +79,7 @@ class DashGraph3FullView extends React.Component {
       })
 
       try {
-        let res = await fetch(apiBaseURL + `Events${query}`)
+        let res = await CustomFetch(apiBaseURL + `Events${query}`)
         let resBody = await res.json()
 
         if (res.ok && resBody.value) {
@@ -100,7 +101,7 @@ class DashGraph3FullView extends React.Component {
     //Get Hazards list/details
     try {
 
-      let res = await fetch(vmsBaseURL + "hazards/flat")
+      let res = await CustomFetch(vmsBaseURL + "hazards/flat")
 
       //Get response body
       let resBody = await res.json()
@@ -151,7 +152,7 @@ class DashGraph3FullView extends React.Component {
     //GET EVENTS FILTERED//
     try {
 
-      let res = await fetch(apiBaseURL + "Events/Extensions.Filter?$select=EventId",
+      let res = await CustomFetch(apiBaseURL + "Events/Extensions.Filter?$select=EventId",
         {
           method: "POST",
           headers: {

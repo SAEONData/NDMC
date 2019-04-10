@@ -4,6 +4,7 @@ import popin from '../../../images/popin.png'
 import { apiBaseURL } from '../../config/serviceURLs.js'
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from 'recharts'
 import buildQuery from 'odata-query'
+import { CustomFetch } from '../../globalFunctions';
 
 const _gf = require('../../globalFunctions')
 
@@ -83,7 +84,7 @@ class DashGraph1FullView extends React.Component {
     //GET EVENTS FILTERED//
     try {
 
-      let res = await fetch(apiBaseURL + "Events/Extensions.Filter?$select=EventId",
+      let res = await CustomFetch(apiBaseURL + "Events/Extensions.Filter?$select=EventId",
         {
           method: "POST",
           headers: {
@@ -132,7 +133,7 @@ class DashGraph1FullView extends React.Component {
       })
 
       try {
-        let res = await fetch(apiBaseURL + `TypeMitigations${query}`)
+        let res = await CustomFetch(apiBaseURL + `TypeMitigations${query}`)
         let resBody = await res.json()
 
         if (res.ok && resBody.value) {

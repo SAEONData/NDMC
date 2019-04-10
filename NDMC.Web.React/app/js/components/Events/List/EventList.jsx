@@ -11,6 +11,7 @@ import EventCard from './EventCard.jsx'
 import { DEAGreen } from '../../../config/colours.js'
 import { Button as ABtn, Modal, Form, Col, Row, InputNumber, Select, DatePicker, Drawer, TreeSelect, Popover } from 'antd'
 import '../../../../css/antd.tree-select.css'
+import { CustomFetch } from '../../../globalFunctions.js';
 
 const { Option } = Select
 const _gf = require('../../../globalFunctions')
@@ -278,7 +279,7 @@ class EventList extends React.Component {
         favorites: _favoritesFilter === true ? _gf.ReadCookie("NDMC_Event_Favorites") : ""
       }
 
-      const res = await fetch(fetchURL, {
+      const res = await CustomFetch(fetchURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -395,7 +396,7 @@ class EventList extends React.Component {
 
     if (this.ValidateInput()) {
       try {
-        let res = await fetch(apiBaseURL + 'Events/', {
+        let res = await CustomFetch(apiBaseURL + 'Events/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -10,6 +10,7 @@ import RangeComponent from '../../Shared/RangeComponent.jsx'
 import OData from 'react-odata'
 import { apiBaseURL } from '../../../config/serviceURLs.js'
 import { vmsBaseURL } from '../../../config/serviceURLs.js'
+import { CustomFetch } from '../../../globalFunctions.js';
 
 
 const mapStateToProps = (state, props) => {
@@ -43,7 +44,7 @@ class EventDetailsTab extends React.Component {
    */
   async getRegion () {
     let fetchURL = `${vmsBaseURL}/regions/${this.state.regionId}`
-    fetch(fetchURL)
+    CustomFetch(fetchURL)
       .then(res => {
         return res.json()
       })
@@ -62,7 +63,7 @@ class EventDetailsTab extends React.Component {
    */
   async getHazard () {
     let fetchURL = `${vmsBaseURL}/hazards/${this.state.hazardId}`
-    fetch(fetchURL)
+    CustomFetch(fetchURL)
       .then(res => {
         return res.json()
       })

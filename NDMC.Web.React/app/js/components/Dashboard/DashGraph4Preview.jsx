@@ -6,6 +6,7 @@ import { apiBaseURL } from '../../config/serviceURLs.js'
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import buildQuery from 'odata-query'
 import moment from 'moment';
+import { CustomFetch } from '../../globalFunctions';
 
 const _gf = require('../../globalFunctions')
 
@@ -79,7 +80,7 @@ class DashGraph4Preview extends React.Component {
     //GET EVENTS FILTERED//
     try {
 
-      let res = await fetch(apiBaseURL + "Events/Extensions.Filter?$select=EventId",
+      let res = await CustomFetch(apiBaseURL + "Events/Extensions.Filter?$select=EventId",
         {
           method: "POST",
           headers: {
@@ -130,7 +131,7 @@ class DashGraph4Preview extends React.Component {
       })
 
       try {
-        let res = await fetch(apiBaseURL + `EventRegions${query}`)
+        let res = await CustomFetch(apiBaseURL + `EventRegions${query}`)
         let resBody = await res.json()
 
         if (res.ok && resBody.value) {

@@ -3,7 +3,11 @@
     [
       "@babel/preset-env",
       {
-        "modules": false
+        "modules": false,
+        "useBuiltIns": "entry",
+        "targets": {
+          "ie": "11"
+        }
       }
     ],
     "@babel/preset-react"

@@ -3,6 +3,25 @@
 import React from 'react'
 import { DEAGreen, DEAGreenDark } from './config/colours.js'
 
+const fetchDefaults = require("fetch-defaults")
+var apiFetch = fetchDefaults(fetch, {
+  headers: { 'pragma': 'no-cache', 'cache-control': 'no-cache' }
+})
+
+export function CustomFetch(url, options) {
+  // Detect IE //
+  let ua = navigator.userAgent;
+  /* MSIE used to detect old browsers and Trident used to newer ones*/
+  let is_ie = ua.indexOf("MSIE ") > -1 || ua.indexOf("Trident/") > -1;
+  // Execute relevant fetch
+  if (is_ie) {
+    return apiFetch(url, options)
+  }
+  else {
+    return fetch(url, options)
+  }
+}
+
 export function fixEmptyValue(value, defaultValue) {
 
   if (isEmptyValue(value)) {
@@ -47,7 +66,7 @@ export function getFontColour(editMode) {
 }
 
 export function getRndInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) ) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export function GetUID() {
@@ -58,8 +77,7 @@ export function GetUID() {
   });
 }
 
-export function IsValidGuid(guid)
-{
+export function IsValidGuid(guid) {
   let pattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
   return pattern.test(guid)
 }
